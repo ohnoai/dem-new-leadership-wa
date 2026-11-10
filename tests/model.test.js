@@ -5,6 +5,61 @@ const vm = require('node:vm');
 const load = () => { const context = { window: {} }; if (fs.existsSync('model.js')) vm.runInNewContext(fs.readFileSync('model.js', 'utf8'), context); return context.window.ActionModel; };
 const murray = { id: 'murray', name: 'Patty Murray', group: 'senate', vote: 'senate' };
 const cantwell = { id: 'cantwell', name: 'Maria Cantwell', group: 'senate', vote: 'senate' };
+test('new letters default to full with independent concise shared defaults', () => {
+  const M = load();
+  const state = M.create({ subject: 'Full subject', message: 'Full text' }, { subject: 'Concise subject', message: 'Concise text' });
+  assert.equal(state.letterVersion, 'full');
+  assert.equal(state.shared.subject, 'Full subject');
+  assert.equal(state.shared.message, 'Full text');
+  assert.equal(state.shared.conciseSubject, 'Concise subject');
+  assert.equal(state.shared.conciseMessage, 'Concise text');
+  assert.equal(M.draft(state, murray).subject, 'Full subject');
+  assert.equal(M.draft(state, murray).message, 'Dear Senator Murray,\n\nFull text');
+});
+test('concise drafts use their own shared text, role requests and recipient overrides', () => {
+  const M = load();
+  const state = M.create({ subject: 'Full subject', message: 'Full body' }, { subject: 'Short subject', message: 'Short body' });
+  const content = { requests: { senate: 'Full vote request' }, concise: { requests: { senate: 'Short vote request', house: 'Short House request', influence: 'Short influence request' } } };
+  state.personal.murray = { subject: 'Personal full subject', message: 'Personal full body', call: 'Call text', social: 'Social text' };
+  state.letterVersion = 'concise';
+  assert.equal(M.draft(state, murray, content).subject, 'Short subject');
+  assert.equal(M.draft(state, murray, content).message, 'Dear Senator Murray,\n\nShort vote request\n\nShort body');
+  assert.equal(M.draft(state, { id: 'house', name: 'Adam Smith', group: 'house', vote: 'house' }, content).message, 'Dear Representative Smith,\n\nShort House request\n\nShort body');
+  assert.equal(M.draft(state, { id: 'gov', name: 'Bob Ferguson', group: 'influence', greeting: 'Dear Governor Ferguson,', vote: null }, content).message, 'Dear Governor Ferguson,\n\nShort influence request\n\nShort body');
+  state.personal.murray.conciseSubject = '';
+  state.personal.murray.conciseMessage = 'Personal concise body';
+  assert.equal(M.draft(state, murray, content).subject, '');
+  assert.equal(M.draft(state, murray, content).message, 'Personal concise body');
+  assert.equal(M.draft(state, murray, content).call, 'Call text');
+  assert.equal(M.draft(state, murray, content).social, 'Social text');
+  state.letterVersion = 'full';
+  assert.equal(M.draft(state, murray, content).subject, 'Personal full subject');
+  assert.equal(M.draft(state, murray, content).message, 'Personal full body');
+});
+test('concise edits map only letter fields and keep both versions independent across recipients', () => {
+  const M = load();
+  const state = M.create({ subject: 'Full default', message: 'Full default body' }, { subject: 'Concise default', message: 'Concise default body' });
+  M.edit(state, murray, 'subject', 'Full personal');
+  M.edit(state, murray, 'message', 'Full personal body');
+  state.letterVersion = 'concise';
+  M.edit(state, murray, 'subject', 'Concise personal');
+  M.edit(state, murray, 'message', 'Concise personal body');
+  for (const field of ['call', 'social', 'legacyReview', 'reviewed']) {
+    M.edit(state, murray, field, `${field} unchanged`);
+    assert.equal(state.personal.murray[field], `${field} unchanged`);
+    assert.equal(state.personal.murray[`concise${field}`], undefined);
+  }
+  assert.equal(state.personal.murray.subject, 'Full personal');
+  assert.equal(state.personal.murray.message, 'Full personal body');
+  assert.equal(state.personal.murray.conciseSubject, 'Concise personal');
+  assert.equal(state.personal.murray.conciseMessage, 'Concise personal body');
+  state.shared.conciseMessage = 'Changed concise shared body';
+  assert.equal(M.draft(state, murray).message, 'Concise personal body');
+  assert.match(M.draft(state, cantwell).message, /Changed concise shared body/);
+  state.letterVersion = 'full';
+  assert.equal(M.draft(state, murray).message, 'Full personal body');
+  assert.equal(M.draft(state, cantwell).message, 'Dear Senator Cantwell,\n\nFull default body');
+});
 test('shared edits follow recipients without overwriting personal letters', () => {
   const M = load();
   assert.ok(M, 'ActionModel is available');
@@ -17,6 +72,66 @@ test('shared edits follow recipients without overwriting personal letters', () =
   assert.equal(M.draft(state, murray).message, 'A personal Murray letter');
   assert.match(M.draft(state, cantwell).message, /Changed shared priorities/);
 });
+test('JSON restore preserves selected version, both draft variants and existing saved fields', () => {
+  const M = load();
+  const state = M.create({ subject: 'Full', message: 'Full body' }, { subject: 'Concise', message: 'Concise body' });
+  state.selected = 'murray'; state.district = 'WA-01'; state.channel = 'social';
+  M.edit(state, murray, 'subject', 'Full personal');
+  M.edit(state, murray, 'message', 'Full personal body');
+  state.letterVersion = 'concise';
+  M.edit(state, murray, 'subject', 'Concise personal');
+  M.edit(state, murray, 'message', 'Concise personal body');
+  for (const field of ['call', 'social', 'legacyReview', 'reviewed']) M.edit(state, murray, field, `Saved ${field}`);
+  const restored = M.restore(JSON.parse(JSON.stringify(state)));
+  assert.deepEqual(JSON.parse(JSON.stringify(restored)), JSON.parse(JSON.stringify(state)));
+  assert.equal(M.draft(restored, murray).message, 'Concise personal body');
+  restored.letterVersion = 'full';
+  assert.equal(M.draft(restored, murray).message, 'Full personal body');
+});
+test('older and malformed saves retain sanitized full fields and receive concise defaults', () => {
+  const M = load();
+  const full = { subject: 'Full default', message: 'Full default body' };
+  const concise = { subject: 'Concise default', message: 'Concise default body' };
+  const state = M.restore({
+    shared: { subject: 'Saved full', message: 123, conciseSubject: [], conciseMessage: null, injected: 'reject' },
+    personal: { murray: { subject: 'Personal full', message: 'Personal full body', conciseSubject: {}, conciseMessage: false, call: 'Saved call', social: 'Saved social', legacyReview: 'Imported', reviewed: 'snapshot', injected: 'reject' }, invalid: [] },
+    letterVersion: 'invalid', selected: 123, district: [], channel: 'call'
+  }, full, concise);
+  assert.equal(state.letterVersion, 'full');
+  assert.equal(state.shared.subject, 'Saved full');
+  assert.equal(state.shared.message, 'Full default body');
+  assert.equal(state.shared.conciseSubject, 'Concise default');
+  assert.equal(state.shared.conciseMessage, 'Concise default body');
+  assert.equal(state.shared.injected, undefined);
+  assert.equal(state.personal.murray.conciseSubject, undefined);
+  assert.equal(state.personal.murray.conciseMessage, undefined);
+  assert.equal(state.personal.murray.injected, undefined);
+  assert.equal(state.personal.invalid, undefined);
+  assert.equal(state.selected, '');
+  assert.equal(state.district, '');
+  assert.equal(state.channel, 'call');
+  assert.equal(M.draft(state, murray).message, 'Personal full body');
+  state.letterVersion = 'concise';
+  assert.equal(M.draft(state, murray).message, 'Dear Senator Murray,\n\nConcise default body');
+  for (const bad of [null, [], 'invalid']) assert.equal(M.restore(bad, full, concise).shared.conciseSubject, 'Concise default');
+  for (const version of [null, 1, [], {}, 'CONCISE']) assert.equal(M.restore({ letterVersion: version }).letterVersion, 'full');
+});
+test('long user text and intentionally empty overrides survive version selection and restore without truncation', () => {
+  const M = load();
+  const text = 'A complete user-written paragraph.\n'.repeat(400);
+  const state = M.create();
+  M.edit(state, murray, 'subject', text);
+  M.edit(state, murray, 'message', text);
+  state.letterVersion = 'concise';
+  M.edit(state, murray, 'subject', '');
+  M.edit(state, murray, 'message', text + 'Concise is a version, not a length restriction.');
+  const restored = M.restore(JSON.parse(JSON.stringify(state)));
+  assert.equal(M.draft(restored, murray).subject, '');
+  assert.equal(M.draft(restored, murray).message, text + 'Concise is a version, not a length restriction.');
+  restored.letterVersion = 'full';
+  assert.equal(M.draft(restored, murray).subject, text);
+  assert.equal(M.draft(restored, murray).message, text);
+});
 test('restores valid saved fields and rejects malformed storage shapes', () => {
   const M = load();
   assert.equal(typeof M.restore, 'function');
@@ -24,6 +139,32 @@ test('restores valid saved fields and rejects malformed storage shapes', () => {
   assert.equal(state.shared.message, 'Saved');
   assert.equal(M.draft(state, murray).message, 'Custom');
   assert.equal(M.restore({ shared: null, personal: [], channel: 'evil' }).channel, 'letter');
+});
+test('campaign concise letters make substantive role-sensitive requests without changing full defaults', () => {
+  const context = { window: {} };
+  vm.runInNewContext(fs.readFileSync('campaign.js', 'utf8'), context);
+  const content = context.window.CAMPAIGN_CONTENT;
+  assert.ok(content.concise?.shared, 'Concise shared defaults are configured');
+  assert.match(content.concise.shared.subject, /leadership/i);
+  assert.match(content.concise.shared.message, /working people/i);
+  assert.match(content.concise.shared.message, /public services/i);
+  assert.match(content.concise.shared.message, /civil rights/i);
+  assert.match(content.concise.shared.message, /open.*competitive/i);
+  assert.match(content.concise.shared.message, /public/i);
+  assert.match(content.concise.shared.message, /\[Your name\]/);
+  assert.match(content.concise.shared.message, /\[Your city and ZIP code\]/);
+  assert.match(content.concise.requests.senate, /oppose Chuck Schumer/);
+  assert.match(content.concise.requests.senate, /leadership vote/);
+  assert.match(content.concise.requests.house, /oppose Hakeem Jeffries/);
+  assert.match(content.concise.requests.house, /leadership vote/);
+  assert.match(content.concise.requests.influence, /Chuck Schumer and Hakeem Jeffries/);
+  assert.match(content.concise.requests.influence, /do not vote/i);
+  assert.match(content.concise.requests.influence, /publicly/i);
+  const M = load();
+  const state = M.create(content.shared, content.concise.shared);
+  assert.equal(M.draft(state, murray, content).message, ['Dear Senator Murray,', content.requests.senate, content.shared.message].join('\n\n'));
+  state.letterVersion = 'concise';
+  assert.equal(M.draft(state, murray, content).message, ['Dear Senator Murray,', content.concise.requests.senate, content.concise.shared.message].join('\n\n'));
 });
 test('appropriate request and greeting for officials without a Democratic ballot', () => {
   const M = load();

@@ -13,7 +13,7 @@
   }
   const savedDrafts = read(draftKey), savedActions = read(actionKey);
   let lastDraft = JSON.stringify(savedDrafts);
-  let state = M.restore(savedDrafts, T.shared);
+  let state = M.restore(savedDrafts, T.shared, T.concise?.shared);
   let actions = savedActions;
   let pendingActions = {};
   if (!actions || typeof actions !== 'object' || Array.isArray(actions)) actions = {};
@@ -108,13 +108,30 @@
     const o = normalized(current()), draft = M.draft(state, o, T);
     $('subject').value = draft.subject; $('message').value = draft.message;
     const personal = state.personal[o.id] || {};
-    $('draftKind').textContent = typeof personal.message === 'string' ? 'Personal version' : 'Shared draft';
-    $('useShared').hidden = !Object.hasOwn(personal, 'message') && !Object.hasOwn(personal, 'subject');
+    $('letterVersion').value = state.letterVersion || 'full';
+    const fields = letterFields();
+    $('sharedSubject').value = state.shared[fields.subject]; $('sharedMessage').value = state.shared[fields.message];
+    $('sharedVersion').textContent = state.letterVersion === 'concise' ? 'Editing the concise master.' : 'Editing the full master.';
+    $('draftKind').textContent = typeof personal[fields.message] === 'string' ? 'Personal version' : 'Shared draft';
+    $('useShared').hidden = !Object.hasOwn(personal, fields.message) && !Object.hasOwn(personal, fields.subject);
     $('callScript').value = personal.call ?? T.call.replace('[official]', o.name).replace('[request]', T.requests[o.vote || 'influence']);
     // Sharing may target any network; a published X/Facebook identity is not a universal mention.
     const handle = o.name + ':';
     $('socialText').value = personal.social ?? T.social.replace('[handle]', handle).replace('[socialRequest]', o.vote ? 'Use your caucus vote to support a credible alternative.' : 'Use your influence to advocate for change.');
-    renderReview();
+    renderReview(); renderCounts();
+  }
+  const letterFields = () => state.letterVersion === 'concise' ? { message: 'conciseMessage', subject: 'conciseSubject' } : { message: 'message', subject: 'subject' };
+  function renderCounts() {
+    const form = current().form || {}, warnings = [];
+    for (const field of ['subject', 'message']) {
+      const rule = form[field], value = $(field).value;
+      const count = rule?.status === 'verified' && rule.newlines === 'crlf' ? value.replace(/\r?\n/g, '\r\n').length : value.length;
+      const limit = rule?.status === 'verified' && Number.isInteger(rule.limit) && rule.limit > 0 ? rule.limit : null;
+      $(field + 'Count').textContent = `${count.toLocaleString('en-US')}${limit ? ' / ' + limit.toLocaleString('en-US') : ''} characters`;
+      if (limit && count > limit) warnings.push(`${field === 'message' ? 'Message' : 'Subject'} exceeds the verified form limit by ${(count - limit).toLocaleString('en-US')} characters.`);
+    }
+    $('limitWarning').hidden = !warnings.length;
+    $('limitWarning').textContent = warnings.length ? warnings.join(' ') + ' Edit this version or choose the concise alternative. Nothing has been shortened.' : '';
   }
   const reviewSnapshot = () => JSON.stringify([state.channel, $('subject').value, $('message').value, $('callScript').value, $('socialText').value]);
   function renderReview() {
@@ -151,7 +168,8 @@
     $('channel').value = state.channel;
     for (const channel of ['letter', 'call', 'social']) $(channel + 'Panel').hidden = state.channel !== channel;
     $('contactLink').href = o.website;
-    $('contactHelp').textContent = 'Copy, open the official form, paste, and submit there. Nothing is sent from this site.' + (o.group === 'house' ? ' House offices generally accept messages only from their own constituents.' : '') + (o.limit ? ` This office lists a ${o.limit.toLocaleString()}-character limit. Edit to fit; text is never truncated here.` : '');
+    $('contactHelp').textContent = 'Copy, open the official form, paste, and submit there. Nothing is sent from this site.' + (o.group === 'house' ? ' House offices generally accept messages only from their own constituents.' : '');
+    $('formCompatibility').textContent = o.form?.note || 'Form limits are unverified. Check the official page before sending; no limit is assumed here.';
     $('phoneLink').hidden = !o.phone;
     if (o.phone) { $('phoneLink').href = 'tel:+1' + o.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, ''); $('phoneLink').textContent = 'Call ' + o.phone; }
     $('phoneNote').textContent = o.phone ? 'Calls open your phone app. You decide whether to place the call.' : 'No verified direct phone number is listed. Use the official contact page instead.';
@@ -171,15 +189,16 @@
     if (o) { $('districtDetails').open = false; select(o.id, true); } else save();
   };
   $('channel').onchange = () => { state.channel = $('channel').value; feedback(''); render(); save(); };
+  $('letterVersion').onchange = () => { state.letterVersion = $('letterVersion').value; feedback(''); renderDraft(); save(); };
   for (const field of ['subject', 'message']) $(field).oninput = () => {
     M.edit(state, current(), field, $(field).value); save();
-    $('draftKind').textContent = Object.hasOwn(state.personal[current().id], 'message') ? 'Personal version' : 'Shared draft';
+    $('draftKind').textContent = Object.hasOwn(state.personal[current().id], letterFields().message) ? 'Personal version' : 'Shared draft';
     $('useShared').hidden = false;
-    renderReview();
+    renderReview(); renderCounts();
   };
   for (const [id, field] of [['callScript', 'call'], ['socialText', 'social']]) $(id).oninput = () => { M.edit(state, current(), field, $(id).value); renderReview(); save(); };
-  for (const [id, field] of [['sharedSubject', 'subject'], ['sharedMessage', 'message']]) $(id).oninput = () => { state.shared[field] = $(id).value; renderDraft(); save(); };
-  $('useShared').onclick = () => { const p = state.personal[current().id]; delete p.message; delete p.subject; renderDraft(); save(); feedback('This recipient now uses the shared draft.'); };
+  for (const [id, field] of [['sharedSubject', 'subject'], ['sharedMessage', 'message']]) $(id).oninput = () => { state.shared[letterFields()[field]] = $(id).value; renderDraft(); save(); };
+  $('useShared').onclick = () => { const p = state.personal[current().id], fields = letterFields(); delete p[fields.message]; delete p[fields.subject]; renderDraft(); save(); feedback('This recipient now uses the shared draft for this version.'); };
   function mergeActions() {
     const latest = read(actionKey);
     if (latest === undefined) { actions = { ...actions, ...pendingActions }; saveStatus(); return false; }
@@ -238,7 +257,7 @@
       // Create then remove an empty action record so other tabs receive an erase event even if no actions were saved.
       localStorage.setItem(actionKey, '{}');
       for (const key of [draftKey, actionKey]) localStorage.removeItem(key);
-      lastDraft = 'null'; state = M.create(T.shared); actions = {}; pendingActions = {}; readFailures.clear(); writeFailures.clear(); draftConflict = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.');
+      lastDraft = 'null'; state = M.create(T.shared, T.concise?.shared); actions = {}; pendingActions = {}; readFailures.clear(); writeFailures.clear(); draftConflict = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.');
     }
     catch { writeFailures.add(draftKey); saveStatus(); feedback('Unable to erase browser storage. Use browser settings.'); }
   };
