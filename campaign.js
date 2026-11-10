@@ -71,7 +71,7 @@ Thank you,
 [Your name]
 [Your location]`
     }
-  }
+  },
   shared: {
     subject: 'It is time for new Democratic congressional leadership',
     message: 'Working people need a Democratic Party willing to defend public services, protect civil rights, and challenge the power of wealthy donors and corporate lobbyists. I want leaders who make a clear case for those priorities and organize to deliver on them, not treat accountability as something that can wait until the next election.\n\nA change in leadership must mean more than a new name. I am asking for an open, competitive process, a substantive debate about strategy, and a commitment to listen to constituents throughout the year. Please explain what you will do to help secure that change and make your position public.\n\nThank you,\n[Your name]\n[Your city and ZIP code]'
@@ -134,7 +134,7 @@ Thank you,
 [Your name]
 [Your location]`
       }
-    }
+    },
     shared: {
       subject: 'Support new Democratic congressional leadership',
       message: 'Working people need leaders who defend public services and civil rights and challenge wealthy donors and corporate lobbyists. Support an open, competitive leadership process and explain publicly how you will help secure accountable leadership.\n\nThank you,\n[Your name]\n[Your city and ZIP code]'

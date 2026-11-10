@@ -77,7 +77,7 @@ test('all officials have a recipient greeting and the correct editable request',
     await expect(page.locator('#contactLink')).toHaveAttribute('href', o.website);
     const text = await page.locator('#message').inputValue();
     expect(text).toContain(o.greeting || o.name.split(' ').at(-1));
-    expect(text).toMatch(o.vote === 'senate' ? /oppose Chuck Schumer/ : o.vote === 'house' ? /oppose Hakeem Jeffries/ : /do not cast a ballot/);
+    expect(text).toMatch(o.vote === 'senate' ? /oppose Chuck Schumer/ : o.vote === 'house' ? /oppose Hakeem Jeffries/ : /(?:do not|don't) vote in either (?:congressional )?caucus/);
     await page.locator('#channel').selectOption('call');
     if (o.phone) await expect(page.locator('#phoneLink')).toHaveAttribute('href', 'tel:+1' + o.phone.replace(/\D/g, ''));
     await page.locator('#channel').selectOption('letter');

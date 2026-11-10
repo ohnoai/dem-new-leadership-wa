@@ -9,7 +9,7 @@ test('private details personalize copy and calls without persisting identity int
   await context.grantPermissions(['clipboard-read','clipboard-write']); await page.goto('/'); await details(page);
   await expect(page.locator('#message')).toHaveValue(/Jane Smith\nCentralia, Lewis County, WA 98531/);
   const text = await page.locator('#message').inputValue();
-  await page.locator('#message').fill(text.replace('Democrats have won', 'My neighbors and I know Democrats have won'));
+  await page.locator('#message').fill(text.replace("I'm writing as your constituent", 'My neighbors and I are writing as constituents'));
   await page.locator('#detailName').fill('Alex Smith');
   await expect(page.locator('#message')).toHaveValue(/My neighbors[\s\S]*Alex Smith/);
   const raw = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).personal.murray.message, key);
