@@ -10,6 +10,8 @@ The public application is a static site.
 | `data.js` | Washington officials and reference data |
 | `campaign.js` | Editable campaign language and role-specific requests |
 | `styles.css` | Mobile-first presentation and Washington visual identity |
+| `presentation.js` | Full-letter expansion without changing draft state |
+| `assets/` | Original evergreen, self-hosted headline font and font license |
 | `scripts/serve.js` | Local-only development preview server |
 | `tests/` | Node model tests and Playwright browser/accessibility tests |
 | `playwright.config.js` | Mobile and desktop browser test configurations |

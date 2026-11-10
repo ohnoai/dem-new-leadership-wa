@@ -28,4 +28,10 @@ test('preview returns 400 for malformed URL escapes and keeps serving', { timeou
   assert.equal(await status('/%E0%A4%A'), 400);
   assert.equal(await status('/%'), 400);
   assert.equal(await status('/'), 200);
+  const fontType = await new Promise((resolve, reject) => {
+    http.get({ hostname: '127.0.0.1', port, path: '/assets/barlow-condensed-800.woff2' }, res => {
+      res.resume(); res.on('end', () => resolve(res.headers['content-type']));
+    }).on('error', reject);
+  });
+  assert.equal(fontType, 'font/woff2');
 });

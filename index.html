@@ -3,30 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#153d35">
+  <meta name="theme-color" content="#191a17">
   <meta name="description" content="Demand new Democratic congressional leadership. Contact your Washington officials, make a call, and track your actions privately.">
-  <title>New Leadership Now · Washington</title>
+  <title>DEM RESET · Washington</title>
+  <link rel="preload" href="assets/barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="assets/evergreen.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip" href="#action">Skip to action</a>
   <header class="masthead">
     <div class="header-inner">
-      <a href="#action" class="brand">NEW LEADERSHIP <span>NOW</span><small id="edition">WASHINGTON</small></a>
+      <div class="identity"><a href="#action" class="brand">DEM<span> RESET</span></a><span class="edition-mark"><img src="assets/evergreen.svg" width="20" height="20" alt=""><span id="edition">WASHINGTON</span></span></div>
       <a href="#completion" class="progress-link" aria-label="View your action progress"><span id="progressText">0 actions</span><span class="progress-track"><span id="progressBar"></span></span></a>
     </div>
   </header>
   <main class="wrap">
     <section class="hero" aria-labelledby="headline">
-      <p class="eyebrow" id="heroKicker">THE EVERGREEN STATE. A NEW DIRECTION.</p>
-      <h1 id="headline">Washington, demand<br>new leadership.</h1>
-      <p id="intro">Ask our delegation to replace Chuck Schumer and Hakeem Jeffries. Make your case. Follow through.</p>
-      <svg class="mountains" viewBox="0 0 260 90" aria-hidden="true"><path d="M0 88 46 49 65 63 119 8 156 49 175 35 235 88Z"/><path class="snow" d="m91 36 28-28 25 28-18-8-9 9-9-8Z"/><path class="ridge" d="m8 89 52-26 44 26m44 0 39-34 49 34"/></svg>
+      <p class="eyebrow" id="heroKicker">WASHINGTON / INDEPENDENT &amp; UNCOMPROMISING</p>
+      <h1 id="headline">DEMOCRATS NEED A RESET.</h1>
+      <div class="hero-bottom">
+        <p class="dek">Same voters.<br><em>Different leadership.</em></p>
+        <div class="hero-argument"><p id="intro">Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.</p><a class="start-action" href="#action">Demand new leadership <span aria-hidden="true">↓</span></a><p class="hero-note">Your voice. Their vote. Start with one office.</p></div>
+      </div>
     </section>
     <noscript><p class="notice">JavaScript is needed to edit and save letters. You can still <a href="https://app.leg.wa.gov/DistrictFinder/">find your district</a> and contact Congress through its official websites.</p></noscript>
     <section class="workspace" id="action" tabindex="-1" aria-label="Contact an official">
+      <div class="action-intro"><p class="eyebrow">THE ASK IS SIMPLE. MAKE IT HEARD.</p><h2>Put your voice behind the reset.</h2><p>Choose an official. Make your case.</p></div>
       <aside class="chooser">
-        <p class="eyebrow">01 / CHOOSE YOUR OFFICIAL</p>
+        <p class="eyebrow">START WITH YOUR DELEGATION</p>
         <label for="official">Choose an official</label>
         <select id="official"></select>
         <details id="districtDetails">
@@ -55,9 +60,9 @@
         </details>
       </aside>
       <div class="editor">
-        <div class="editor-heading"><p class="eyebrow">02 / MAKE YOUR CASE</p><span id="saveStatus" class="note" role="status" aria-live="polite"></span></div>
+        <div class="editor-heading"><p class="eyebrow">YOUR WORDS. YOUR CALL.</p><span id="saveStatus" class="note" role="status" aria-live="polite"></span></div>
         <label for="channel">How will you take action?</label>
-        <select id="channel"><option value="letter">Write a message</option><option value="call">Make a phone call</option><option value="social">Share a social post</option></select>
+        <select id="channel"><option value="letter">Write a letter</option><option value="call">Make a call</option><option value="social">Share a post</option></select>
         <div id="recipientReview" class="notice" hidden>
           <p id="reviewExplanation"></p>
           <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
@@ -66,7 +71,8 @@
           <div class="label-row"><label for="subject">Subject</label><button class="text-button" id="copySubject">Copy subject</button></div>
           <input id="subject">
           <div class="label-row"><label for="message">Message</label><span id="draftKind" class="note"></span></div>
-          <textarea id="message" rows="9" spellcheck="true" aria-describedby="draftHelp"></textarea>
+          <textarea id="message" rows="13" spellcheck="true" aria-describedby="draftHelp"></textarea>
+          <button type="button" id="expandLetter" class="text-button expand-letter" aria-expanded="false" aria-controls="message">Read the full letter ↓</button>
           <div class="label-row"><span class="note" id="draftHelp">Replace the name and location placeholders before sending.</span><button id="useShared" class="text-button" hidden>Use shared draft</button></div>
           <div class="action-row"><button class="button" id="copyMessage">Copy message</button><a class="button secondary" id="contactLink" target="_blank" rel="noopener noreferrer">Open official contact page ↗</a></div>
           <p class="note" id="contactHelp">Copy, open the official form, paste, and submit there. Nothing is sent from this site.</p>
@@ -83,14 +89,14 @@
         </section>
         <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
         <div class="completion" id="completion">
-          <div><p class="eyebrow">03 / FOLLOW THROUGH</p><label class="check"><input type="checkbox" id="completed"> I completed this action</label><p class="note">Self-reported, for this official and channel.</p></div>
+          <div><p class="eyebrow">KEEP THE PRESSURE ON</p><label class="check"><input type="checkbox" id="completed"> I completed this action</label><p class="note">Self-reported, for this official and channel.</p></div>
           <button class="button" id="nextOfficial" aria-label="Next official">Next official →</button>
         </div>
       </div>
     </section>
     <details class="about"><summary>About the campaign, privacy &amp; sources</summary><p>Independent civic advocacy. Not a government website or affiliated with a political party. House Democrats choose their caucus leader separately from the full House's election of a Speaker. Senate Democrats choose their own leader. State and party officials have influence, not a congressional caucus ballot.</p><p>Drafts and self-reported actions stay in this browser. No account, analytics, or backend. Browser data can be cleared or unavailable in private mode. No cross-device sync.</p><div id="sources"></div><p><a href="docs/sources.md">Contact verification notes</a> · <a href="docs/verification.md">Testing &amp; known limitations</a></p><details><summary>Erase saved data</summary><p>This removes this campaign's drafts and action history from this browser.</p><button class="button secondary" id="erase">Erase my drafts and actions</button><div id="eraseConfirm" hidden><p>Erase permanently on this device?</p><button class="button" id="confirmErase">Yes, erase local data</button> <button class="button secondary" id="cancelErase">Cancel</button></div></details></details>
   </main>
-  <footer class="wrap"><a id="forkLink" href="https://github.com/ohnoai/dem-new-leadership-wa">Want this for your state? Fork it.</a><p>Independent civic action · <a href="LICENSE">MIT licensed</a> · <a href="README.md">Adapt this project</a></p></footer>
-  <script src="data.js"></script><script src="campaign.js"></script><script src="model.js"></script><script src="app.js"></script>
+  <footer class="wrap"><div class="footer-mark" aria-hidden="true">DEM RESET<span>Different leadership. Same fight.</span></div><a id="forkLink" href="https://github.com/ohnoai/dem-new-leadership-wa">Want this for your state? Fork it.</a><p>Independent civic action · <a href="LICENSE">MIT licensed</a> · <a href="README.md">Adapt this project</a></p></footer>
+  <script src="data.js"></script><script src="campaign.js"></script><script src="model.js"></script><script src="app.js"></script><script src="presentation.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 Environment: Windows 11, Node.js 24.22.1, Playwright Chromium. No public deployment, calls, form submissions, or social publication were performed.
 
 `npm run check` runs Node state tests and browser tests at 375×812, 430×932, and 1440×1000. The suite verifies:
-Latest completed run: **4 Node tests and 111 Playwright cases passed**. `npm audit` reported zero vulnerabilities, and JavaScript syntax plus whitespace checks passed.
+Latest completed run: **4 Node tests and 120 Playwright cases passed**. `npm audit` reported zero vulnerabilities, and JavaScript syntax plus whitespace checks passed.
 
 - Recipient-first editing, next-official navigation, correct greetings and role-specific requests for every listed official.
 - Shared priorities following recipients; personal letters remaining independent of the master.
@@ -23,7 +23,16 @@ Latest completed run: **4 Node tests and 111 Playwright cases passed**. `npm aud
 - No horizontal document overflow at tested widths, including expanded controls and each channel.
 - Keyboard skip-link entry and focus movement. Axe WCAG 2 A/AA and 2.1 AA checks on the main editor and all channel panels, with disclosures open.
 
-Mobile and desktop screenshots were inspected locally. Main controls are 44–48px or taller; compact progress remains in the sticky header. Substantive letters remain intact inside a scrollable, resizable editor, rather than expanding the entire page to letter length. The mobile workflow is stacked and the desktop workflow uses a recipient sidebar.
+Mobile and desktop screenshots were inspected locally. Main controls are 44px or taller; compact progress remains in the sticky header. Substantive letters remain intact inside a spacious, resizable editor, with an explicit full-letter expansion to avoid mandatory nested scrolling. The mobile workflow is stacked and the desktop workflow uses a recipient sidebar.
+
+## Approved Pressure visual implementation
+
+The owner selected concept A. Production now uses DEM RESET branding, near-black/warm-paper surfaces, self-hosted Barlow Condensed headlines and citron reserved for brand emphasis, primary actions and focus/progress. A small original geometric evergreen sits beside the Washington edition label at 16px on mobile and 20px on desktop; no scenic imagery or mountain artwork remains.
+
+Browser screenshots were rendered and inspected at 375px, 430px and 1440px, including hero, action viewport and full workflow. No page errors, missing headline font or document overflow were observed. A new regression checks the hero CTA's focus destination, long-letter expansion through typing and recipient switches, compact mode and the evergreen asset. Expansion is presentation-only in `presentation.js`; hardened `app.js` and `model.js` remain unchanged. Existing regression cases were retained without weakening assertions.
+Independent review identified a 320 CSS-pixel headline overflow and a keyboard-collapse focus target partly hidden by the sticky header. Both were reproduced and corrected with regressions. The preview server now serves the local WOFF2 font with its proper MIME type. One verification run overlapped another Playwright runner and failed during artifact cleanup with missing trace files; the complete suite was rerun successfully using an isolated output directory.
+
+The letter body and role-specific requests remain unchanged. The campaign identity, introduction and social hashtag were updated in configuration; a separate editorial review of campaign content remains outstanding. Visual inspection is recorded separately from automated accessibility/test results and is not a substitute for owner review.
 
 Additional checks: `git diff --check`; dependency audit; JavaScript syntax checks through file tooling and Node/browser execution. The original prototype had no automated test framework; no existing test suite was removed. MIT license preserved.
 

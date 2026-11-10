@@ -1,4 +1,4 @@
-# New Leadership Now · Washington
+# DEM RESET · Washington
 
 A mobile-first, static civic action site asking for new Democratic congressional leadership. Independent advocacy, not affiliated with government or a political party. MIT licensed. No accounts, analytics, tracking pixels, or application backend.
 
@@ -22,7 +22,7 @@ Open http://127.0.0.1:4173. The preview server binds only to localhost. Opening 
 3. Copy the message and subject, then open the official contact page. Paste and submit on that site yourself. Phone links open the dialer; social sharing opens the device share sheet when available, or copies the post.
 4. Mark the action complete yourself and move to the next official.
 
-The Shared message disclosure holds the master subject and substantive priorities used across recipients. Editing a recipient's letter creates a personal override, leaving the master and other officials untouched. Use shared draft removes only that recipient's letter/subject overrides; it does not reset calls, social posts, or completion.
+The Shared message disclosure holds the master subject and substantive priorities used across recipients. Editing a recipient's letter creates a personal override, leaving the master and other officials untouched. Use shared draft removes only that recipient's letter/subject overrides; it does not reset calls, social posts, or completion. Read the full letter expands the entire message without truncation; the compact editor remains available when you want less page scrolling.
 
 ## State and privacy
 
@@ -38,7 +38,7 @@ Storage is device/browser/origin-local, may be unavailable, and can be cleared b
 2. Each official supplies `id`, `name`, `office`, `group` (`senate`, `house`, `influence`), `district`, `party`, `vote` (`senate`, `house`, or explicit `null`), `greeting`, `phone`, `website`, and `social`. Leave unavailable phone/social values empty. A Republican House member has `vote: null` for Democratic caucus elections. State/party officials likewise have no caucus ballot.
 3. Verify contact details and social identities against official pages. Use an official full-address geographic boundary finder, not a guessed ZIP mapping. Document evidence and any blocked verification in `docs/sources.md`.
 4. Edit campaign language in `campaign.js`. This is the authoritative home for headings, draft priorities, role-specific requests, phone scripts and social templates. Do not put campaign-specific language into `app.js` or `model.js`.
-5. Update the fallback title, description, noscript and state-finder text in `index.html` for non-JavaScript visitors. Update the mountain motif and green tokens in `styles.css` if another state's identity calls for it.
+5. Update the fallback title, description, noscript and state-finder text in `index.html` for non-JavaScript visitors. Replace the original geometric Washington evergreen in `assets/evergreen.svg` if your state calls for another signature detail. The Pressure palette and typography live in `styles.css`.
 6. Adapt the Washington-specific test fixtures and run the verification commands below. Check all official roles and district entries. Keep the MIT license and the footer invitation.
 
 No map/geocoder package or API key is needed. The user enters their address only on the official state site; this site does not collect it.
@@ -55,7 +55,9 @@ Node tests cover the state model. Playwright tests cover the actual browser work
 
 ## Static hosting
 
-No production build is needed. When deployment is authorized, publish only `index.html`, `styles.css`, `data.js`, `campaign.js`, `model.js`, `app.js`, `LICENSE`, `README.md`, and the public `docs/` files together on an HTTPS static host. Do not publish the entire development checkout, local tooling configuration, `node_modules`, test results, or credentials. This revision does not deploy automatically.
+No production build is needed. When deployment is authorized, publish only `index.html`, `styles.css`, `data.js`, `campaign.js`, `model.js`, `app.js`, `presentation.js`, the `assets/` directory, `LICENSE`, `README.md`, and the public `docs/` files together on an HTTPS static host. Do not publish the entire development checkout, local tooling configuration, `node_modules`, test results, or credentials. This revision does not deploy automatically. The prospective `demreset.com` domain is not assumed to be purchased or configured.
+
+Barlow Condensed ExtraBold is self-hosted under the SIL Open Font License, retained in `assets/OFL-Barlow.txt`. The original evergreen artwork and application code retain this project's MIT license. No font service or third-party asset request is needed at runtime.
 
 ## Documentation
 

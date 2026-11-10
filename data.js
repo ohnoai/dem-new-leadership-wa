@@ -1,7 +1,7 @@
 /* Source audit and limitations: docs/sources.md. Reverify before launch or a new Congress. */
 window.CAMPAIGN = {
  state:'Washington', code:'WA', updated:'2026-11-09',
- kicker:'THE EVERGREEN STATE. A NEW DIRECTION.',
+ kicker:'WASHINGTON / INDEPENDENT & UNCOMPROMISING',
  repository:'https://github.com/ohnoai/dem-new-leadership-wa',
  districtFinder:'https://app.leg.wa.gov/DistrictFinder/',
  districtMaps:'https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps',
