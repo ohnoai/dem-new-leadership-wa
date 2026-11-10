@@ -36,7 +36,7 @@ Subject and message counters never truncate text. Verified caps and user-reporte
 
 ## Hosting and assets
 
-To regenerate [the social-preview image](../assets/social-preview.png), leave `npm start` running and run `node scripts/capture-social-preview.js` in another terminal. The capture uses the live hero, local font and evergreen at 1280 × 640, with interaction-only controls hidden on the capture page. Review the generated PNG before committing it. The Open Graph image URL targets the intended demreset.com host; preparing the image does not publish the site or update GitHub's social-preview setting.
+To regenerate [the social-preview image](../assets/social-preview.png), run `node scripts/capture-social-preview.js`. It renders the approved split-field placard in `scripts/social-preview.html`, independently of the website, using the local font and evergreen at 1280 × 640. No preview server is required. Review the generated PNG at full and 50% scale before committing it. The Open Graph image URL targets the intended demreset.com host; preparing the image does not publish the site or update GitHub's social-preview setting.
 
 No production build is needed. When deployment is authorized, publish only `index.html`, `styles.css`, `data.js`, `campaign.js`, `model.js`, `app.js`, `presentation.js`, `assets/`, `LICENSE`, `README.md` and public `docs/` together on an HTTPS static host. Do not publish the development checkout, `node_modules`, test results, credentials or private configuration. No deployment is authorized by these instructions.
 
