@@ -10,7 +10,7 @@ The live House directory supplies all ten Washington districts, party affiliatio
 
 ## Contact and social audit
 
-Phone numbers are official-office numbers, not personal lines. Contact routes were read without submitting forms. A retained social URL is an exact outbound `href` from the office's primary website; it verifies that the office publishes that identity, **not** that the social platform is accessible, independently authenticated, current or monitored. Legacy `twitter.com` and HTTP URLs are preserved as published rather than silently rewritten.
+Phone numbers are official-office numbers, not personal lines. Contact routes were read without submitting forms. A retained social URL is an exact outbound `href` from the office's primary website; it verifies that the office publishes that identity, **not** that the social platform is accessible, independently authenticated, current or monitored. Legacy `twitter.com` and HTTP URLs are preserved exactly as published.
 
 | Official | Primary-page evidence / contact result | Social evidence |
 |---|---|---|
@@ -53,7 +53,7 @@ The [Secretary of State map collection](https://www.sos.wa.gov/elections/data-re
 
 ## Sources
 
-[1] https://www.house.gov/representatives — Directory of Representatives
+[1] https://www.house.gov/representatives - Directory of Representatives
     > "Washington
 District
 Name
@@ -133,16 +133,16 @@ D
 1724 LHOB
 (202) 225-9740
 Armed Services|Transportation and Infrastructure"
-[2] https://www.senate.gov/senators/index.htm — Senator directory
+[2] https://www.senate.gov/senators/index.htm - Senator directory
     > "Cantwell, Maria
 Washington
 Democratic"
     > "Murray, Patty
 Washington
 Democratic"
-[3] https://www.murray.senate.gov — Murray office phone
+[3] https://www.murray.senate.gov - Murray office phone
     > "Phone: (202) 224-2621"
-[4] https://www.murray.senate.gov/write-to-patty — Murray message form
+[4] https://www.murray.senate.gov/write-to-patty - Murray message form
     > "To send a message to Senator Murray, please fill out the following form:"
     > "LoA
 https://www.facebook.com/senatorpattymurray/
@@ -151,9 +151,9 @@ https://x.com/PattyMurray
 https://www.threads.net/@senpattymurray
 https://bsky.app/profile/murray.senate.gov
 https://www.murr"
-[5] https://www.cantwell.senate.gov/contact/email — Cantwell legislative contact
+[5] https://www.cantwell.senate.gov/contact/email - Cantwell legislative contact
     > "You can e-mail Senator Cantwell about legislative issues from this page."
-[6] https://www.cantwell.senate.gov — Cantwell official social link
+[6] https://www.cantwell.senate.gov - Cantwell official social link
     > "tagram.com/senatormariacantwell/
 https://www.facebook.com/senatorcantwell/
 https://x.com/SenatorCantwell
@@ -166,7 +166,7 @@ https://x.com/SenatorCantwell
 https://bsky.app/profile/cantwell.senate.gov
 http://www.flickr.com/photos/mariacantwell
 https://www"
-[7] https://delbene.house.gov/contact — DelBene contact
+[7] https://delbene.house.gov/contact - DelBene contact
     > "Phone: (202) 225-6311"
     > "485-0083
 hours: M-F 8:30am-5pm
@@ -180,7 +180,7 @@ https://twitter.com/RepDelBene
 https://www.youtube.com/channel/UCd00b7TpKDZIr-Ujhaktvjg
 https://www.instagram.com/repdelbene/
 http"
-[8] https://larsen.house.gov/contact — Larsen contact
+[8] https://larsen.house.gov/contact - Larsen contact
     > "Phone: (202) 225-2605"
     > "ntment only
 Home
@@ -197,7 +197,7 @@ youtube-page
 https://www.facebook.com/RepRickLarsen
 https://web-cdn.bsky.app/profile/did:plc:qbmfkla22voltmkf27dg4pgx
 https://www.instagram.com/reprick"
-[9] https://gluesenkampperez.house.gov/contact — Gluesenkamp Perez contact
+[9] https://gluesenkampperez.house.gov/contact - Gluesenkamp Perez contact
     > "Washington, DC
 1431 Longworth House Office Building
 Washington
@@ -220,9 +220,9 @@ https://twitter.com/RepMGP
 https://www.instagram.com/repmgp/
 https://www.youtube.com/@repmgp
 https://www.google.com/maps/searc"
-[10] https://newhouse.house.gov/contact — Newhouse contact
+[10] https://newhouse.house.gov/contact - Newhouse contact
     > "Phone: (202) 225-5816"
-[11] https://baumgartner.house.gov/contact — Baumgartner contact
+[11] https://baumgartner.house.gov/contact - Baumgartner contact
     > "Contact - Michael Baumgartner"
     > "e-district/
 #
@@ -234,7 +234,7 @@ https://x.com/RepBaumgartner
 https://www.youtube.com/@RepBaumgartner
 https://baumgartner.house.gov/contact/email-me
 https://baum"
-[12] https://baumgartner.house.gov/contact/office-locations — Baumgartner office phone
+[12] https://baumgartner.house.gov/contact/office-locations - Baumgartner office phone
     > "hington D.C.
 124 Cannon House Office Building
 Washington, DC  20515
@@ -243,7 +243,7 @@ Spokane
 528 E. Spokane Falls Blvd #115
 Spokane, WA  99202
 Phone: (509) 353"
-[13] https://randall.house.gov/contact — Randall contact
+[13] https://randall.house.gov/contact - Randall contact
     > "DC Office
 1531 Longworth House Office Building
 Washington,
@@ -270,7 +270,7 @@ https://facebook.com/RepEmilyRandall
 https://instagram.com/repemilyrandall
 https://bsky.app/profile/repemilyrandall.bsky.social
 https://"
-[14] https://jayapal.house.gov/contact — Jayapal contact
+[14] https://jayapal.house.gov/contact - Jayapal contact
     > ", DC Office
 2346 Rayburn House Office Building
 Washington. DC 20515
@@ -288,7 +288,7 @@ http://www.twitter.com/RepJayapal/
 http://instagram.com/repjayapal
 http://www.youtube.com/repjayapal
 https://jayapal.house.gov/search/"
-[15] https://schrier.house.gov/contact — Schrier contact
+[15] https://schrier.house.gov/contact - Schrier contact
     > "t | Representative Kim Schrier
 Skip to main content
 Washington D.C. Office
@@ -308,7 +308,7 @@ https://x.com/repkimschrier
 /issues
 /about/our-district
 https://schrier.house.gov/accompl"
-[16] https://adamsmith.house.gov/contact — Smith contact
+[16] https://adamsmith.house.gov/contact - Smith contact
     > "Contact | Congressman Adam Smith
 Skip to main content
 Contact My Office:
@@ -324,7 +324,7 @@ https://twitter.com/RepAdamSmith
 https://www.facebook.com/RepAdamSmith
 https://www.instagram.com/repadamsmith/
 https://www.youtube.c"
-[17] https://strickland.house.gov/contact — Strickland contact
+[17] https://strickland.house.gov/contact - Strickland contact
     > "Contact - Marilyn Strickland
 Skip to content
 HOW CAN I HELP YOU?
@@ -336,11 +336,11 @@ https://twitter.com/RepStricklandWA
 https://strickland.house.gov/search/
 https://strickland.house.gov/services/help-federal-agency/
 htt"
-[18] https://wadems.org/about/board — Washington Democrats chair
+[18] https://wadems.org/about/board - Washington Democrats chair
     > "Chair **Shasti Conrad**"
-[19] https://wadems.org/contact — Washington Democrats shared contact
+[19] https://wadems.org/contact - Washington Democrats shared contact
     > "Contact us by phone: (206) 583-0664"
-[20] https://governor.wa.gov/contacting-governor — Governor contact and scope
+[20] https://governor.wa.gov/contacting-governor - Governor contact and scope
     > "As a state official, Governor Bob Ferguson does not have any jurisdiction over the federal agencies handling issues like social security or immigration."
     > "ccounts/WAGOV/subscriber/new?topic_id=WAGOV_1
 https://bsky.app/profile/governorferguson.bsky.social
@@ -348,7 +348,7 @@ https://twitter.com/WaStateGov
 https://www.facebook.com/WaStateGov
 https://www.instagram.com/govferguson/
 https://medium.com/wagov"
-[21] https://governor.wa.gov/contacting-governor/contacting-governors-office — Governor phone
+[21] https://governor.wa.gov/contacting-governor/contacting-governors-office - Governor phone
     > "b Ferguson
 Office of the Governor
 PO Box 40002
@@ -358,11 +358,11 @@ Call
 TTY/TDD call 711 or
 1-800-833-6384
 If you need to speak with someone and y"
-[22] https://app.leg.wa.gov/DistrictFinder — Official full-address District Finder
+[22] https://app.leg.wa.gov/DistrictFinder - Official full-address District Finder
     > "Enter your full address to find your legislative or congressional district."
-[23] https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps — Official geographic map source
+[23] https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps - Official geographic map source
     > "Washington State Legislative & Congressional Districts (front)"
-[24] https://leg.wa.gov/media/npcn2rop/us-members-elected-officials_2025_digital.pdf — Washington Legislature 2025 officials reference
+[24] https://leg.wa.gov/media/npcn2rop/us-members-elected-officials_2025_digital.pdf - Washington Legislature 2025 officials reference
     > "Bob Ferguson (D)"
     > "Phone: 202-224-3441
 Fax: 202-228-0514"
