@@ -3,7 +3,7 @@ const AxeBuilder = require('@axe-core/playwright').default;
 
 test('audited non-text subjects hide copy without deleting either subject version', async ({ page }) => {
   await page.goto('/');
-  for (const [id, explanation] of [['baumgartner', /Select an issue/], ['strickland', /No separate subject/], ['ferguson', /Select a subject category/]]) {
+  for (const [id, explanation] of [['strickland', /No separate subject/], ['ferguson', /Select a subject category/]]) {
     await page.locator('#official').selectOption(id);
     await expect(page.locator('#copySubject')).toBeHidden();
     await expect(page.locator('#subjectHelp')).toContainText(explanation);
@@ -42,7 +42,8 @@ test('Perez advisory is reported not verified and retains over-limit full and co
   await page.locator('#completed').check();
   await page.locator('#letterVersion').selectOption('concise');
   const concise = await page.locator('#message').inputValue();
-  expect(concise.length).toBe(495);
+  expect(concise.replace(/\r?\n/g, '\r\n').length).toBeGreaterThanOrEqual(700);
+  expect(concise.replace(/\r?\n/g, '\r\n').length).toBeLessThanOrEqual(900);
   await page.locator('#message').fill('c'.repeat(2100));
   await page.reload();
   await expect(page.locator('#message')).toHaveValue('c'.repeat(2100));

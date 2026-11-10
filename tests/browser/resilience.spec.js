@@ -71,13 +71,13 @@ test('phone and social are editable, saved separately and never auto-complete', 
 });
 test('all officials have a recipient greeting and the correct editable request', async ({ page }) => {
   await page.goto('/');
-  const officials = await page.evaluate(() => window.CAMPAIGN.officials);
+  const officials = await page.evaluate(() => window.CAMPAIGN.officials.filter(o => o.active !== false));
   for (const o of officials) {
     await page.locator('#official').selectOption(o.id);
     await expect(page.locator('#contactLink')).toHaveAttribute('href', o.website);
     const text = await page.locator('#message').inputValue();
     expect(text).toContain(o.greeting || o.name.split(' ').at(-1));
-    expect(text).toContain(o.vote ? 'leadership vote' : 'You do not cast a vote');
+    expect(text).toMatch(o.vote === 'senate' ? /oppose Chuck Schumer/ : o.vote === 'house' ? /oppose Hakeem Jeffries/ : /do not cast a ballot/);
     await page.locator('#channel').selectOption('call');
     if (o.phone) await expect(page.locator('#phoneLink')).toHaveAttribute('href', 'tel:+1' + o.phone.replace(/\D/g, ''));
     await page.locator('#channel').selectOption('letter');
@@ -114,7 +114,7 @@ test('prototype call and shared social drafts migrate exactly for every relevant
     if (!localStorage.getItem('new-leadership-wa-v2')) localStorage.setItem('new-leadership-wa-v2', JSON.stringify(value));
   }, legacy);
   await page.goto('/');
-  const officials = await page.evaluate(() => window.CAMPAIGN.officials);
+  const officials = await page.evaluate(() => window.CAMPAIGN.officials.filter(o => o.active !== false));
   const personal = await page.evaluate(() => JSON.parse(localStorage.getItem('leadership-wa-drafts-v3'))?.personal);
   for (const o of officials) {
     await page.locator('#official').selectOption(o.id);
@@ -151,9 +151,9 @@ test('every House district resolves and compound surname greeting is preserved',
   await page.locator('#districtDetails').evaluate(el => el.open = true);
   await expect(page.locator('#district option')).toHaveCount(11);
   await page.locator('#district').selectOption('WA-04');
-  await expect(page.locator('#officialName')).toHaveText('Dan Newhouse');
-  await expect(page.locator('#voteBadge')).toHaveText('Indirect influence');
-  await expect(page.locator('#message')).toHaveValue(/^Dear Representative Newhouse,/);
+  await expect(page.locator('#districtNotice')).toContainText('Dan Newhouse');
+  await expect(page.locator('#districtNotice')).toContainText('cannot vote');
+  await expect(page.locator('#officialName')).toHaveText('Patty Murray');
   await page.locator('#official').selectOption('perez');
   await expect(page.locator('#message')).toHaveValue(/^Dear Representative Gluesenkamp Perez,/);
 });

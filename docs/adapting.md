@@ -6,7 +6,7 @@ Fork the repository and replace Washington's information with your own. The appl
 
 Start with `data.js`. Replace the state name and code, kickoff line, repository URL, official district finder and map links, official roster and primary sources. Use stable, unique recipient IDs. Include every House district, regardless of party, so nobody gets a misleading missing-district result.
 
-Each official supplies `id`, `name`, `office`, `group` (`senate`, `house`, `influence`), `district`, `party`, `vote` (`senate`, `house`, or explicit `null`), `greeting`, `phone`, `website` and `social`. An explicit greeting handles compound surnames and titles. Leave unavailable phone/social values empty. A Republican House member has `vote: null` for Democratic caucus elections. State and party officials likewise have influence, not a congressional caucus ballot.
+Each official supplies `id`, `name`, `office`, `group` (`senate`, `house`, `influence`), `district`, `party`, `vote` (`senate`, `house`, or explicit `null`), `greeting`, `phone`, `website` and `social`. An explicit greeting handles compound surnames and titles. Leave unavailable phone/social values empty. A Republican House member has `vote: null` for Democratic caucus elections and `active: false` for this campaign. The Washington configuration derives activity from party. Retain inactive officials for district discovery and saved history without presenting advocacy actions. State and party officials likewise have influence, not a congressional caucus ballot.
 
 Verify numbers, contact URLs and social identities against official pages. Use an official full-address geographic boundary finder, not a guessed ZIP-to-district map. Record source URLs, dates and blocked checks in your source documentation. Washington's evidence is in [sources.md](sources.md); do not present it as evidence for a different state.
 
@@ -14,7 +14,7 @@ Audit each contact form before assigning a limit. The current `forms` metadata m
 
 ## Campaign and presentation
 
-Edit `campaign.js` for headings, full and concise priorities, role-specific requests, call scripts and social templates. Keep campaign language out of reusable `app.js` and `model.js`. A message to an indirect-influence official must not imply that official casts a caucus leadership vote.
+Edit `campaign.js` for headings, category-specific `letters`, `concise.letters`, `calls` and `posts`. The old shared/request fields remain as compatibility content for retained v3 drafts, not the new editorial defaults. Keep campaign language out of reusable `app.js` and `model.js`. A message to an indirect-influence official must not imply that official casts a caucus leadership vote. See [editorial verification](editorial-verification.md) for dated election evidence; reverify it for any new campaign.
 
 Update `index.html`'s fallback title, description, noscript and state-finder text for non-JavaScript visitors. Replace the original Washington evergreen in `assets/evergreen.svg` if another mark suits your state. The Pressure palette and typography live in `styles.css`. Retain the bundled font's license if you use it.
 
