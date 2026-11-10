@@ -1,35 +1,66 @@
-# New Leadership Now - Washington edition
+# New Leadership Now · Washington
 
-> Want this for your state? Fork it.
+A mobile-first, static civic action site asking for new Democratic congressional leadership. Independent advocacy, not affiliated with government or a political party. MIT licensed. No accounts, analytics, tracking pixels, or application backend.
 
-A small, static, MIT-licensed civic advocacy website for the 2026 Democratic congressional leadership elections. Not affiliated with Congress or any political party. No accounts, analytics, tracking pixels, or backend.
+Want this for your state? Fork it.
 
-## Run
+## Run locally
 
-For a quick local check, open `index.html` in a browser. To host it, publish the folder to any static host (GitHub Pages, Vercel, Netlify, etc.) and keep `index.html`, `app.js`, `data.js`, and `LICENSE` together.
+Requires Node.js 22 or newer for development and tests.
 
-## Fork for your state
+```sh
+npm ci
+npm start
+```
 
-1. Update the `state`, `code`, `updated`, `officials`, and `sources` fields in `data.js`.
-2. Verify each official's current term, direct phone number, official website/contact form, and public social handle against primary sources.
-3. Update the Washington language in `index.html` and the sample drafts in `app.js`.
-4. Do not portray officials who lack leadership ballots as voting members of a congressional caucus.
-5. Test on a mobile browser and check the entire contact flow before sharing.
+Open http://127.0.0.1:4173. The preview server binds only to localhost. Opening `index.html` directly is not recommended: browser storage and clipboard behavior under `file:` URLs varies. Clipboard and native sharing require HTTPS or localhost.
 
-## Important limitations
+## Action workflow
 
-- Contact forms generally cannot accept externally prefilled messages; the user must copy and submit the message on the official site.
-- Clicking a contact link or copying text does not submit a message; completion is self-reported.
-- Public social handles and directory URLs may change; verify before public launch.
-- LocalStorage is browser/device-local and may be deleted by clearing site data. No sync across devices.
-- Office contact forms often only accept constituents from within their district.
-- The House caucus leadership election and the House-wide Speaker election are distinct votes.
-- Election dates are subject to change. Roster researched November 9, 2026.
+1. Choose an official. To find your House representative, open the state district finder, enter your full address there, choose Congressional, and select the resulting district back here.
+2. Edit the recipient's letter, call script, or social post. The greeting and request match the recipient's role.
+3. Copy the message and subject, then open the official contact page. Paste and submit on that site yourself. Phone links open the dialer; social sharing opens the device share sheet when available, or copies the post.
+4. Mark the action complete yourself and move to the next official.
 
-## Sources
+The Shared message disclosure holds the master subject and substantive priorities used across recipients. Editing a recipient's letter creates a personal override, leaving the master and other officials untouched. Use shared draft removes only that recipient's letter/subject overrides; it does not reset calls, social posts, or completion.
 
-See primary source links in `data.js`; the official Senate Washington page, House Democratic caucus membership page, Washington Democrats' executive committee page, and the governor's official contact site are linked there.
+## State and privacy
+
+Drafts save synchronously on each edit to a state-specific localStorage key. Completed actions use a separate key and are tracked per official and channel. Nothing is transmitted to an application server. Navigating to official sites does not mark an action complete. Progress is self-reported, not a submission counter; the header counts the three supported channels for every listed office, not a required checklist.
+
+Prototype v2 letters and call scripts are migrated verbatim into personal versions for their chamber, shared social text into every recipient's social draft, and old completions into letter actions. Original browser data remains until explicitly erased. Migrated greetings are not rewritten: review them before sending. Migration is only for the Washington prototype.
+
+Storage is device/browser/origin-local, may be unavailable, and can be cleared by the browser. The editor reports save failures and remains usable in memory. There is no cross-device sync. An older browser tab detects newer stored drafts and refuses to overwrite them; copy any unsaved changes, then reload to use the newer version. Concurrent edits are not merged automatically. Avoid editing in two tabs at once.
+
+## Fork for another state
+
+1. Replace `data.js`: state name/code, kickoff line, official district finder and map links, repository URL, officials, and primary sources. Keep stable unique official IDs. Include every House district so residents are never given a misleading missing-district result.
+2. Each official supplies `id`, `name`, `office`, `group` (`senate`, `house`, `influence`), `district`, `party`, `vote` (`senate`, `house`, or explicit `null`), `greeting`, `phone`, `website`, and `social`. Leave unavailable phone/social values empty. A Republican House member has `vote: null` for Democratic caucus elections. State/party officials likewise have no caucus ballot.
+3. Verify contact details and social identities against official pages. Use an official full-address geographic boundary finder, not a guessed ZIP mapping. Document evidence and any blocked verification in `docs/sources.md`.
+4. Edit campaign language in `campaign.js`. This is the authoritative home for headings, draft priorities, role-specific requests, phone scripts and social templates. Do not put campaign-specific language into `app.js` or `model.js`.
+5. Update the fallback title, description, noscript and state-finder text in `index.html` for non-JavaScript visitors. Update the mountain motif and green tokens in `styles.css` if another state's identity calls for it.
+6. Adapt the Washington-specific test fixtures and run the verification commands below. Check all official roles and district entries. Keep the MIT license and the footer invitation.
+
+No map/geocoder package or API key is needed. The user enters their address only on the official state site; this site does not collect it.
+
+## Test
+
+```sh
+npx playwright install chromium
+npm run check
+git diff --check
+```
+
+Node tests cover the state model. Playwright tests cover the actual browser workflow at 375px, 430px and desktop widths, including clipboard, persistence, role-specific messages, and axe accessibility checks. Browser tests emulate mobile Chromium, not physical devices. See [verification and outstanding checks](docs/verification.md) for exact coverage and release limitations, and [source evidence](docs/sources.md) for contact research.
+
+## Static hosting
+
+No production build is needed. When deployment is authorized, publish only `index.html`, `styles.css`, `data.js`, `campaign.js`, `model.js`, `app.js`, `LICENSE`, `README.md`, and the public `docs/` files together on an HTTPS static host. Do not publish the entire development checkout, local tooling configuration, `node_modules`, test results, or credentials. This revision does not deploy automatically.
+
+## Documentation
+
+See [documentation index](docs/README.md) and [code map](docs/code-map.md).
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See [LICENSE](LICENSE).

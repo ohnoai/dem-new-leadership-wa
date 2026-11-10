@@ -1,0 +1,51 @@
+const { test, expect } = require('@playwright/test');
+const AxeBuilder = require('@axe-core/playwright').default;
+test('recipient-first journey preserves work through next, refresh and external return', async ({ page, context }) => {
+  await page.goto('/');
+  await expect(page.getByLabel('Choose an official')).toBeVisible();
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Dear Senator Murray,/);
+  await page.getByLabel('Message', { exact: true }).fill('My personal Murray letter');
+  await page.getByRole('button', { name: 'Next official', exact: true }).click();
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Dear Senator Cantwell,/);
+  await page.getByLabel('Choose an official').selectOption('murray');
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue('My personal Murray letter');
+  await page.reload();
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue('My personal Murray letter');
+  await context.route('https://www.murray.senate.gov/**', route => route.fulfill({ body: '<title>External contact stand-in</title>Contact form' }));
+  const popupPromise = page.waitForEvent('popup');
+  await page.getByRole('link', { name: 'Open official contact page' }).click();
+  const popup = await popupPromise; await popup.waitForLoadState(); await popup.close();
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue('My personal Murray letter');
+  await expect(page.getByLabel('I completed this action')).not.toBeChecked();
+  await page.getByLabel('I completed this action').check();
+  await page.reload();
+  await expect(page.getByLabel('I completed this action')).toBeChecked();
+  await expect(page.locator('#progressText')).toContainText('1');
+});
+test('master priorities flow across officials without overwriting custom text', async ({ page }) => {
+  await page.goto('/');
+  await page.getByText('Shared message', { exact: true }).click();
+  await page.getByLabel('Shared priorities').fill('Protect public services and demand accountable leadership.');
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Protect public services/);
+  await page.getByRole('button', { name: 'Next official', exact: true }).click();
+  await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Protect public services/);
+});
+test('clipboard copies exact recipient draft and subject', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/');
+  const message = await page.getByLabel('Message', { exact: true }).inputValue();
+  await page.getByRole('button', { name: 'Copy message', exact: true }).click();
+  expect((await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n')).toBe(message);
+  await page.getByRole('button', { name: 'Copy subject', exact: true }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(await page.getByLabel('Subject', { exact: true }).inputValue());
+});
+test('responsive layout, keyboard entry and automated accessibility', async ({ page }) => {
+  await page.goto('/');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Skip to action' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#action')).toBeFocused();
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(results.violations).toEqual([]);
+});

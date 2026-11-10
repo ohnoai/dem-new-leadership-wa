@@ -1,32 +1,196 @@
-(()=>{'use strict';
-const C=window.CAMPAIGN,$=id=>document.getElementById(id),storageKey='new-leadership-wa-v2';
-const samples={
- senate:{subject:'Choose new Senate Democratic leadership',message:'Dear Senator,\n\nAs a Washington constituent, I am asking you to oppose Chuck Schumer for Senate Democratic leader and support a change in leadership. I want a party that responds to working people, confronts the influence of wealthy donors and lobbyists, and demonstrates genuine accountability. Please consider Chris Van Hollen and tell me how you intend to vote.\n\nThank you,\n[Your name]'},
- house:{subject:'Choose new House Democratic leadership',message:'Dear Representative,\n\nAs a Washington constituent, I am asking you to oppose Hakeem Jeffries for House Democratic leader and support an alternative. Working people deserve leadership that challenges corporate influence and entrenched power rather than repeating the same political calculations. Please tell me how you intend to vote.\n\nThank you,\n[Your name]'}
-};
-let state={};try{state=JSON.parse(localStorage.getItem(storageKey))||{}}catch{};
-state.drafts={senate:{...samples.senate,...state.drafts?.senate},house:{...samples.house,...state.drafts?.house}};
-state.topic=state.topic==='house'?'house':'senate';state.progress=state.progress||{};
-const save=()=>{try{localStorage.setItem(storageKey,JSON.stringify(state));$('saveStatus').textContent='Saved locally'}catch{$('saveStatus').textContent='Could not save. Copy your draft.'}};
-const topicName=()=>state.topic==='house'?'Representative':'Senator';
-function renderDraft(){for(const t of ['senate','house'])$(t+'Tab').setAttribute('aria-selected',String(state.topic===t));$('subject').value=state.drafts[state.topic].subject;$('message').value=state.drafts[state.topic].message;refreshCount();$('callScript').value=state.callScript?.[state.topic]||`Hello, my name is [NAME] and I live in [CITY], Washington. I'm calling to ask ${topicName()} [NAME] to support new Democratic ${state.topic==='house'?'House':'Senate'} leadership instead of ${state.topic==='house'?'Hakeem Jeffries':'Chuck Schumer'}. Could you record my request and tell me where the ${state.topic==='house'?'representative':'senator'} stands? Thank you.`;}
-function refreshCount(){$('characters').textContent=$('message').value.length+' characters'+(state.topic==='house'?' · Perez’s form has a 2,000-character limit':'');}
-for(const t of ['senate','house'])$(t+'Tab').onclick=()=>{state.topic=t;renderDraft();save();};
-for(const f of ['subject','message'])$(f).addEventListener('input',()=>{state.drafts[state.topic][f]=$(f).value;refreshCount();save()});
-function copy(s){const finish=msg=>$('saveStatus').textContent=msg;return navigator.clipboard?.writeText(s).then(()=>finish('Copied.')).catch(()=>fallbackCopy(s))||fallbackCopy(s)}
-function fallbackCopy(s){const a=document.createElement('textarea');a.value=s;document.body.append(a);a.select();const success=document.execCommand('copy');a.remove();$('saveStatus').textContent=success?'Copied.':'Select and copy the text manually.';}
-$('copyMessage').onclick=()=>copy($('message').value);$('copySubject').onclick=()=>copy($('subject').value);
-$('resetDraft').onclick=()=>{if(confirm('Replace this draft with its original sample?')){state.drafts[state.topic]={...samples[state.topic]};renderDraft();save()}};
-function textEl(tag,className,content){const e=document.createElement(tag);if(className)e.className=className;if(content!==undefined)e.textContent=content;return e;}
-function link(label,url,cls){const a=textEl('a','btn '+cls,label);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
-function renderRoster(){const group=$('filter').value,selected=$('district').value;const container=$('voters');container.replaceChildren();for(const p of C.officials.filter(p=>p.priority===1&&(group==='all'||p.group===group))){const card=textEl('article','person');const top=textEl('div','row'),labels=textEl('div');labels.append(textEl('h3','',p.name),textEl('div','role',`${p.office} · ${p.district}`));top.append(labels);if(p.district===selected){top.append(textEl('span','pill','Your district'));}card.append(top);const actions=textEl('div','buttons');actions.append(link('Official contact',p.website,'secondary'));if(p.phone){const phone=link('Call '+p.phone,'tel:+'+p.phone.replace(/\D/g,''),'ghost');phone.removeAttribute('target');actions.append(phone)}if(p.social)actions.append(link('X profile',p.social,'ghost'));const copied=textEl('button','btn ghost','Copy '+(p.group==='senate'?'Senate':'House')+' draft');copied.type='button';copied.onclick=()=>copy(state.drafts[p.group].message.replace(/^Dear (Senator|Representative),/,`Dear ${p.group==='senate'?'Senator':'Representative'} ${p.name.split(' ').slice(-1)[0]},`));actions.append(copied);card.append(actions);const completion=textEl('label','check');const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!state.progress[p.id];cb.onchange=()=>{state.progress[p.id]=cb.checked;save();renderProgress()};completion.append(cb,document.createTextNode('I contacted this office'));card.append(completion);if(p.limit)card.append(textEl('p','note',`Official form message limit: ${p.limit.toLocaleString()} characters. A subject line or signature may need separate space.`));container.append(card)}}
-function renderInfluencers(){const container=$('influencers');container.replaceChildren();for(const p of C.officials.filter(p=>p.group==='influence')){const card=textEl('article','person');card.append(textEl('h3','',p.name),textEl('div','role',p.office+' · No congressional leadership vote'));const actions=textEl('div','buttons');actions.append(link('Official website',p.website,'secondary'));if(p.phone){const phone=link('Call '+p.phone,'tel:+'+p.phone.replace(/\D/g,''),'ghost');phone.removeAttribute('target');actions.append(phone)}card.append(actions);container.append(card)}}
-function renderProgress(){const container=$('progress');container.replaceChildren();const targets=C.officials.filter(o=>o.priority===1);for(const p of targets){const l=textEl('label','check'),cb=document.createElement('input');cb.type='checkbox';cb.checked=!!state.progress[p.id];cb.onchange=()=>{state.progress[p.id]=cb.checked;save();renderRoster();renderProgress()};l.append(cb,document.createTextNode(p.name));container.append(l)}$('progressCount').textContent=`${targets.filter(p=>state.progress[p.id]).length} / ${targets.length} congressional offices marked contacted (self-reported).`}
-$('filter').onchange=renderRoster;$('district').value=state.district||'';$('district').onchange=()=>{state.district=$('district').value;renderRoster();save()};
-$('callScript').oninput=()=>{state.callScript=state.callScript||{};state.callScript[state.topic]=$('callScript').value;save()};$('copyCall').onclick=()=>copy($('callScript').value);
-const defaultSocial='Washington Democrats: Where do you stand on congressional leadership? I want our senators and representatives to publicly explain their votes on Chuck Schumer and Hakeem Jeffries. Contact your officials and ask for a direct answer. #NewLeadership';$('socialText').value=state.social??defaultSocial;$('socialText').oninput=()=>{state.social=$('socialText').value;save()};$('copySocial').onclick=()=>copy($('socialText').value);$('postX').onclick=()=>window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent($('socialText').value),'_blank','noopener,noreferrer');
-$('share').onclick=async()=>{const url=location.protocol==='file:'?'':location.href;try{if(navigator.share&&url)await navigator.share({title:document.title,url});else if(url)await copy(url);else $('saveStatus').textContent='Publish to a public URL first to share a working link.'}catch{}};
-$('wipe').onclick=()=>{if(confirm('Erase all drafts and progress saved by this site on this device?')){localStorage.removeItem(storageKey);location.reload()}};
-for(const s of C.sources){const p=textEl('p','note'),a=document.createElement('a');a.href=s.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=s.name;p.append(a);$('sources').append(p)}
-renderDraft();renderRoster();renderInfluencers();renderProgress();
+(() => {
+  'use strict';
+  const C = window.CAMPAIGN, T = window.CAMPAIGN_CONTENT, M = window.ActionModel;
+  const $ = id => document.getElementById(id);
+  const prefix = `leadership-${C.code.toLowerCase()}`;
+  const draftKey = `${prefix}-drafts-v3`, actionKey = `${prefix}-actions-v3`;
+  const legacyKey = 'new-leadership-wa-v2';
+  let storageFailed = false;
+  function read(key) {
+    try { return JSON.parse(localStorage.getItem(key)); }
+    catch { storageFailed = true; return null; }
+  }
+  const savedDrafts = read(draftKey), savedActions = read(actionKey);
+  let lastDraft = JSON.stringify(savedDrafts);
+  let state = M.restore(savedDrafts, T.shared);
+  let actions = savedActions;
+  let pendingActions = {};
+  if (!actions || typeof actions !== 'object' || Array.isArray(actions)) actions = {};
+  const officials = C.officials;
+  const current = () => officials.find(o => o.id === state.selected) || officials[0];
+  const ballot = o => Object.hasOwn(o, 'vote') ? o.vote : ['senate', 'house'].includes(o.group) ? o.group : null;
+  const normalized = o => ({ ...o, vote: ballot(o) });
+  // Preserve exact prototype text, including user-written greetings. Never rewrite it.
+  if (!savedDrafts && C.code === 'WA') {
+    const legacy = read(legacyKey);
+    if (legacy && typeof legacy === 'object') {
+      for (const o of officials) {
+        const old = legacy.drafts?.[o.group];
+        if (old && ['senate', 'house'].includes(o.group)) {
+          for (const field of ['subject', 'message']) if (typeof old[field] === 'string') M.edit(state, o, field, old[field]);
+        }
+        if (['senate', 'house'].includes(o.group) && typeof legacy.callScript?.[o.group] === 'string') M.edit(state, o, 'call', legacy.callScript[o.group]);
+        if (typeof legacy.social === 'string') M.edit(state, o, 'social', legacy.social);
+        if (!savedActions && legacy.progress?.[o.id] === true) actions[`${o.id}:letter`] = true;
+      }
+      if (typeof legacy.district === 'string') state.district = legacy.district;
+    }
+  }
+  function saveStatus() {
+    $('saveStatus').textContent = storageFailed ? 'Not saved. Copy your work.' : 'Saved on this device';
+  }
+  function persist(key, value) {
+    let saved = false;
+    try { localStorage.setItem(key, JSON.stringify(value)); saved = true; }
+    catch { storageFailed = true; }
+    saveStatus();
+    return saved;
+  }
+  const save = () => {
+    try {
+      const stored = JSON.stringify(read(draftKey));
+      if (stored !== lastDraft) {
+        $('saveStatus').textContent = 'Another tab changed this draft.';
+        feedback('Copy any edits in this tab, then reload to use the latest saved draft. This tab will not overwrite it.');
+        return;
+      }
+      persist(draftKey, state);
+      if (!storageFailed) lastDraft = JSON.stringify(state);
+    } catch { storageFailed = true; saveStatus(); }
+  };
+  function feedback(text) { $('feedback').textContent = text; }
+  function option(value, text) {
+    const el = document.createElement('option'); el.value = value; el.textContent = text; return el;
+  }
+  for (const [label, matches] of [
+    ['U.S. senators', o => o.group === 'senate'],
+    ['U.S. representatives', o => o.group === 'house'],
+    ['State & party influence', o => o.group === 'influence']
+  ]) {
+    const group = document.createElement('optgroup'); group.label = label;
+    for (const o of officials.filter(matches)) group.append(option(o.id, `${o.name} · ${o.district}`));
+    $('official').append(group);
+  }
+  for (const o of officials.filter(o => o.group === 'house').sort((a, b) => a.district.localeCompare(b.district))) {
+    $('district').append(option(o.district, `${o.district} · ${o.name}`));
+  }
+  $('edition').textContent = C.state.toUpperCase();
+  $('headline').textContent = T.headline;
+  $('intro').textContent = T.intro;
+  $('heroKicker').textContent = C.kicker || `${C.state.toUpperCase()}. A NEW DIRECTION.`;
+  document.title = `${T.name} · ${C.state}`;
+  $('districtFinder').href = C.districtFinder || $('districtFinder').href;
+  $('districtFinder').textContent = `Open ${C.state} district finder ↗`;
+  $('districtMaps').href = C.districtMaps || $('districtMaps').href;
+  $('forkLink').href = C.repository || $('forkLink').href;
+  for (const source of C.sources) {
+    const link = document.createElement('a'); link.textContent = source.name + ' ↗';
+    link.href = source.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; $('sources').append(link);
+  }
+  function renderDraft() {
+    const o = normalized(current()), draft = M.draft(state, o, T);
+    $('subject').value = draft.subject; $('message').value = draft.message;
+    const personal = state.personal[o.id] || {};
+    $('draftKind').textContent = typeof personal.message === 'string' ? 'Personal version' : 'Shared draft';
+    $('useShared').hidden = !Object.hasOwn(personal, 'message') && !Object.hasOwn(personal, 'subject');
+    $('callScript').value = personal.call ?? T.call.replace('[official]', o.name).replace('[request]', T.requests[o.vote || 'influence']);
+    // Sharing may target any network; a published X/Facebook identity is not a universal mention.
+    const handle = o.name + ':';
+    $('socialText').value = personal.social ?? T.social.replace('[handle]', handle).replace('[socialRequest]', o.vote ? 'Use your caucus vote to support a credible alternative.' : 'Use your influence to advocate for change.');
+  }
+  const actionId = () => `${current().id}:${state.channel}`;
+  function renderProgress() {
+    const count = officials.reduce((sum, o) => sum + ['letter', 'call', 'social'].filter(channel => actions[`${o.id}:${channel}`] === true).length, 0);
+    const total = officials.length * 3;
+    $('progressText').textContent = `${count} / ${total} actions`;
+    $('progressBar').style.width = `${count / total * 100}%`;
+    $('completed').checked = actions[actionId()] === true;
+  }
+  function render() {
+    const o = current(), vote = ballot(o);
+    state.selected = o.id;
+    $('official').value = o.id; $('district').value = state.district;
+    $('officialName').textContent = o.name;
+    $('officialRole').textContent = `${o.office} · ${o.district}${o.party ? ' · ' + o.party : ''}`;
+    $('voteBadge').textContent = vote ? `Direct ${vote === 'senate' ? 'Senate' : 'House'} caucus vote` : 'Indirect influence';
+    $('voteBadge').classList.toggle('indirect', !vote);
+    $('voteDescription').textContent = vote ? `Ask for a leadership change in the ${vote === 'senate' ? 'Senate' : 'House'} Democratic caucus.` : 'No vote in Democratic congressional leadership elections. Ask this office to use its influence.';
+    $('channel').value = state.channel;
+    for (const channel of ['letter', 'call', 'social']) $(channel + 'Panel').hidden = state.channel !== channel;
+    $('contactLink').href = o.website;
+    $('contactHelp').textContent = 'Copy, open the official form, paste, and submit there. Nothing is sent from this site.' + (o.group === 'house' ? ' House offices generally accept messages only from their own constituents.' : '') + (o.limit ? ` This office lists a ${o.limit.toLocaleString()}-character limit. Edit to fit; text is never truncated here.` : '');
+    $('phoneLink').hidden = !o.phone;
+    if (o.phone) { $('phoneLink').href = 'tel:+1' + o.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, ''); $('phoneLink').textContent = 'Call ' + o.phone; }
+    $('phoneNote').textContent = o.phone ? 'Calls open your phone app. You decide whether to place the call.' : 'No verified direct phone number is listed. Use the official contact page instead.';
+    $('socialProfile').hidden = !o.social;
+    if (o.social) $('socialProfile').href = o.social;
+    $('sharedSubject').value = state.shared.subject; $('sharedMessage').value = state.shared.message;
+    renderDraft(); renderProgress(); saveStatus();
+  }
+  function select(id, moveFocus = false) {
+    state.selected = id; feedback(''); render(); save();
+    if (moveFocus) { $('official').focus({ preventScroll: true }); $('action').scrollIntoView({ block: 'start' }); }
+  }
+  $('official').onchange = () => select($('official').value);
+  $('district').onchange = () => {
+    state.district = $('district').value;
+    const o = officials.find(o => o.group === 'house' && o.district === state.district);
+    if (o) { $('districtDetails').open = false; select(o.id, true); } else save();
+  };
+  $('channel').onchange = () => { state.channel = $('channel').value; feedback(''); render(); save(); };
+  for (const field of ['subject', 'message']) $(field).oninput = () => {
+    M.edit(state, current(), field, $(field).value); save();
+    $('draftKind').textContent = Object.hasOwn(state.personal[current().id], 'message') ? 'Personal version' : 'Shared draft';
+    $('useShared').hidden = false;
+  };
+  for (const [id, field] of [['callScript', 'call'], ['socialText', 'social']]) $(id).oninput = () => { M.edit(state, current(), field, $(id).value); save(); };
+  for (const [id, field] of [['sharedSubject', 'subject'], ['sharedMessage', 'message']]) $(id).oninput = () => { state.shared[field] = $(id).value; renderDraft(); save(); };
+  $('useShared').onclick = () => { const p = state.personal[current().id]; delete p.message; delete p.subject; renderDraft(); save(); feedback('This recipient now uses the shared draft.'); };
+  function mergeActions() {
+    const latest = read(actionKey);
+    actions = { ...(latest && typeof latest === 'object' && !Array.isArray(latest) ? latest : {}), ...pendingActions };
+  }
+  $('completed').onchange = () => {
+    pendingActions[actionId()] = $('completed').checked;
+    mergeActions();
+    if (persist(actionKey, actions)) pendingActions = {};
+    renderProgress();
+  };
+  $('nextOfficial').onclick = () => { const index = officials.findIndex(o => o.id === current().id); select(officials[(index + 1) % officials.length].id, true); };
+  async function copy(id) {
+    const field = $(id);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(field.value); feedback('Copied. Ready to paste.');
+    } catch {
+      field.focus(); field.select();
+      feedback('Clipboard unavailable. Text selected; use your device’s Copy command.');
+    }
+  }
+  for (const [button, field] of [['copySubject', 'subject'], ['copyMessage', 'message'], ['copyCall', 'callScript'], ['copySocial', 'socialText']]) $(button).onclick = () => copy(field);
+  $('sharePost').onclick = async () => {
+    if (!navigator.share) { await copy('socialText'); return; }
+    try { await navigator.share({ text: $('socialText').value }); feedback('Share dialog closed. Mark complete only if you posted.'); }
+    catch (error) { if (error.name !== 'AbortError') { await copy('socialText'); } }
+  };
+  // Save synchronously before navigation, including mobile tab/app switches.
+  $('contactLink').addEventListener('click', save);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+  window.addEventListener('pagehide', save);
+  // Other tabs never silently overwrite unsaved-in-memory work. Progress is independent.
+  window.addEventListener('storage', event => {
+    if (event.key === actionKey) { mergeActions(); renderProgress(); }
+    if (event.key === draftKey) feedback('Drafts changed in another tab. This tab keeps its current version; reload to use the other version.');
+  });
+  $('erase').onclick = () => { $('eraseConfirm').hidden = false; $('confirmErase').focus(); };
+  $('cancelErase').onclick = () => { $('eraseConfirm').hidden = true; $('erase').focus(); };
+  $('confirmErase').onclick = () => {
+    try { for (const key of [draftKey, actionKey, legacyKey]) localStorage.removeItem(key); lastDraft = 'null'; state = M.create(T.shared); actions = {}; pendingActions = {}; storageFailed = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.'); }
+    catch { storageFailed = true; saveStatus(); feedback('Unable to erase browser storage. Use browser settings.'); }
+  };
+  render();
+  if (!savedDrafts && C.code === 'WA' && Object.keys(state.personal).length) {
+    save();
+    if (!savedActions) persist(actionKey, actions);
+  }
 })();
