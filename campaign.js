@@ -8,13 +8,13 @@ window.CAMPAIGN_CONTENT = {
       subject: 'A Democratic majority is not a mandate for Chuck Schumer',
       message: `Democrats have won a new majority. That victory belongs to voters, organizers and candidates, not Chuck Schumer. It is not a mandate to keep him. I urge you to oppose Chuck Schumer for Senate Democratic leader and insist on a genuine, competitive replacement contest.
 
-For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet rent and healthcare remain unaffordable while wealthy donors and corporate lobbyists keep their access. People cannot pay bills with speeches about democracy or buy groceries with fundraising appeals. Promises about the future become negotiable when donors and lobbyists object.
+For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet rent and healthcare remain unaffordable while wealthy donors and corporate lobbyists keep their access. We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Promises become negotiable when donors and lobbyists object.
 
 Warn us about Republicans, but confront corporate influence inside your own party, too. An election victory creates an obligation to deliver and accept accountability, not a reason to avoid it. We deserve economic security, civil liberties and oversight that serves people. We are not just a voting bloc to mobilize and then set aside.
 
-If you support Schumer, explain what will change. What measurable commitments will you demand, and how will voters judge whether they are met? A better seat count is not enough. A competitive process must let credible alternatives make their case in public, rather than treating the result as settled.
+If you support Schumer, explain what will change. What measurable commitments will you demand, and how will voters judge whether they are met? A competitive process must let credible alternatives make their case in public, rather than treating the result as settled.
 
-Please make your position public, support a real leadership contest and explain how your choice will put constituents ahead of wealthy interests. New power should bring new accountability.
+Please make your position public and explain how your choice puts constituents ahead of wealthy interests. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
 
 Sincerely,
 
@@ -25,13 +25,13 @@ Sincerely,
       subject: 'New majority. New leadership. Not Hakeem Jeffries.',
       message: `Democrats have won back the House. That victory belongs to voters, organizers and candidates. It is not a vote of confidence in Hakeem Jeffries. I urge you to oppose Hakeem Jeffries for House Democratic leader and support a genuine, competitive contest for new leadership.
 
-For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet rent and healthcare remain unaffordable while wealthy donors and corporate lobbyists keep their access. People cannot pay bills with speeches about democracy or buy groceries with fundraising appeals. Promises about the future become negotiable when donors and lobbyists object.
+For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet rent and healthcare remain unaffordable while wealthy donors and corporate lobbyists keep their access. We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Promises become negotiable when donors and lobbyists object.
 
 Warn us about Republicans, but confront corporate influence inside your own party, too. Winning the House creates an obligation to deliver and accept accountability, not a reason to avoid it. We deserve economic security, civil liberties and oversight that serves people. We are not just a voting bloc to mobilize and then set aside.
 
-If you support Jeffries, explain what will change. What measurable commitments will you demand, and how will voters judge whether they are met? A better seat count is not enough. A competitive process must let credible alternatives make their case in public, rather than treating the result as settled.
+If you support Jeffries, explain what will change. What measurable commitments will you demand, and how will voters judge whether they are met? A competitive process must let credible alternatives make their case in public, rather than treating the result as settled.
 
-Please make your position public, support a real leadership contest and explain how your choice will put constituents ahead of wealthy interests. Winning a majority should mean more than protecting the people already at the top.
+Please make your position public and explain how your choice puts constituents ahead of wealthy interests. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
 
 Sincerely,
 
@@ -44,11 +44,11 @@ Sincerely,
 
 I know you do not cast a ballot in either caucus election. Your public position and relationships still matter. Silence is a choice. Use your influence to urge Washington's congressional Democrats to hold genuine, competitive leadership elections and set public standards for the leaders they choose.
 
-For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet housing, healthcare and basic necessities remain out of reach while wealthy donors and corporate lobbyists keep their access. People cannot pay rent with speeches about democracy or buy groceries with fundraising appeals. Promises become negotiable when powerful interests object.
+For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet housing, healthcare and basic necessities remain out of reach while wealthy donors and corporate lobbyists keep their access. We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Promises become negotiable when powerful interests object.
 
 Warning about Republicans is not enough. We need Democrats willing to confront those interests inside their own institutions. Election victories create an obligation to deliver economic security, protect civil liberties and conduct oversight for people, not just manage a voting bloc.
 
-Do not ask for unity without accountability. Ask for credible alternatives, measurable commitments and a public explanation of leadership choices. Please tell us what you will do to encourage both contests and put constituents ahead of donors. Voters deserve a party willing to change, not another demand to wait.
+Do not ask for unity without accountability. Demand credible alternatives and measurable commitments. Tell us how you will encourage both contests and put constituents ahead of donors. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
 
 Sincerely,
 
@@ -71,9 +71,9 @@ Sincerely,
         subject: 'A Democratic majority is not a mandate for Chuck Schumer',
         message: `Democrats have won a new majority. The victory belongs to voters, organizers and candidates, not Chuck Schumer. I urge you to oppose Chuck Schumer for Senate Democratic leader and support a genuine, competitive replacement contest.
 
-We voted, volunteered, donated and organized. We cannot pay rent with democracy speeches or buy groceries with fundraising appeals while donors and lobbyists make promises negotiable. Confront corporate influence inside your party, not only Republicans.
+We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Confront corporate influence inside your party, not only Republicans. We deserve economic security, civil liberties and oversight.
 
-A better seat count is not enough. We deserve economic security, civil liberties and oversight. Make your position public. If you support Schumer, explain what changes and what measurable commitments you will demand.
+Make your position public. If you support Schumer, explain what changes and what commitments you demand. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
 
 Sincerely,
 
@@ -84,9 +84,9 @@ Sincerely,
         subject: 'New majority. New leadership. Not Hakeem Jeffries.',
         message: `Democrats have won back the House. That victory belongs to voters, organizers and candidates, not Hakeem Jeffries. I urge you to oppose Hakeem Jeffries for House Democratic leader and support a genuine, competitive replacement contest.
 
-We voted, volunteered, donated and organized. We cannot pay rent with democracy speeches or buy groceries with fundraising appeals while donors and lobbyists make promises negotiable. Confront corporate influence inside your party, not only Republicans.
+We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Confront corporate influence inside your party, not only Republicans. We deserve economic security, civil liberties and oversight.
 
-A better seat count is not enough. We deserve economic security, civil liberties and oversight. Make your position public. If you support Jeffries, explain what changes and what measurable commitments you will demand.
+Make your position public. If you support Jeffries, explain what changes and what commitments you demand. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
 
 Sincerely,
 
@@ -99,9 +99,9 @@ Sincerely,
 
 I know you do not cast a ballot in either caucus election. Your public position and relationships matter. Silence is a choice. Urge Washington's congressional Democrats to hold competitive leadership elections with measurable standards.
 
-People cannot pay rent with democracy speeches. Housing, healthcare and necessities must come before wealthy donors' access. Confront powerful interests inside your own institutions, not only Republicans.
+We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Confront powerful interests inside your own institutions, not only Republicans.
 
-Do not ask for unity without accountability. Make your position public and explain what you will do. Voters deserve a party willing to change.
+Do not ask for unity without accountability. Make your position public. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
 
 Sincerely,
 

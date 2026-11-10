@@ -68,6 +68,16 @@ test('category calls demand a public position and posts contain no personal iden
   }
   assert.match(content.calls.influence, /do not vote in either caucus election/);
 });
+test('full category letters retain the approved forceful lines with personalization headroom', () => {
+  const { content, officials } = load();
+  for (const category of ['senate', 'house', 'influence']) {
+    for (const source of [content, content.concise]) {
+      assert.ok(source.letters[category].message.includes('We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals.'));
+      assert.ok(source.letters[category].message.includes('The voters delivered a new majority. They deserve more than the same establishment with a better seat count.'));
+    }
+  }
+  for (const o of officials) assert.ok(2000 - crlfLength(`${greeting(o)}\n\n${content.letters[o.vote || 'influence'].message}`) >= 300);
+});
 
 test('legacy defaults remain byte-for-byte available for saved draft migration', () => {
   const { content: x } = load();

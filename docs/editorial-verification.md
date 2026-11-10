@@ -55,7 +55,7 @@ No new conclusion is made about server enforcement, newline counting, Unicode co
 
 ## Source dates and retrieval limitations
 
-All sources below were accessed on **2026-11-10**. The evidence quotes are verbatim load-bearing excerpts from retrieved bodies, not search snippets. PDF line breaks are normalized in the quotes.
+All sources below were accessed on **2026-11-10**. The quotes are supporting excerpts from the retrieved pages, not search snippets. PDF line breaks are normalized in the quotes.
 
 | Source | Displayed date or version | Retrieval scope |
 |---|---|---|

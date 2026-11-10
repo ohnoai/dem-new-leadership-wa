@@ -6,11 +6,11 @@ Counts include the actual greeting, blank lines, `Sincerely,`, and name/location
 
 | Category | Longest actual greeting | Full | Concise | Remaining before 2,000, full |
 |---|---|---:|---:|---:|
-| Senate Democrats | Dear Senator Cantwell, | 1,562 | 780 | 438 |
-| House Democrats | Dear Representative Gluesenkamp Perez, | 1,622 | 801 | 378 |
-| Washington Democratic leadership | Dear Governor Ferguson, | 1,617 | 807 | 383 |
+| Senate Democrats | Dear Senator Cantwell, | 1,544 | 758 | 456 |
+| House Democrats | Dear Representative Gluesenkamp Perez, | 1,564 | 779 | 436 |
+| Washington Democratic leadership | Dear Governor Ferguson, | 1,605 | 824 | 395 |
 
-Every full default is between 1,500 and 1,700 CRLF units; every concise default is between 700 and 900. Personal details and user edits can increase those counts. Recipient counters retain their observed counting conventions, with verified frontend limits distinct from user-reported advisory thresholds. Nothing truncates typed or copied text. Dated election evidence and contact-report provenance are in [editorial verification](editorial-verification.md).
+Every full default is between 1,500 and 1,700 CRLF units; every concise default is between 700 and 900. Across actual greetings, full/concise ranges are Senate 1,542-1,544 / 756-758, House 1,552-1,564 / 767-779, and state/party 1,600-1,605 / 819-824. Every full default leaves at least 395 characters before 2,000. Personal details and user edits can increase those counts. Recipient counters retain their observed counting conventions, with verified frontend limits distinct from user-reported advisory thresholds. Nothing truncates typed or copied text. Dated election evidence and contact-report provenance are in [editorial verification](editorial-verification.md).
 
 ## Preservation evidence
 
