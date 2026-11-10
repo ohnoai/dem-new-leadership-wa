@@ -1,0 +1,24 @@
+# secrets / env
+.env
+.env.*
+!.env.example
+
+# generated output
+node_modules/
+dist/
+coverage/
+tmp/
+*.log
+.DS_Store
+
+# local AI tooling and workspace configuration
+.claude/
+.opencode/
+.serena/
+.repo-intelligence.json
+.squelch.json
+.veans.yml
+AGENTS.md
+
+# local decision records
+docs/decisions/
