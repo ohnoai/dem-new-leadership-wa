@@ -1,0 +1,13 @@
+server: https://tasks.ohnoai.xyz
+project_id: 34
+project_identifier: DEMNEW
+view_id: 140
+buckets:
+    todo: 151
+    in_progress: 152
+    in_review: 154
+    done: 153
+    scrapped: 155
+bot:
+    username: bot-dem-new-leadership-wa
+    user_id: 27

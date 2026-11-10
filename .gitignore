@@ -1,0 +1,20 @@
+# secrets / env
+.env
+.env.*
+!.env.example
+
+# tooling noise
+node_modules/
+dist/
+coverage/
+tmp/
+*.log
+.DS_Store
+
+# agent tooling - shared hooks committed; personal overrides local
+# .claude/settings.json is committed (SessionStart/PreCompact -> veans prime)
+.claude/settings.local.json
+.opencode/**
+!.opencode/plugin/
+!.opencode/plugin/veans-prime.ts
+.serena/
