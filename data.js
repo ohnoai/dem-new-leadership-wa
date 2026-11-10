@@ -17,10 +17,10 @@ window.CAMPAIGN = {
  {id:'wadems',name:'Washington State Democrats',office:'State party organization',group:'influence',district:'Statewide',phone:'',website:'https://wadems.org/',social:'',priority:2}
  ],
  sources:[
- {name:'U.S. Senate — Washington senators',url:'https://www.senate.gov/states/WA/intro.htm'},
- {name:'House Democratic Caucus — Washington members',url:'https://democrats.house.gov/who-we-are/our-members'},
- {name:'WA Democrats — Executive Committee',url:'https://wadems.org/about/board/'},
- {name:'Governor — Contact',url:'https://governor.wa.gov/contacting-governor'},
+ {name:'U.S. Senate - Washington senators',url:'https://www.senate.gov/states/WA/intro.htm'},
+ {name:'House Democratic Caucus - Washington members',url:'https://democrats.house.gov/who-we-are/our-members'},
+ {name:'WA Democrats - Executive Committee',url:'https://wadems.org/about/board/'},
+ {name:'Governor - Contact',url:'https://governor.wa.gov/contacting-governor'},
  {name:'Find your U.S. House district',url:'https://www.house.gov/representatives/find-your-representative'}
  ]
 };

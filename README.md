@@ -1,4 +1,4 @@
-# New Leadership Now — Washington edition
+# New Leadership Now - Washington edition
 
 > Want this for your state? Fork it.
 
