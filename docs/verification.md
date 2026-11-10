@@ -5,7 +5,7 @@
 Environment: Windows 11, Node.js 24.22.1, Playwright Chromium. No public deployment, calls, form submissions, or social publication were performed.
 
 `npm run check` runs Node state tests and browser tests at 375×812, 430×932, and 1440×1000. The suite verifies:
-Latest completed run: **4 Node tests and 45 Playwright cases passed**. `npm audit` reported zero vulnerabilities, and JavaScript syntax plus whitespace checks passed.
+Latest completed run: **4 Node tests and 111 Playwright cases passed**. `npm audit` reported zero vulnerabilities, and JavaScript syntax plus whitespace checks passed.
 
 - Recipient-first editing, next-official navigation, correct greetings and role-specific requests for every listed official.
 - Shared priorities following recipients; personal letters remaining independent of the master.
@@ -27,6 +27,21 @@ Mobile and desktop screenshots were inspected locally. Main controls are 44–48
 
 Additional checks: `git diff --check`; dependency audit; JavaScript syntax checks through file tooling and Node/browser execution. The original prototype had no automated test framework; no existing test suite was removed. MIT license preserved.
 
+## Functional hardening findings
+
+The storage recovery defect was reproduced before changing application code. After an injected write failure, the first recovered write reached localStorage but the global failure flag remained set. The successful write did not advance the stale-tab baseline, so the following edit was rejected as another tab's change. An action-only failure also poisoned draft saves. A read failure was incorrectly classified as a stale-tab conflict.
+
+Storage now tracks failed reads and writes per key. Each successful operation clears only its own error, and each successful draft write advances its baseline regardless of unrelated failures. Failed reads never authorize overwriting an unknown stored draft. Once an initially inaccessible empty store becomes readable, editing resumes without reload. Existing stored content discovered after an unreadable startup is retained and treated as a conflict, not replaced with the in-memory default.
+Independent review also reproduced an action-only read failure that cleared its warning before pending completion was saved, and migration overwriting unreadable action history. Pending actions now retry their merge/write during draft save; migration writes action history only after confirming that its destination is absent. Regression tests inspect the actual stored action map, not just the checkbox or status.
+
+Migrated letters, call scripts and social posts keep exact text. A visible imported-draft warning names the current recipient and requires explicit review before the copy, share, contact-page or phone actions. Review is recipient/text-specific, survives refresh, and is invalidated by edits or channel changes. Older v3 imports are identified by comparison with the retained v2 source where available. This does not infer that a greeting is correct or rewrite it for the user.
+
+Added audit cases cover recipient-only reset, a second page reopening saved work, erase cancellation and scoped deletion, social-share cancellation/unsupported fallback, and subject clipboard denial. These passing audit cases did not require application changes. No styling overhaul, dependency, service, analytics or account system was added.
+
+The audit reproduced delayed clipboard rejection selecting a newly chosen recipient's text and delayed share rejection copying the wrong post. Async actions now retain their original payload and context; stale callbacks cannot focus/select replacement text or announce success for a different recipient.
+
+Erase now removes the legacy migration source first, stopping if that fails instead of deleting v3 replacements and reimporting old private text on reload. It emits action removal even when no action record existed, so other open tabs discard pre-erase pending completions rather than restoring them. This requires writable localStorage for the notification; a denied erase reports failure and directs the user to browser settings. Storage deletion across multiple keys is not transactional.
+
 ## Source verification
 
 Contact routes, office numbers, published social identities, and district references are documented with primary-source evidence in [sources.md](sources.md). The old Murray `/contact/` link was a 404 and is replaced with the actual message form. Directory and contact-page retrieval is not proof of successful form submission. Published social links are evidence of office identity, not a guarantee of platform access or monitoring.
@@ -39,5 +54,6 @@ Contact routes, office numbers, published social identities, and district refere
 4. Recheck live congressional and party membership immediately before launch and after the next Congress takes office. No 2026 election outcome or leadership-election date is asserted by this revision.
 5. Manually inspect each live external form in a regular browser for constituency gates, CAPTCHA and current field limits. Do not submit test advocacy to offices. Rate limits and anti-bot responses may prevent automated verification; those are recorded in the source audit.
 6. Multi-tab draft edits are conflict-detected, not merged. A blocked stale tab asks the user to copy local edits and reload. Truly simultaneous writes remain subject to localStorage's lack of transactions; use one editing tab at a time.
+7. The new-page reopening test uses the same browser context, not an actual browser-process restart. Physical browser shutdown/reopening remains a manual check. Imported text can only be identified retrospectively when its retained legacy source or provenance marker exists; this is not automatic detection of every incorrectly addressed user-written letter.
 
 This is a PR-ready implementation with the above release checks disclosed, not a claim that physical-device, assistive-technology or external-service testing has been completed.

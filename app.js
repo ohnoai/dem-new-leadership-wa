@@ -5,10 +5,11 @@
   const prefix = `leadership-${C.code.toLowerCase()}`;
   const draftKey = `${prefix}-drafts-v3`, actionKey = `${prefix}-actions-v3`;
   const legacyKey = 'new-leadership-wa-v2';
-  let storageFailed = false;
+  const readFailures = new Set(), writeFailures = new Set();
+  let draftConflict = false;
   function read(key) {
-    try { return JSON.parse(localStorage.getItem(key)); }
-    catch { storageFailed = true; return null; }
+    try { const value = JSON.parse(localStorage.getItem(key)); readFailures.delete(key); return value; }
+    catch { readFailures.add(key); return undefined; }
   }
   const savedDrafts = read(draftKey), savedActions = read(actionKey);
   let lastDraft = JSON.stringify(savedDrafts);
@@ -21,7 +22,7 @@
   const ballot = o => Object.hasOwn(o, 'vote') ? o.vote : ['senate', 'house'].includes(o.group) ? o.group : null;
   const normalized = o => ({ ...o, vote: ballot(o) });
   // Preserve exact prototype text, including user-written greetings. Never rewrite it.
-  if (!savedDrafts && C.code === 'WA') {
+  if (savedDrafts !== undefined && !savedDrafts && C.code === 'WA') {
     const legacy = read(legacyKey);
     if (legacy && typeof legacy === 'object') {
       for (const o of officials) {
@@ -31,32 +32,48 @@
         }
         if (['senate', 'house'].includes(o.group) && typeof legacy.callScript?.[o.group] === 'string') M.edit(state, o, 'call', legacy.callScript[o.group]);
         if (typeof legacy.social === 'string') M.edit(state, o, 'social', legacy.social);
-        if (!savedActions && legacy.progress?.[o.id] === true) actions[`${o.id}:letter`] = true;
+        if (state.personal[o.id]) state.personal[o.id].legacyReview = 'Imported prototype text';
+        if (savedActions === null && legacy.progress?.[o.id] === true) actions[`${o.id}:letter`] = true;
       }
       if (typeof legacy.district === 'string') state.district = legacy.district;
     }
   }
+  // Identify retained older v3 imports without rewriting their text.
+  if (savedDrafts && C.code === 'WA') {
+    const legacy = read(legacyKey);
+    for (const o of officials) {
+      const p = state.personal[o.id];
+      if (p && !p.legacyReview && ['subject', 'message'].some(field => typeof p[field] === 'string' && p[field] === legacy?.drafts?.[o.group]?.[field])) p.legacyReview = 'Imported prototype text';
+      if (p && !p.legacyReview && ((typeof p.call === 'string' && p.call === legacy?.callScript?.[o.group]) || (typeof p.social === 'string' && p.social === legacy?.social))) p.legacyReview = 'Imported prototype text';
+    }
+  }
   function saveStatus() {
-    $('saveStatus').textContent = storageFailed ? 'Not saved. Copy your work.' : 'Saved on this device';
+    $('saveStatus').textContent = readFailures.size || writeFailures.size ? 'Not saved. Copy your work.' : draftConflict ? 'Another tab changed this draft.' : 'Saved on this device';
   }
   function persist(key, value) {
     let saved = false;
-    try { localStorage.setItem(key, JSON.stringify(value)); saved = true; }
-    catch { storageFailed = true; }
+    try { localStorage.setItem(key, JSON.stringify(value)); writeFailures.delete(key); saved = true; }
+    catch { writeFailures.add(key); }
     saveStatus();
     return saved;
   }
   const save = () => {
     try {
-      const stored = JSON.stringify(read(draftKey));
+      const value = read(draftKey);
+      if (value === undefined) { saveStatus(); return; }
+      for (const key of [...readFailures]) if (key !== draftKey) read(key);
+      if (Object.keys(pendingActions).length && mergeActions() && persist(actionKey, actions)) pendingActions = {};
+      // A failed startup read establishes no baseline. Only an actually empty store is safe.
+      if (lastDraft === undefined && value === null) lastDraft = 'null';
+      const stored = JSON.stringify(value);
       if (stored !== lastDraft) {
-        $('saveStatus').textContent = 'Another tab changed this draft.';
+        draftConflict = true; saveStatus();
         feedback('Copy any edits in this tab, then reload to use the latest saved draft. This tab will not overwrite it.');
         return;
       }
-      persist(draftKey, state);
-      if (!storageFailed) lastDraft = JSON.stringify(state);
-    } catch { storageFailed = true; saveStatus(); }
+      draftConflict = false;
+      if (persist(draftKey, state)) lastDraft = JSON.stringify(state);
+    } catch { writeFailures.add(draftKey); saveStatus(); }
   };
   function feedback(text) { $('feedback').textContent = text; }
   function option(value, text) {
@@ -97,7 +114,23 @@
     // Sharing may target any network; a published X/Facebook identity is not a universal mention.
     const handle = o.name + ':';
     $('socialText').value = personal.social ?? T.social.replace('[handle]', handle).replace('[socialRequest]', o.vote ? 'Use your caucus vote to support a credible alternative.' : 'Use your influence to advocate for change.');
+    renderReview();
   }
+  const reviewSnapshot = () => JSON.stringify([state.channel, $('subject').value, $('message').value, $('callScript').value, $('socialText').value]);
+  function renderReview() {
+    const p = state.personal[current().id];
+    $('recipientReview').hidden = !p?.legacyReview;
+    $('reviewExplanation').textContent = `Imported draft: review the greeting, names and request for ${current().name}. Original text was preserved and may name a different recipient.`;
+    $('reviewedRecipient').checked = !!p?.reviewed && p.reviewed === reviewSnapshot();
+  }
+  function allowReviewedAction() {
+    if (!$('recipientReview').hidden && !$('reviewedRecipient').checked) {
+      feedback('Review the imported text for this official before copying, opening or sharing.');
+      $('reviewedRecipient').focus(); return false;
+    }
+    return true;
+  }
+  $('reviewedRecipient').onchange = () => { M.edit(state, current(), 'reviewed', $('reviewedRecipient').checked ? reviewSnapshot() : ''); save(); };
   const actionId = () => `${current().id}:${state.channel}`;
   function renderProgress() {
     const count = officials.reduce((sum, o) => sum + ['letter', 'call', 'social'].filter(channel => actions[`${o.id}:${channel}`] === true).length, 0);
@@ -142,55 +175,76 @@
     M.edit(state, current(), field, $(field).value); save();
     $('draftKind').textContent = Object.hasOwn(state.personal[current().id], 'message') ? 'Personal version' : 'Shared draft';
     $('useShared').hidden = false;
+    renderReview();
   };
-  for (const [id, field] of [['callScript', 'call'], ['socialText', 'social']]) $(id).oninput = () => { M.edit(state, current(), field, $(id).value); save(); };
+  for (const [id, field] of [['callScript', 'call'], ['socialText', 'social']]) $(id).oninput = () => { M.edit(state, current(), field, $(id).value); renderReview(); save(); };
   for (const [id, field] of [['sharedSubject', 'subject'], ['sharedMessage', 'message']]) $(id).oninput = () => { state.shared[field] = $(id).value; renderDraft(); save(); };
   $('useShared').onclick = () => { const p = state.personal[current().id]; delete p.message; delete p.subject; renderDraft(); save(); feedback('This recipient now uses the shared draft.'); };
   function mergeActions() {
     const latest = read(actionKey);
+    if (latest === undefined) { actions = { ...actions, ...pendingActions }; saveStatus(); return false; }
     actions = { ...(latest && typeof latest === 'object' && !Array.isArray(latest) ? latest : {}), ...pendingActions };
+    return true;
   }
   $('completed').onchange = () => {
     pendingActions[actionId()] = $('completed').checked;
-    mergeActions();
-    if (persist(actionKey, actions)) pendingActions = {};
+    if (mergeActions() && persist(actionKey, actions)) pendingActions = {};
     renderProgress();
   };
   $('nextOfficial').onclick = () => { const index = officials.findIndex(o => o.id === current().id); select(officials[(index + 1) % officials.length].id, true); };
-  async function copy(id) {
-    const field = $(id);
+  function captureAction(id) {
+    const field = $(id), text = field.value, selected = state.selected, channel = state.channel, source = state;
+    return { field, text, isCurrent: () => state === source && state.selected === selected && state.channel === channel && field.value === text };
+  }
+  async function copy(id, context) {
+    if (!context && !allowReviewedAction()) return;
+    context = context || captureAction(id);
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText(field.value); feedback('Copied. Ready to paste.');
+      await navigator.clipboard.writeText(context.text);
+      if (context.isCurrent()) feedback('Copied. Ready to paste.');
     } catch {
-      field.focus(); field.select();
+      if (!context.isCurrent()) return;
+      context.field.focus(); context.field.select();
       feedback('Clipboard unavailable. Text selected; use your device’s Copy command.');
     }
   }
   for (const [button, field] of [['copySubject', 'subject'], ['copyMessage', 'message'], ['copyCall', 'callScript'], ['copySocial', 'socialText']]) $(button).onclick = () => copy(field);
   $('sharePost').onclick = async () => {
-    if (!navigator.share) { await copy('socialText'); return; }
-    try { await navigator.share({ text: $('socialText').value }); feedback('Share dialog closed. Mark complete only if you posted.'); }
-    catch (error) { if (error.name !== 'AbortError') { await copy('socialText'); } }
+    if (!allowReviewedAction()) return;
+    const context = captureAction('socialText');
+    if (!navigator.share) { await copy('socialText', context); return; }
+    try { await navigator.share({ text: context.text }); if (context.isCurrent()) feedback('Share dialog closed. Mark complete only if you posted.'); }
+    catch (error) { if (error.name !== 'AbortError') { await copy('socialText', context); } }
   };
   // Save synchronously before navigation, including mobile tab/app switches.
-  $('contactLink').addEventListener('click', save);
+  for (const id of ['contactLink', 'phoneLink', 'socialProfile']) $(id).addEventListener('click', event => { if (!allowReviewedAction()) event.preventDefault(); else save(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
   window.addEventListener('pagehide', save);
   // Other tabs never silently overwrite unsaved-in-memory work. Progress is independent.
   window.addEventListener('storage', event => {
-    if (event.key === actionKey) { mergeActions(); renderProgress(); }
+    if (event.key === actionKey) {
+      if (event.newValue === null && event.oldValue !== null) { pendingActions = {}; actions = {}; readFailures.delete(actionKey); writeFailures.delete(actionKey); saveStatus(); }
+      else mergeActions();
+      renderProgress();
+    }
     if (event.key === draftKey) feedback('Drafts changed in another tab. This tab keeps its current version; reload to use the other version.');
   });
   $('erase').onclick = () => { $('eraseConfirm').hidden = false; $('confirmErase').focus(); };
   $('cancelErase').onclick = () => { $('eraseConfirm').hidden = true; $('erase').focus(); };
   $('confirmErase').onclick = () => {
-    try { for (const key of [draftKey, actionKey, legacyKey]) localStorage.removeItem(key); lastDraft = 'null'; state = M.create(T.shared); actions = {}; pendingActions = {}; storageFailed = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.'); }
-    catch { storageFailed = true; saveStatus(); feedback('Unable to erase browser storage. Use browser settings.'); }
+    try {
+      localStorage.removeItem(legacyKey);
+      // Create then remove an empty action record so other tabs receive an erase event even if no actions were saved.
+      localStorage.setItem(actionKey, '{}');
+      for (const key of [draftKey, actionKey]) localStorage.removeItem(key);
+      lastDraft = 'null'; state = M.create(T.shared); actions = {}; pendingActions = {}; readFailures.clear(); writeFailures.clear(); draftConflict = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.');
+    }
+    catch { writeFailures.add(draftKey); saveStatus(); feedback('Unable to erase browser storage. Use browser settings.'); }
   };
   render();
   if (!savedDrafts && C.code === 'WA' && Object.keys(state.personal).length) {
     save();
-    if (!savedActions) persist(actionKey, actions);
+    if (savedActions === null) persist(actionKey, actions);
   }
 })();

@@ -58,6 +58,10 @@
         <div class="editor-heading"><p class="eyebrow">02 / MAKE YOUR CASE</p><span id="saveStatus" class="note" role="status" aria-live="polite"></span></div>
         <label for="channel">How will you take action?</label>
         <select id="channel"><option value="letter">Write a message</option><option value="call">Make a phone call</option><option value="social">Share a social post</option></select>
+        <div id="recipientReview" class="notice" hidden>
+          <p id="reviewExplanation"></p>
+          <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
+        </div>
         <section id="letterPanel" aria-label="Letter editor">
           <div class="label-row"><label for="subject">Subject</label><button class="text-button" id="copySubject">Copy subject</button></div>
           <input id="subject">

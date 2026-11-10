@@ -107,8 +107,8 @@ test('prototype drafts and progress survive the upgrade', async ({ page }) => {
 });
 test('prototype call and shared social drafts migrate exactly for every relevant recipient', async ({ page }) => {
   const legacy = {
-    callScript: { senate: 'My Senate call\n[official] — keep this greeting!  ', house: 'My House call\n[request] — unchanged.  ' },
-    social: 'My shared post\n[handle] — exact text!  '
+    callScript: { senate: 'My Senate call\n[official] - keep this greeting!  ', house: 'My House call\n[request] - unchanged.  ' },
+    social: 'My shared post\n[handle] - exact text!  '
   };
   await page.addInitScript(value => {
     if (!localStorage.getItem('new-leadership-wa-v2')) localStorage.setItem('new-leadership-wa-v2', JSON.stringify(value));

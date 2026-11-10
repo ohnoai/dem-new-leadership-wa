@@ -28,7 +28,7 @@
     if (['letter', 'call', 'social'].includes(value.channel)) state.channel = value.channel;
     if (record(value.personal)) {
       for (const [id, fields] of Object.entries(value.personal)) {
-        if (record(fields)) Object.defineProperty(state.personal, id, { value: strings(fields, ['subject', 'message', 'call', 'social']), enumerable: true, writable: true, configurable: true });
+        if (record(fields)) Object.defineProperty(state.personal, id, { value: strings(fields, ['subject', 'message', 'call', 'social', 'legacyReview', 'reviewed']), enumerable: true, writable: true, configurable: true });
       }
     }
     return state;
