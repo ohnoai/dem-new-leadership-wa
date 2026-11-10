@@ -50,8 +50,8 @@
       <div class="action-intro"><p class="eyebrow">THE ASK IS SIMPLE. MAKE IT HEARD.</p><h2>Put your voice behind the reset.</h2><p>Choose an official. Make your case.</p></div>
       <aside class="chooser">
         <p class="eyebrow">START WITH YOUR DELEGATION</p>
-        <details id="yourDetails" class="your-details">
-          <summary>Your details <span class="note">(optional)</span></summary>
+        <section id="yourDetails" class="your-details" aria-labelledby="yourDetailsHeading">
+          <h3 id="yourDetailsHeading">Your details <span class="note">(optional)</span></h3>
           <p>Add your details once to personalize your letters and call scripts. They stay in this browser.</p>
           <div class="details-grid">
             <div><label for="detailName">Full name</label><input id="detailName" autocomplete="name"></div>
@@ -60,7 +60,7 @@
             <div><label for="detailZip">ZIP code</label><input id="detailZip" autocomplete="postal-code" inputmode="numeric"></div>
           </div>
           <p class="note">Optional. Browser data can be cleared and does not sync across devices. Edits to your letters and signatures take precedence over automatic details.</p>
-        </details>
+        </section>
         <label for="official">Choose an official</label>
         <select id="official"></select>
         <details id="districtDetails">
