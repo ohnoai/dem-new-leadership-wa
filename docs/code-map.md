@@ -18,7 +18,9 @@ The public application is a static site.
 | `docs/sources.md` | Primary-source contact and district research |
 | `docs/contact-forms.md` | Dated browser form compatibility audit, evidence and unknowns |
 | `docs/verification.md` | Executed verification and outstanding checks |
-| `README.md` | Setup and state-forking instructions |
+| `README.md` | Campaign introduction and first steps |
+| `docs/development.md` | Local development, draft mechanics and hosting |
+| `docs/adapting.md` | Instructions for bringing the campaign to another state |
 | `LICENSE` | MIT license |
 
 Update this map when the public application structure changes.

@@ -1,70 +1,40 @@
-# DEM RESET · Washington
+# DEM RESET
 
-A mobile-first, static civic action site asking for new Democratic congressional leadership. Independent advocacy, not affiliated with government or a political party. MIT licensed. No accounts, analytics, tracking pixels, or application backend.
+Democrats need a reset. Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders, and ask Washington's delegation to back the change.
 
-Want this for your state? Fork it.
+Working people deserve leaders willing to defend public services and civil rights, challenge wealthy donors, and answer to the people they represent. DEM RESET helps Washington residents make that demand directly to elected officials.
 
-## Run locally
+[demreset.com](https://demreset.com) is the campaign's intended home. The domain is registered, but the site is not confirmed live yet. You can run it locally with the instructions below.
 
-Requires Node.js 22 or newer for development and tests.
+## Make your case
+
+Choose an official, or find your House representative through the official district finder. Review the prepared letter and make it yours. Copy the message, open the official contact page, and send it there yourself. You can also use the call script or prepare a social post.
+
+The site distinguishes officials who vote in Democratic leadership elections from those who can use their influence. Full and concise letters keep separate edits. Your drafts survive recipient changes, and you mark completed actions yourself. Opening a contact page never counts as sending a message.
+
+Some offices require address checks or limit message length. The [contact-form audit](docs/contact-forms.md) records what was observed, what was reported by a user, and what remains unknown.
+
+## Independence and privacy
+
+DEM RESET is independent advocacy, not a government website or a political party project. You do not need an account. The site has no analytics or tracking pixels, and your drafts and action history stay in this browser.
+
+Browser storage is not a backup: clearing it can erase your work, and drafts do not sync between devices. Official contact forms and social platforms have their own privacy rules. Nothing is sent or published without your action.
+
+## Want this for your state? Fork it.
+
+The campaign copy and Washington contacts are separate from the application logic. Replace them with your state's officials and verified contact information, keep the distinction between votes and influence, and make the campaign your own. The [state adaptation guide](docs/adapting.md) explains what to change and check.
+
+## Work on the site
+
+Use Node.js 22 or newer, then run:
 
 ```sh
 npm ci
 npm start
 ```
 
-Open http://127.0.0.1:4173. The preview server binds only to localhost. Opening `index.html` directly is not recommended: browser storage and clipboard behavior under `file:` URLs varies. Clipboard and native sharing require HTTPS or localhost.
-
-## Action workflow
-
-1. Choose an official. To find your House representative, open the state district finder, enter your full address there, choose Congressional, and select the resulting district back here.
-2. Edit the recipient's letter, call script, or social post. The greeting and request match the recipient's role.
-3. Copy the message and subject, then open the official contact page. Paste and submit on that site yourself. Phone links open the dialer; social sharing opens the device share sheet when available, or copies the post.
-4. Mark the action complete yourself and move to the next official.
-
-The Shared message disclosure edits the master for the selected letter version and identifies which master is active. The Letter version picker offers full and concise alternatives. Each version keeps its own shared and recipient-specific subject and message edits across switches and refreshes; switching never shortens or replaces the other version. Use shared draft removes only the current recipient's active-version letter/subject overrides, not the other version, calls, social posts, or completion. Read the full letter expands the entire message without truncation; the compact editor remains available when you want less page scrolling.
-
-Subject and message counters are always shown in the letter editor. Recipient-specific warnings distinguish verified form limits from explicitly labeled user-reported advisories; they never block editing, copying or opening a form, and never truncate text. Unknown limits are not treated as unlimited. Copy subject is hidden only where the audit confirms no free-text subject control; subject drafts remain editable and saved. Issue/category selection happens on the official form. See the dated [contact-form compatibility audit](docs/contact-forms.md) for required fields, address gates, evidence and inaccessible forms.
-
-## State and privacy
-
-Drafts save synchronously on each edit to a state-specific localStorage key. Completed actions use a separate key and are tracked per official and channel. Nothing is transmitted to an application server. Navigating to official sites does not mark an action complete. Progress is self-reported, not a submission counter; the header counts the three supported channels for every listed office, not a required checklist.
-
-Prototype v2 letters and call scripts are migrated verbatim into personal versions for their chamber, shared social text into every recipient's social draft, and old completions into letter actions. Original browser data remains until explicitly erased. Migrated greetings are not rewritten: review them before sending. Migration is only for the Washington prototype.
-
-Storage is device/browser/origin-local, may be unavailable, and can be cleared by the browser. The editor reports save failures and remains usable in memory. There is no cross-device sync. An older browser tab detects newer stored drafts and refuses to overwrite them; copy any unsaved changes, then reload to use the newer version. Concurrent edits are not merged automatically. Avoid editing in two tabs at once.
-
-## Fork for another state
-
-1. Replace `data.js`: state name/code, kickoff line, official district finder and map links, repository URL, officials, and primary sources. Keep stable unique official IDs. Include every House district so residents are never given a misleading missing-district result.
-2. Each official supplies `id`, `name`, `office`, `group` (`senate`, `house`, `influence`), `district`, `party`, `vote` (`senate`, `house`, or explicit `null`), `greeting`, `phone`, `website`, and `social`. Leave unavailable phone/social values empty. A Republican House member has `vote: null` for Democratic caucus elections. State/party officials likewise have no caucus ballot.
-3. Verify contact details and social identities against official pages. Use an official full-address geographic boundary finder, not a guessed ZIP mapping. Document evidence and any blocked verification in `docs/sources.md`.
-4. Edit campaign language in `campaign.js`. This is the authoritative home for headings, draft priorities, role-specific requests, phone scripts and social templates. Do not put campaign-specific language into `app.js` or `model.js`.
-5. Update the fallback title, description, noscript and state-finder text in `index.html` for non-JavaScript visitors. Replace the original geometric Washington evergreen in `assets/evergreen.svg` if your state calls for another signature detail. The Pressure palette and typography live in `styles.css`.
-6. Adapt the Washington-specific test fixtures and run the verification commands below. Check all official roles and district entries. Keep the MIT license and the footer invitation.
-
-No map/geocoder package or API key is needed. The user enters their address only on the official state site; this site does not collect it.
-
-## Test
-
-```sh
-npx playwright install chromium
-npm run check
-git diff --check
-```
-
-Node tests cover the state model. Playwright tests cover the actual browser workflow at 375px, 430px and desktop widths, including clipboard, persistence, role-specific messages, and axe accessibility checks. Browser tests emulate mobile Chromium, not physical devices. See [verification and outstanding checks](docs/verification.md) for exact coverage and release limitations, and [source evidence](docs/sources.md) for contact research.
-
-## Static hosting
-
-No production build is needed. When deployment is authorized, publish only `index.html`, `styles.css`, `data.js`, `campaign.js`, `model.js`, `app.js`, `presentation.js`, the `assets/` directory, `LICENSE`, `README.md`, and the public `docs/` files together on an HTTPS static host. Do not publish the entire development checkout, local tooling configuration, `node_modules`, test results, or credentials. This revision does not deploy automatically. The prospective `demreset.com` domain is not assumed to be purchased or configured.
-
-Barlow Condensed ExtraBold is self-hosted under the SIL Open Font License, retained in `assets/OFL-Barlow.txt`. The original evergreen artwork and application code retain this project's MIT license. No font service or third-party asset request is needed at runtime.
-
-## Documentation
-
-See [documentation index](docs/README.md) and [code map](docs/code-map.md).
+Open http://127.0.0.1:4173. The [development guide](docs/development.md) covers tests, draft storage and hosting. The [documentation index](docs/README.md) links to the code map, source research and [remaining release checks](docs/verification.md).
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+[MIT](LICENSE). The bundled Barlow Condensed font uses the [SIL Open Font License](assets/OFL-Barlow.txt).

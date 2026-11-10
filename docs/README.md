@@ -1,11 +1,10 @@
 # Documentation
 
-Public documentation focuses on the website and how to contribute.
+Start with the [campaign introduction](../README.md).
 
-- `README.md`: project overview, running locally, and adapting for another state.
-- `docs/code-map.md`: current structure of the public application.
-- `docs/sources.md`: primary-source contact and district research.
-- `docs/verification.md`: verified behavior and outstanding release checks.
-- `docs/guides/`: optional guides as the project grows.
-
-Internal workspace configurations and decision records are kept out of the public repository.
+- [Development](development.md): local preview, tests, draft storage and hosting.
+- [Another state](adapting.md): contacts, district discovery, campaign copy and fork checks.
+- [Code map](code-map.md): application files and their roles.
+- [Sources](sources.md): official contact and district research.
+- [Contact forms](contact-forms.md): dated evidence, field restrictions and unknowns.
+- [Verification](verification.md): executed tests and remaining release checks.
