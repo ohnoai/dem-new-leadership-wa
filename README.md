@@ -16,7 +16,7 @@ Some offices require address checks or limit message length. The [contact-form a
 
 ## Independence and privacy
 
-DEM RESET is independent advocacy, not a government website or a political party project. You do not need an account. The site has no analytics or tracking pixels, and your drafts and action history stay in this browser.
+DEM RESET is independent advocacy, not a government website or a political party project. You do not need an account. The site has no analytics or tracking pixels. Optional name, city, county and ZIP details personalize letters and calls; those details, your drafts and action history stay in this browser. Nothing is required to start.
 
 Browser storage is not a backup: clearing it can erase your work, and drafts do not sync between devices. Official contact forms and social platforms have their own privacy rules. Nothing is sent or published without your action.
 

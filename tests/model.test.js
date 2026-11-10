@@ -162,9 +162,9 @@ test('campaign concise letters make substantive role-sensitive requests without 
   assert.match(content.concise.requests.influence, /publicly/i);
   const M = load();
   const state = M.create(content.shared, content.concise.shared);
-  assert.equal(M.draft(state, murray, content).message, ['Dear Senator Murray,', content.requests.senate, content.shared.message].join('\n\n'));
+  assert.equal(M.draft(state, murray, content).message, ['Dear Senator Murray,', content.letters.senate.message].join('\n\n'));
   state.letterVersion = 'concise';
-  assert.equal(M.draft(state, murray, content).message, ['Dear Senator Murray,', content.concise.requests.senate, content.concise.shared.message].join('\n\n'));
+  assert.equal(M.draft(state, murray, content).message, ['Dear Senator Murray,', content.concise.letters.senate.message].join('\n\n'));
 });
 test('appropriate request and greeting for officials without a Democratic ballot', () => {
   const M = load();

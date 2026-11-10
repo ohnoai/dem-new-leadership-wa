@@ -40,6 +40,17 @@
       <div class="action-intro"><p class="eyebrow">THE ASK IS SIMPLE. MAKE IT HEARD.</p><h2>Put your voice behind the reset.</h2><p>Choose an official. Make your case.</p></div>
       <aside class="chooser">
         <p class="eyebrow">START WITH YOUR DELEGATION</p>
+        <details id="yourDetails" class="your-details">
+          <summary>Your details <span class="note">(optional)</span></summary>
+          <p>Add your details once to personalize your letters and call scripts. They stay in this browser.</p>
+          <div class="details-grid">
+            <div><label for="detailName">Full name</label><input id="detailName" autocomplete="name"></div>
+            <div><label for="detailCity">City</label><input id="detailCity" autocomplete="address-level2"></div>
+            <div><label for="detailCounty">County</label><input id="detailCounty" autocomplete="off"></div>
+            <div><label for="detailZip">ZIP code</label><input id="detailZip" autocomplete="postal-code" inputmode="numeric"></div>
+          </div>
+          <p class="note">Optional. Browser data can be cleared and does not sync across devices. Edits to your letters and signatures take precedence over automatic details.</p>
+        </details>
         <label for="official">Choose an official</label>
         <select id="official"></select>
         <details id="districtDetails">
@@ -52,6 +63,7 @@
           <a id="districtMaps" href="https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps" target="_blank" rel="noopener noreferrer">Official district maps ↗</a>
           <p class="note">State finder not working? <a id="houseFinder" href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noopener noreferrer">Use the official House finder ↗</a>. A ZIP can span districts; use its full-address follow-up if offered.</p>
         </details>
+        <p id="districtNotice" class="notice" role="status" hidden></p>
         <div class="recipient">
           <span class="badge" id="voteBadge"></span>
           <h2 id="officialName"></h2>
@@ -60,7 +72,7 @@
         </div>
         <details class="shared">
           <summary>Shared message</summary>
-          <p class="note">The master for your selected letter version follows every official. Personal edits do not change this master or the other version.</p>
+          <p class="note">The master for this category and letter version follows officials in that category. Retained older shared drafts still follow every official. Personal edits do not change the master or the other version.</p>
           <p class="note" id="sharedVersion"></p>
           <label for="sharedSubject">Shared subject</label>
           <input id="sharedSubject">
@@ -89,7 +101,7 @@
           <p id="messageCount" class="note character-count"></p>
           <p id="limitWarning" class="notice" role="status" hidden></p>
           <button type="button" id="expandLetter" class="text-button expand-letter" aria-expanded="false" aria-controls="message">Read the full letter ↓</button>
-          <div class="label-row"><span class="note" id="draftHelp">Replace the name and location placeholders before sending.</span><button id="useShared" class="text-button" hidden>Use shared draft</button></div>
+          <div class="label-row"><span class="note" id="draftHelp">Optional details fill untouched template fields. Your edits, including manual signatures, take precedence. Review the final text before sending.</span><button id="useShared" class="text-button" hidden>Use shared draft</button></div>
           <div class="action-row"><button class="button" id="copyMessage">Copy message</button><a class="button secondary" id="contactLink" target="_blank" rel="noopener noreferrer">Open official contact page ↗</a></div>
           <p class="note" id="contactHelp">Copy, open the official form, paste, and submit there. Nothing is sent from this site.</p>
           <p class="note" id="formCompatibility"></p>
@@ -112,7 +124,7 @@
         </div>
       </div>
     </section>
-    <details class="about"><summary>About the campaign, privacy &amp; sources</summary><p>Independent civic advocacy. Not a government website or affiliated with a political party. House Democrats choose their caucus leader separately from the full House's election of a Speaker. Senate Democrats choose their own leader. State and party officials have influence, not a congressional caucus ballot.</p><p>Drafts and self-reported actions stay in this browser. No account, analytics, or backend. Browser data can be cleared or unavailable in private mode. No cross-device sync.</p><div id="sources"></div><p><a href="docs/sources.md">Contact verification notes</a> · <a href="docs/verification.md">Testing &amp; known limitations</a></p><details><summary>Erase saved data</summary><p>This removes this campaign's drafts and action history from this browser.</p><button class="button secondary" id="erase">Erase my drafts and actions</button><div id="eraseConfirm" hidden><p>Erase permanently on this device?</p><button class="button" id="confirmErase">Yes, erase local data</button> <button class="button secondary" id="cancelErase">Cancel</button></div></details></details>
+    <details class="about"><summary>About the campaign, privacy &amp; sources</summary><p>Independent civic advocacy. Not a government website or affiliated with a political party. House Democrats choose their caucus leader separately from the full House's election of a Speaker. Senate Democrats choose their own leader. State and party officials have influence, not a congressional caucus ballot.</p><p>Drafts, optional personal details and self-reported actions stay in this browser. No account, analytics, or backend. Browser data can be cleared or unavailable in private mode. No cross-device sync.</p><div id="sources"></div><p><a href="docs/sources.md">Contact verification notes</a> · <a href="docs/verification.md">Testing &amp; known limitations</a></p><details><summary>Erase saved data</summary><p>This removes this campaign's personal details, drafts and action history, including saved inactive recipients, from this browser.</p><button class="button secondary" id="erase">Erase my drafts and actions</button><div id="eraseConfirm" hidden><p>Erase permanently on this device?</p><button class="button" id="confirmErase">Yes, erase local data</button> <button class="button secondary" id="cancelErase">Cancel</button></div></details></details>
   </main>
   <footer class="wrap"><div class="footer-mark" aria-hidden="true">DEM RESET<span>Different leadership. Same fight.</span></div><a id="forkLink" href="https://github.com/ohnoai/demreset">Want this for your state? Fork it.</a><p>Independent civic action · <a href="LICENSE">MIT licensed</a> · <a href="README.md">Adapt this project</a></p></footer>
   <script src="data.js"></script><script src="campaign.js"></script><script src="model.js"></script><script src="app.js"></script><script src="presentation.js"></script>

@@ -78,7 +78,11 @@ test('version switching keeps imported full text and completion independent', as
 
 test('verified live limits match newline conventions without modifying drafts', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#official').selectOption('baumgartner');
+  await page.route('**/data.js', async route => {
+    const response = await route.fetch();
+    await route.fulfill({ response, body: await response.text() + "\nwindow.CAMPAIGN.officials.find(o => o.id === 'murray').form = { message: { status: 'verified', limit: 2000, newlines: 'crlf' } };" });
+  });
+  await page.reload();
   await page.locator('#message').fill('a\nb😀');
   await expect(page.locator('#messageCount')).toHaveText('6 / 2,000 characters');
   await page.locator('#official').selectOption('jayapal');

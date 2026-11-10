@@ -30,10 +30,10 @@ window.CAMPAIGN = {
    perez:{message:{status:'user-reported',limit:2000,date:'2026-11-10',source:'https://gluesenkampperez.house.gov/contact',evidence:'Firsthand user report in PR #5 review follow-up; not independently verified.'},note:'User-reported 2,000-character message threshold, not independently verified. Full-address district check; Pacific County address problems: call the office.'},
    newhouse:{note:'USPS-recognized address check before the message. Downstream fields and limits unverified.'},
    baumgartner:{subject:{status:'verified',control:'category',help:'Select an issue on the official contact form. There is no free-text subject box; your subject drafts stay saved here.'},message:{status:'verified',limit:2000,newlines:'crlf',date:'2026-11-10',source:'https://baumgartner.house.gov/contact/email-me/'},note:'Verified message cap: 2,000, counting line breaks as two. Choose an issue; no separate subject box was displayed.'},
-   randall:{note:'USPS-recognized address check before the message. Downstream fields and limits unverified.'},
+   randall:{message:{status:'user-reported',limit:2000,date:'2026-11-10',source:'https://randall.house.gov/contact',evidence:'User-confirmed message threshold; not independently verified.'},note:'User-confirmed 2,000-character message threshold, not independently verified. USPS-recognized address check.'},
    jayapal:{message:{status:'verified',limit:2000,date:'2026-11-10',source:'https://jayapal.house.gov/contact/'},subject:{status:'verified',limit:400,date:'2026-11-10',source:'https://jayapal.house.gov/contact/'},note:'Verified message cap: 2,000; subject: 400. Address, phone and topic required. Email link also has a ZIP check.'},
    schrier:{note:'USPS-recognized address check before the message. Downstream fields and limits unverified.'},
-   smith:{note:'Four-page form; identity required on page one, with a CAPTCHA notice. Later fields and limits unverified.'},
+   smith:{message:{status:'user-reported',limit:2000,date:'2026-11-10',source:'https://adamsmith.house.gov/contact',evidence:'User-confirmed message threshold; not independently verified.'},note:'User-confirmed 2,000-character message threshold, not independently verified. Four-page form with identity and CAPTCHA notice.'},
    strickland:{subject:{status:'verified',control:'absent',help:'No separate subject field was observed on the official form. Your subject drafts stay saved here.'},note:'Address, email, phone, phone type and response preference required. No subject box displayed; message limit unverified.'},
    conrad:{note:'Party contact page was inaccessible behind a security check. Fields and limits unverified; phone is an alternative.'},
    ferguson:{subject:{status:'verified',control:'category',help:'Select a subject category on the official contact form instead of pasting a subject. Your subject drafts stay saved here.'},note:'Subject is a category dropdown, not a text box. Address, email and phone required; message limit unverified. Correspondence may be publicly disclosed.'}
@@ -50,4 +50,12 @@ window.CAMPAIGN = {
  {name:'WA Secretary of State - official geographic district maps',url:'https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps'}
  ]
 };
-for (const official of window.CAMPAIGN.officials) official.form = window.CAMPAIGN.forms[official.id];
+for (const official of window.CAMPAIGN.officials) {
+  official.active = official.party === 'Democratic';
+  official.form = window.CAMPAIGN.forms[official.id];
+}
+// User observations do not establish unlimited fields or replace frontend evidence.
+for (const id of ['delbene', 'schrier', 'strickland', 'conrad', 'ferguson']) {
+  window.CAMPAIGN.forms[id].message = { status: 'user-reported', observation: 'no-limit-observed', date: '2026-11-10' };
+  window.CAMPAIGN.forms[id].note += ' No message limit observed during manual user testing; not verified unlimited.';
+}
