@@ -2,15 +2,15 @@
 
 ## Rendered character budgets
 
-Counts include the actual greeting, blank lines, `Sincerely,`, and name/location placeholders, with every line break counted as CRLF (two UTF-16 units). Subjects are separate. These are unpersonalized defaults, not caps on user edits. The browser tests render all twelve active recipients through `ActionModel.draft`, not just the source bodies.
+Counts include the actual greeting, blank lines, `Thank you,`, and name/location placeholders, with every line break counted as CRLF (two UTF-16 units). Subjects are separate. These are unpersonalized defaults, not caps on user edits. The browser tests render all twelve active recipients through `ActionModel.draft`, not just the source bodies.
 
 | Category | Longest actual greeting | Full | Concise | Remaining before 2,000, full |
 |---|---|---:|---:|---:|
-| Senate Democrats | Dear Senator Cantwell, | 1,544 | 758 | 456 |
-| House Democrats | Dear Representative Gluesenkamp Perez, | 1,564 | 779 | 436 |
-| Washington Democratic leadership | Dear Governor Ferguson, | 1,605 | 824 | 395 |
+| Senate Democrats | Dear Senator Cantwell, | 1,569 | 875 | 431 |
+| House Democrats | Dear Representative Gluesenkamp Perez, | 1,587 | 880 | 413 |
+| Washington Democratic leadership | Dear Governor Ferguson, | 1,594 | 891 | 406 |
 
-Every full default is between 1,500 and 1,700 CRLF units; every concise default is between 700 and 900. Across actual greetings, full/concise ranges are Senate 1,542-1,544 / 756-758, House 1,552-1,564 / 767-779, and state/party 1,600-1,605 / 819-824. Every full default leaves at least 395 characters before 2,000. Personal details and user edits can increase those counts. Recipient counters retain their observed counting conventions, with verified frontend limits distinct from user-reported advisory thresholds. Nothing truncates typed or copied text. Dated election evidence and contact-report provenance are in [editorial verification](editorial-verification.md).
+Every full default is between 1,500 and 1,700 CRLF units; every concise default is between 700 and 900. Across actual greetings, full/concise ranges are Senate 1,567-1,569 / 873-875, House 1,575-1,587 / 868-880, and state/party 1,589-1,594 / 886-891. Every full default leaves at least 406 characters before 2,000. Personal details and user edits can increase those counts. Recipient counters retain their observed counting conventions, with verified frontend limits distinct from user-reported advisory thresholds. Nothing truncates typed or copied text. Dated election evidence and contact-report provenance are in [editorial verification](editorial-verification.md).
 
 ## Preservation evidence
 
