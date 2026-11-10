@@ -1,8 +1,102 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#12121a"><meta name="description" content="Washington-focused civic action tool for the 2026 Democratic congressional leadership elections. Contact, call, share, and keep your drafts."><title>New Leadership Now - Washington</title><style>
-:root{color-scheme:dark;--bg:#101018;--panel:#1d1d29;--edge:#353544;--text:#f6f2e9;--muted:#bdbbc7;--red:#ff6b63;--mint:#a5e2c3}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}a{color:inherit}button,input,textarea,select{font:inherit}button{cursor:pointer}.wrap{max-width:1200px;padding:0 20px;margin:auto}.top{border-bottom:1px solid var(--edge)}.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:17px;padding-bottom:17px}.brand{font-size:19px;font-weight:900;letter-spacing:-.04em}.brand span,.accent{color:var(--red)}.tag{font-size:12px;border:1px solid var(--edge);border-radius:40px;padding:6px 10px;color:var(--muted)}.hero{padding:60px 0 25px}.kicker{font-size:12px;letter-spacing:.17em;font-weight:850;text-transform:uppercase;color:var(--red)}h1{font-size:clamp(42px,7vw,88px);letter-spacing:-.075em;line-height:1;margin:15px 0 20px;max-width:1000px}h1 span{color:var(--red)}.lead{font-size:19px;color:#ded8d4;max-width:800px}.small{font-size:13px;color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;margin:20px 0 65px}.stack{display:grid;gap:18px;align-content:start}.card{border:1px solid var(--edge);background:var(--panel);border-radius:16px;padding:24px;min-width:0}.step{color:var(--red);font-size:12px;text-transform:uppercase;font-weight:850;letter-spacing:.14em}h2{letter-spacing:-.04em;line-height:1.15;font-size:25px;margin:9px 0 12px}h3{font-size:17px;margin:15px 0 5px}.muted{color:var(--muted)}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.btn{border:0;border-radius:9px;background:var(--red);color:#221312;padding:11px 14px;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:43px}.btn.secondary{background:#303143;color:white;border:1px solid #515263}.btn.ghost{background:transparent;color:var(--text);border:1px solid #5b5968}.btn:focus-visible,.tab:focus-visible{outline:3px solid white;outline-offset:2px}.tabs{display:flex;flex-wrap:wrap;gap:8px}.tab{background:#292b3a;border:1px solid #4d4c5e;color:white;border-radius:9px;padding:11px 14px}.tab[aria-selected=true]{background:#f3eadd;color:#1d1b1a;font-weight:850}label{display:block;color:var(--muted);font-size:13px;font-weight:700;margin:15px 0 6px}input:not([type=checkbox]),textarea,select{background:#11121c;color:var(--text);width:100%;border-radius:9px;border:1px solid #545365;padding:12px}textarea{min-height:230px;resize:vertical}.short{min-height:126px}input:focus,select:focus,textarea:focus{outline:2px solid var(--red)}.tip{padding:13px 15px;background:#2b2831;border-left:3px solid var(--red);border-radius:5px;font-size:14px}.note{font-size:13px;color:var(--muted)}.status{font-size:13px;color:var(--mint);min-height:20px}.row{display:flex;align-items:center;justify-content:space-between;gap:15px}.person{padding:16px;border:1px solid var(--edge);border-radius:12px;margin-top:12px}.person h3{margin:0;font-size:18px}.person .role{font-size:13px;color:var(--muted)}.person .buttons{margin-top:9px}.person .btn{font-size:13px;min-height:36px;padding:8px 11px}.check{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;margin:10px 0}.check input{width:18px;height:18px;accent-color:var(--red)}.pill{border:1px solid #77634c;color:#f6dcb4;border-radius:20px;padding:4px 9px;font-size:11px;font-weight:750;white-space:nowrap}.count{color:var(--mint);font-size:13px}.hidden{display:none!important}.social{white-space:pre-wrap;padding:13px;background:#12131d;border:1px solid var(--edge);border-radius:8px}.divider{border-top:1px solid var(--edge);margin:17px 0}footer{border-top:1px solid var(--edge);padding:32px 0 45px;color:var(--muted)}footer strong{color:var(--text)}@media(max-width:830px){.layout{grid-template-columns:1fr}.hero{padding-top:42px}.card{padding:19px}.tag{display:none}}
-</style></head><body><header class="top"><div class="wrap"><div class="brand">NEW LEADERSHIP<span>.</span> NOW</div><div class="tag">WASHINGTON EDITION · OPEN SOURCE</div></div></header><main class="wrap"><section class="hero"><div class="kicker">Washington · Congressional leadership · 2026</div><h1>Your representatives.<br><span>Your voice.</span></h1><p class="lead">Washington Democrats have a say in choosing congressional party leaders. Find out who can vote, contact their offices, make a call, and share your position-without losing a single word of your message.</p><p class="small">House Democratic leadership elections expected November 18–19, 2026 · Senate Democratic leadership election expected in December. Confirm dates as they develop.</p></section><div class="layout"><div class="stack">
-<section class="card" id="write"><div class="step">01 · Write once</div><h2>A message that stays yours.</h2><p class="muted">Pick Senate or House. Edit the subject and letter. Your changes are saved on your device. Selecting another official won't erase them.</p><div class="tabs"><button id="senateTab" class="tab" aria-selected="true">Senate · Schumer</button><button id="houseTab" class="tab" aria-selected="false">House · Jeffries</button></div><label for="subject">Subject</label><input id="subject" maxlength="150"><label for="message">Message</label><textarea id="message" spellcheck="true"></textarea><div class="row"><span id="characters" class="note"></span><span id="saveStatus" class="status" role="status"></span></div><div class="buttons"><button id="copyMessage" class="btn">Copy message</button><button id="copySubject" class="btn secondary">Copy subject</button><button id="resetDraft" class="btn ghost">Reset this draft</button></div><p class="tip">Most congressional contact forms cannot be safely prefilled by other websites. Copy here, then paste into the official form in a separate tab. Your draft remains here.</p></section>
-<section class="card" id="people"><div class="step">02 · The voters</div><h2>Who actually chooses leadership?</h2><p class="muted">Both Washington senators vote in their Senate Democratic caucus election. Washington's eight Democratic House members vote in their House caucus election. House office forms may require that you live in the member's district.</p><label for="filter">Show</label><select id="filter"><option value="all">All congressional Democrats</option><option value="senate">Senators only</option><option value="house">House members only</option></select><label for="district">Your House district (optional)</label><select id="district"><option value="">Select district to highlight your own representative</option><option value="WA-01">WA-01</option><option value="WA-02">WA-02</option><option value="WA-03">WA-03</option><option value="WA-04">WA-04</option><option value="WA-05">WA-05</option><option value="WA-06">WA-06</option><option value="WA-07">WA-07</option><option value="WA-08">WA-08</option><option value="WA-09">WA-09</option><option value="WA-10">WA-10</option></select><p class="note">Don't know your district? <a href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noopener noreferrer">Use the official House finder</a>. A ZIP code isn't always enough to determine a district.</p><div id="voters"></div></section>
-<section class="card" id="influence"><div class="step">03 · Beyond the vote</div><h2>The rest of the circus.</h2><p class="muted">The state party and governor cannot cast congressional leadership votes. You can still ask them to address the issue publicly or communicate constituent concerns. Their official offices may limit responses to matters within their jurisdiction.</p><div id="influencers"></div></section>
-<section class="card" id="social"><div class="step">04 · Make some noise</div><h2>Calls, posts, and sharing.</h2><p class="muted">Phone calls let you ask for a position directly. Social posts can publicly request an answer. Everything is editable and reviewed by you before posting.</p><label for="callScript">Phone script</label><textarea id="callScript" class="short"></textarea><div class="buttons"><button id="copyCall" class="btn secondary">Copy call script</button><a class="btn ghost" href="tel:+12022243121">Call Capitol switchboard</a></div><label for="socialText">Social post</label><textarea id="socialText" class="short"></textarea><div class="buttons"><button id="copySocial" class="btn">Copy post</button><button id="postX" class="btn secondary">Open X composer</button><button id="share" class="btn ghost">Share this website</button></div><p class="note">No automatic posts, false participation counters, or fake delivery confirmations. Please contact offices respectfully, using your own voice.</p></section>
-</div><aside class="stack"><section class="card"><div class="step">Your progress</div><h2>No vanishing drafts.</h2><p class="muted">Track which offices you've contacted; your activity stays in this browser.</p><div id="progress"></div><p id="progressCount" class="count"></p><div class="divider"></div><button id="wipe" class="btn ghost">Erase my local data</button></section><section class="card"><div class="step">Important</div><h2>Be precise about the vote.</h2><p>The House Democratic caucus chooses its party leader; the full House separately elects the Speaker. Senate Democrats choose their own leader internally. State officials have no ballot in either election.</p><p class="note">Roster reflects sitting Washington congressional Democrats as of November 9, 2026. Incoming membership and election details should be rechecked before launch.</p></section><section class="card"><div class="step">Verify</div><h2>Official sources</h2><div id="sources"></div><p class="note">This is independent civic advocacy, not a government website. Opening a contact form is not the same as submitting it.</p></section></aside></div></main><footer><div class="wrap"><strong>Want this for your state? Fork it.</strong><p>MIT licensed · Edit <code>data.js</code> for your delegation · No registration, analytics, or backend required.</p><p class="small">Independent project · Not affiliated with Congress or the Washington State Democratic Party · <a href="LICENSE">View license</a> · <a href="README.md">Read the setup guide</a></p></div></footer><script src="data.js"></script><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#191a17">
+  <meta name="description" content="Demand new Democratic congressional leadership. Contact your Washington officials, make a call, and track your actions privately.">
+  <title>DEM RESET · Washington</title>
+  <link rel="preload" href="assets/barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="assets/evergreen.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#action">Skip to action</a>
+  <header class="masthead">
+    <div class="header-inner">
+      <div class="identity"><a href="#action" class="brand">DEM<span> RESET</span></a><span class="edition-mark"><img src="assets/evergreen.svg" width="20" height="20" alt=""><span id="edition">WASHINGTON</span></span></div>
+      <a href="#completion" class="progress-link" aria-label="View your action progress"><span id="progressText">0 actions</span><span class="progress-track"><span id="progressBar"></span></span></a>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="headline">
+      <p class="eyebrow" id="heroKicker">WASHINGTON / INDEPENDENT &amp; UNCOMPROMISING</p>
+      <h1 id="headline">DEMOCRATS NEED A RESET.</h1>
+      <div class="hero-bottom">
+        <p class="dek">Same voters.<br><em>Different leadership.</em></p>
+        <div class="hero-argument"><p id="intro">Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.</p><a class="start-action" href="#action">Demand new leadership <span aria-hidden="true">↓</span></a><p class="hero-note">Your voice. Their vote. Start with one office.</p></div>
+      </div>
+    </section>
+    <noscript><p class="notice">JavaScript is needed to edit and save letters. You can still <a href="https://app.leg.wa.gov/DistrictFinder/">find your district</a> and contact Congress through its official websites.</p></noscript>
+    <section class="workspace" id="action" tabindex="-1" aria-label="Contact an official">
+      <div class="action-intro"><p class="eyebrow">THE ASK IS SIMPLE. MAKE IT HEARD.</p><h2>Put your voice behind the reset.</h2><p>Choose an official. Make your case.</p></div>
+      <aside class="chooser">
+        <p class="eyebrow">START WITH YOUR DELEGATION</p>
+        <label for="official">Choose an official</label>
+        <select id="official"></select>
+        <details id="districtDetails">
+          <summary>Find my House representative</summary>
+          <p>Use your full address in the official district finder. Choose <strong>Congressional</strong>, then select your district below.</p>
+          <a class="button secondary full" id="districtFinder" href="https://app.leg.wa.gov/DistrictFinder/" target="_blank" rel="noopener noreferrer">Open Washington district finder ↗</a>
+          <p class="note">Uses official geographic boundaries, not a ZIP-code guess. Your address is entered on the state website, not here.</p>
+          <label for="district">My congressional district</label>
+          <select id="district"><option value="">Choose district</option></select>
+          <a id="districtMaps" href="https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps" target="_blank" rel="noopener noreferrer">Official district maps ↗</a>
+          <p class="note">State finder not working? <a id="houseFinder" href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noopener noreferrer">Use the official House finder ↗</a>. A ZIP can span districts; use its full-address follow-up if offered.</p>
+        </details>
+        <div class="recipient">
+          <span class="badge" id="voteBadge"></span>
+          <h2 id="officialName"></h2>
+          <p id="officialRole" class="note"></p>
+          <p id="voteDescription"></p>
+        </div>
+        <details class="shared">
+          <summary>Shared message</summary>
+          <p class="note">Your master draft follows every official. Editing a recipient's message creates a personal version; it will not change this master.</p>
+          <label for="sharedSubject">Shared subject</label>
+          <input id="sharedSubject">
+          <label for="sharedMessage">Shared priorities</label>
+          <textarea id="sharedMessage" rows="10"></textarea>
+        </details>
+      </aside>
+      <div class="editor">
+        <div class="editor-heading"><p class="eyebrow">YOUR WORDS. YOUR CALL.</p><span id="saveStatus" class="note" role="status" aria-live="polite"></span></div>
+        <label for="channel">How will you take action?</label>
+        <select id="channel"><option value="letter">Write a letter</option><option value="call">Make a call</option><option value="social">Share a post</option></select>
+        <div id="recipientReview" class="notice" hidden>
+          <p id="reviewExplanation"></p>
+          <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
+        </div>
+        <section id="letterPanel" aria-label="Letter editor">
+          <div class="label-row"><label for="subject">Subject</label><button class="text-button" id="copySubject">Copy subject</button></div>
+          <input id="subject">
+          <div class="label-row"><label for="message">Message</label><span id="draftKind" class="note"></span></div>
+          <textarea id="message" rows="13" spellcheck="true" aria-describedby="draftHelp"></textarea>
+          <button type="button" id="expandLetter" class="text-button expand-letter" aria-expanded="false" aria-controls="message">Read the full letter ↓</button>
+          <div class="label-row"><span class="note" id="draftHelp">Replace the name and location placeholders before sending.</span><button id="useShared" class="text-button" hidden>Use shared draft</button></div>
+          <div class="action-row"><button class="button" id="copyMessage">Copy message</button><a class="button secondary" id="contactLink" target="_blank" rel="noopener noreferrer">Open official contact page ↗</a></div>
+          <p class="note" id="contactHelp">Copy, open the official form, paste, and submit there. Nothing is sent from this site.</p>
+        </section>
+        <section id="callPanel" hidden aria-label="Phone action">
+          <label for="callScript">Call script</label><textarea id="callScript" rows="7"></textarea>
+          <div class="action-row"><a class="button" id="phoneLink"></a><button class="button secondary" id="copyCall">Copy call script</button></div>
+          <p id="phoneNote" class="note"></p>
+        </section>
+        <section id="socialPanel" hidden aria-label="Social action">
+          <label for="socialText">Social post</label><textarea id="socialText" rows="6"></textarea>
+          <div class="action-row"><button class="button" id="sharePost">Share post</button><button class="button secondary" id="copySocial">Copy post</button><a class="button secondary" id="socialProfile" target="_blank" rel="noopener noreferrer">Official social profile ↗</a></div>
+          <p class="note">Review your post in your chosen app. Nothing is published automatically.</p>
+        </section>
+        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+        <div class="completion" id="completion">
+          <div><p class="eyebrow">KEEP THE PRESSURE ON</p><label class="check"><input type="checkbox" id="completed"> I completed this action</label><p class="note">Self-reported, for this official and channel.</p></div>
+          <button class="button" id="nextOfficial" aria-label="Next official">Next official →</button>
+        </div>
+      </div>
+    </section>
+    <details class="about"><summary>About the campaign, privacy &amp; sources</summary><p>Independent civic advocacy. Not a government website or affiliated with a political party. House Democrats choose their caucus leader separately from the full House's election of a Speaker. Senate Democrats choose their own leader. State and party officials have influence, not a congressional caucus ballot.</p><p>Drafts and self-reported actions stay in this browser. No account, analytics, or backend. Browser data can be cleared or unavailable in private mode. No cross-device sync.</p><div id="sources"></div><p><a href="docs/sources.md">Contact verification notes</a> · <a href="docs/verification.md">Testing &amp; known limitations</a></p><details><summary>Erase saved data</summary><p>This removes this campaign's drafts and action history from this browser.</p><button class="button secondary" id="erase">Erase my drafts and actions</button><div id="eraseConfirm" hidden><p>Erase permanently on this device?</p><button class="button" id="confirmErase">Yes, erase local data</button> <button class="button secondary" id="cancelErase">Cancel</button></div></details></details>
+  </main>
+  <footer class="wrap"><div class="footer-mark" aria-hidden="true">DEM RESET<span>Different leadership. Same fight.</span></div><a id="forkLink" href="https://github.com/ohnoai/dem-new-leadership-wa">Want this for your state? Fork it.</a><p>Independent civic action · <a href="LICENSE">MIT licensed</a> · <a href="README.md">Adapt this project</a></p></footer>
+  <script src="data.js"></script><script src="campaign.js"></script><script src="model.js"></script><script src="app.js"></script><script src="presentation.js"></script>
+</body>
+</html>
