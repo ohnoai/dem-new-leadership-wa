@@ -1,4 +1,15 @@
 const { test, expect } = require('@playwright/test');
+test('approved campaign copy has a prominent leadership subheading and current repository links', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.dek')).toHaveText('New majority.New leadership.');
+  const intro = page.getByRole('heading', { level: 2, name: /Replace Chuck Schumer and Hakeem Jeffries/ });
+  await expect(intro).toBeVisible();
+  expect(await intro.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(24);
+  expect(await intro.evaluate(el => Number(getComputedStyle(el).fontWeight))).toBeGreaterThanOrEqual(700);
+  await expect(page.locator('#forkLink')).toHaveAttribute('href', 'https://github.com/ohnoai/demreset');
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://demreset.com/assets/social-preview.png');
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /New majority\. New leadership\./);
+});
 test('DEM RESET hero leads into an accessible spacious action workspace', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle('DEM RESET · Washington');
