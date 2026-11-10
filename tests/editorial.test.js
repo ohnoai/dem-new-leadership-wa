@@ -11,9 +11,9 @@ function load() {
   return { content: context.window.CAMPAIGN_CONTENT, officials: context.window.CAMPAIGN.officials.filter(o => o.party === 'Democratic') };
 }
 const subjects = {
-  senate: 'A Democratic majority is not a mandate for Chuck Schumer',
-  house: 'New majority. New leadership. Not Hakeem Jeffries.',
-  influence: 'Silence is a choice. Demand new Democratic leadership.'
+  senate: 'Oppose Chuck Schumer for Democratic leader',
+  house: 'Oppose Hakeem Jeffries for Democratic leader',
+  influence: 'Publicly call for new Democratic congressional leadership'
 };
 const greeting = o => o.greeting || `Dear ${o.group === 'senate' ? 'Senator' : 'Representative'} ${o.name.split(' ').at(-1)},`;
 const crlfLength = text => text.replace(/\r?\n/g, '\r\n').length;
@@ -28,18 +28,18 @@ test('category letters meet full and concise CRLF budgets for every active greet
       const letter = source.letters[official.vote || 'influence'];
       assert.equal(letter.subject, subjects[official.vote || 'influence']);
       assert.doesNotMatch(letter.message, /^Dear /);
-      assert.match(letter.message, /Sincerely,\n\n\[Your name\]\n\[Your location\]$/);
+      assert.match(letter.message, /Thank you,\n\n\[Your name\]\n\[Your location\]$/);
       const count = crlfLength(`${greeting(official)}\n\n${letter.message}`);
       assert.ok(count >= minimum && count <= maximum, `${version} ${official.id}: ${count}, expected ${minimum}-${maximum}`);
-      assert.doesNotMatch(letter.message, /\u2014|already control|November|January|2026|2027/i);
+      assert.doesNotMatch(letter.message, /\u2014|seat count|already control|November|January|2026|2027/i);
     }
     assert.match(source.letters.senate.message, /oppose Chuck Schumer/);
     assert.match(source.letters.house.message, /oppose Hakeem Jeffries/);
     for (const category of ['senate', 'house', 'influence']) {
-      assert.match(source.letters[category].message, /competitive/);
-      assert.match(source.letters[category].message, /public/);
+      assert.match(source.letters[category].message, /A party that demands trust while refusing accountability is not leading/);
+      assert.match(source.letters[category].message, /AIPAC/);
     }
-    assert.match(source.letters.influence.message, /I know you do not cast a ballot in either caucus election/);
+    assert.match(source.letters.influence.message, /You (?:do not|don't) vote in either (?:congressional )?caucus/);
     assert.match(source.letters.influence.message, /Chuck Schumer/);
     assert.match(source.letters.influence.message, /Hakeem Jeffries/);
   }
@@ -68,13 +68,16 @@ test('category calls demand a public position and posts contain no personal iden
   }
   assert.match(content.calls.influence, /do not vote in either caucus election/);
 });
-test('full category letters retain the approved forceful lines with personalization headroom', () => {
+test('approved campaign copy retains its argument and personal voice', () => {
   const { content, officials } = load();
   for (const category of ['senate', 'house', 'influence']) {
     for (const source of [content, content.concise]) {
-      assert.ok(source.letters[category].message.includes('We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals.'));
-      assert.ok(source.letters[category].message.includes('The voters delivered a new majority. They deserve more than the same establishment with a better seat count.'));
+      const body = source.letters[category].message;
+      assert.match(body, /A party that demands trust while refusing accountability is not leading\. It is protecting its own power\./);
+      assert.match(body, /AIPAC/);
+      assert.doesNotMatch(body, /seat count/i);
     }
+    assert.match(content.concise.letters[category].message, /We voted, volunteered, donated and organized/);
   }
   for (const o of officials) assert.ok(2000 - crlfLength(`${greeting(o)}\n\n${content.letters[o.vote || 'influence'].message}`) >= 300);
 });
