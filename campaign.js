@@ -5,57 +5,73 @@ window.CAMPAIGN_CONTENT = {
   intro: "Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.",
   letters: {
     senate: {
-      subject: 'A Democratic majority is not a mandate for Chuck Schumer',
-      message: `Democrats have won a new majority. That victory belongs to voters, organizers and candidates, not Chuck Schumer. It is not a mandate to keep him. I urge you to oppose Chuck Schumer for Senate Democratic leader and insist on a genuine, competitive replacement contest.
+      subject: "Oppose Chuck Schumer for Democratic leader",
+      message: `I'm writing as your constituent to urge you to oppose Chuck Schumer when Senate Democrats select their leadership for the next Congress.
 
-For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet rent and healthcare remain unaffordable while wealthy donors and corporate lobbyists keep their access. We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Promises become negotiable when donors and lobbyists object.
+Democratic leadership has spent years alienating the working-class Americans it claims to represent. Political cowardice and corporate influence have become hallmarks of the party's establishment. Schumer hasn't broken with that culture. He has helped lead it.
 
-Warn us about Republicans, but confront corporate influence inside your own party, too. An election victory creates an obligation to deliver and accept accountability, not a reason to avoid it. We deserve economic security, civil liberties and oversight that serves people. We are not just a voting bloc to mobilize and then set aside.
+Democrats cannot credibly condemn Republican corruption and corporate favoritism while remaining beholden to many of the same wealthy interests. Organizations like AIPAC wield enormous influence over congressional politics. Schumer's relationship with those interests raises serious questions about whose priorities Senate leadership serves.
 
-If you support Schumer, explain what will change. What measurable commitments will you demand, and how will voters judge whether they are met? A competitive process must let credible alternatives make their case in public, rather than treating the result as settled.
+Americans are struggling with housing costs, healthcare, and stagnant wages. They deserve leaders willing to confront these realities, not calculated messaging, fundraising appeals, and televised outrage.
 
-Please make your position public and explain how your choice puts constituents ahead of wealthy interests. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
+Every election is presented as an existential struggle. Yet Democratic leaders refuse to confront the institutions and financial incentives perpetuating the problems they campaign against. Their refusal to acknowledge their own failures is indefensible.
 
-Sincerely,
+A party that demands trust while refusing accountability is not leading. It is protecting its own power.
+
+Oppose Schumer. Support genuine alternative leadership and publicly explain your position.
+
+Please tell me how you intend to vote. Your constituents deserve a direct answer.
+
+Thank you,
 
 [Your name]
 [Your location]`
     },
     house: {
-      subject: 'New majority. New leadership. Not Hakeem Jeffries.',
-      message: `Democrats have won back the House. That victory belongs to voters, organizers and candidates. It is not a vote of confidence in Hakeem Jeffries. I urge you to oppose Hakeem Jeffries for House Democratic leader and support a genuine, competitive contest for new leadership.
+      subject: "Oppose Hakeem Jeffries for Democratic leader",
+      message: `I'm writing as your constituent to urge you to oppose Hakeem Jeffries when House Democrats select their leadership for the next Congress.
 
-For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet rent and healthcare remain unaffordable while wealthy donors and corporate lobbyists keep their access. We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Promises become negotiable when donors and lobbyists object.
+Democratic leadership has spent years alienating working-class Americans. Political cowardice, corporate influence, and an unwillingness to confront entrenched power have become hallmarks of the establishment. Jeffries has done little to distinguish himself from that culture. He has become one of its most prominent defenders.
 
-Warn us about Republicans, but confront corporate influence inside your own party, too. Winning the House creates an obligation to deliver and accept accountability, not a reason to avoid it. We deserve economic security, civil liberties and oversight that serves people. We are not just a voting bloc to mobilize and then set aside.
+Democrats cannot credibly condemn Republican corruption and corporate favoritism while remaining beholden to many of the same wealthy interests. Organizations like AIPAC wield enormous influence over congressional politics, and Jeffries' close alignment with those interests raises serious questions about whose priorities Democratic leadership serves.
 
-If you support Jeffries, explain what will change. What measurable commitments will you demand, and how will voters judge whether they are met? A competitive process must let credible alternatives make their case in public, rather than treating the result as settled.
+Americans are struggling with housing, healthcare, and stagnant wages. They deserve leaders who confront these realities rather than offer messaging, fundraising appeals, and televised outrage.
 
-Please make your position public and explain how your choice puts constituents ahead of wealthy interests. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
+Voters are told every election is an existential struggle, yet Democratic leaders refuse to challenge the institutions and financial incentives behind the problems they campaign against.
 
-Sincerely,
+A party that demands trust while refusing accountability is not leading. It is protecting its own power.
+
+Oppose Jeffries. Support genuine alternative leadership and publicly explain your position.
+
+Please tell me how you intend to vote. Your constituents deserve a direct answer.
+
+Thank you,
 
 [Your name]
 [Your location]`
     },
     influence: {
-      subject: 'Silence is a choice. Demand new Democratic leadership.',
-      message: `Democrats have won congressional majorities. That creates an opportunity and a responsibility to change leadership, not protect it. Please publicly advocate for replacing both Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders.
+      subject: "Publicly call for new Democratic congressional leadership",
+      message: `I'm writing to ask you to publicly call for new Democratic congressional leadership, replacing both Chuck Schumer and Hakeem Jeffries.
 
-I know you do not cast a ballot in either caucus election. Your public position and relationships still matter. Silence is a choice. Use your influence to urge Washington's congressional Democrats to hold genuine, competitive leadership elections and set public standards for the leaders they choose.
+You don't vote in either congressional caucus. But you are a prominent Washington Democrat, and silence is a political choice. Speak plainly to our delegation. Ask them to oppose the current leadership and support genuine alternatives.
 
-For years, we have been told democracy is on the line. We voted, volunteered, donated and organized. Yet housing, healthcare and basic necessities remain out of reach while wealthy donors and corporate lobbyists keep their access. We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Promises become negotiable when powerful interests object.
+Democratic leadership has spent years alienating the working-class Americans it claims to represent. Political cowardice, corporate influence, and an unwillingness to confront entrenched power have become hallmarks of the party's establishment. Schumer and Jeffries have helped preserve that culture, not challenge it.
 
-Warning about Republicans is not enough. We need Democrats willing to confront those interests inside their own institutions. Election victories create an obligation to deliver economic security, protect civil liberties and conduct oversight for people, not just manage a voting bloc.
+Democrats cannot credibly condemn Republican corruption and corporate favoritism while remaining beholden to many of the same wealthy interests. Organizations like AIPAC wield enormous influence over congressional politics. The party's willingness to accommodate that influence raises serious questions about who actually has its ear.
 
-Do not ask for unity without accountability. Demand credible alternatives and measurable commitments. Tell us how you will encourage both contests and put constituents ahead of donors. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
+People are struggling with housing, healthcare, wages and an economy structured around the wealthy. They deserve more than fundraising appeals, televised outrage and warnings that the next election will decide everything.
 
-Sincerely,
+A party that demands trust while refusing accountability is not leading. It is protecting its own power.
+
+Will you publicly urge Washington's congressional Democrats to reject Schumer and Jeffries? Will you explain where you stand? Silence is not an answer.
+
+Thank you,
 
 [Your name]
 [Your location]`
     }
-  },
+  }
   shared: {
     subject: 'It is time for new Democratic congressional leadership',
     message: 'Working people need a Democratic Party willing to defend public services, protect civil rights, and challenge the power of wealthy donors and corporate lobbyists. I want leaders who make a clear case for those priorities and organize to deliver on them, not treat accountability as something that can wait until the next election.\n\nA change in leadership must mean more than a new name. I am asking for an open, competitive process, a substantive debate about strategy, and a commitment to listen to constituents throughout the year. Please explain what you will do to help secure that change and make your position public.\n\nThank you,\n[Your name]\n[Your city and ZIP code]'
@@ -68,47 +84,57 @@ Sincerely,
   concise: {
     letters: {
       senate: {
-        subject: 'A Democratic majority is not a mandate for Chuck Schumer',
-        message: `Democrats have won a new majority. The victory belongs to voters, organizers and candidates, not Chuck Schumer. I urge you to oppose Chuck Schumer for Senate Democratic leader and support a genuine, competitive replacement contest.
+        subject: "Oppose Chuck Schumer for Democratic leader",
+        message: `I'm writing as your constituent to urge you to oppose Chuck Schumer for Senate Democratic leader.
 
-We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Confront corporate influence inside your party, not only Republicans. We deserve economic security, civil liberties and oversight.
+We voted, volunteered, donated and organized. Not to hand power back to defenders of the status quo. Political cowardice and corporate influence have alienated working people. AIPAC wields enormous influence, and Schumer's relationship with it deserves scrutiny.
 
-Make your position public. If you support Schumer, explain what changes and what commitments you demand. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
+We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Every election is called existential, yet Democratic leaders refuse to confront the interests behind the problems they campaign against.
 
-Sincerely,
+A party that demands trust while refusing accountability is not leading. It is protecting its own power.
+
+Oppose Schumer. Tell me how you intend to vote. Your constituents deserve an answer.
+
+Thank you,
 
 [Your name]
 [Your location]`
       },
       house: {
-        subject: 'New majority. New leadership. Not Hakeem Jeffries.',
-        message: `Democrats have won back the House. That victory belongs to voters, organizers and candidates, not Hakeem Jeffries. I urge you to oppose Hakeem Jeffries for House Democratic leader and support a genuine, competitive replacement contest.
+        subject: "Oppose Hakeem Jeffries for Democratic leader",
+        message: `I'm writing as your constituent to urge you to oppose Hakeem Jeffries for House Democratic leader.
 
-We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Confront corporate influence inside your party, not only Republicans. We deserve economic security, civil liberties and oversight.
+We voted, volunteered, donated and organized. We did not do that to reward political cowardice and corporate influence. Jeffries has defended the establishment that alienated working people. His alignment with interests like AIPAC raises serious questions about whose priorities he serves.
 
-Make your position public. If you support Jeffries, explain what changes and what commitments you demand. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
+We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Democrats cannot condemn Republican corruption while protecting their own wealthy patrons.
 
-Sincerely,
+A party that demands trust while refusing accountability is not leading. It is protecting its own power.
+
+Oppose Jeffries. Tell me how you intend to vote. Your constituents deserve a direct answer.
+
+Thank you,
 
 [Your name]
 [Your location]`
       },
       influence: {
-        subject: 'Silence is a choice. Demand new Democratic leadership.',
-        message: `Democrats have won congressional majorities. Use this opportunity to publicly advocate for replacing both Chuck Schumer and Hakeem Jeffries.
+        subject: "Publicly call for new Democratic congressional leadership",
+        message: `I'm writing to ask you to publicly advocate for replacing Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders.
 
-I know you do not cast a ballot in either caucus election. Your public position and relationships matter. Silence is a choice. Urge Washington's congressional Democrats to hold competitive leadership elections with measurable standards.
+You do not vote in either caucus. But you have a public platform and influence. Use them. Political cowardice, corporate influence and loyalty to powerful donors have alienated working people. Organizations like AIPAC wield enormous influence while ordinary Americans struggle with rent, healthcare and wages.
 
-We cannot pay rent with speeches about democracy. We cannot afford healthcare with fundraising appeals. Confront powerful interests inside your own institutions, not only Republicans.
+We voted, volunteered, donated and organized. We cannot pay rent with speeches about democracy or afford healthcare with fundraising appeals.
 
-Do not ask for unity without accountability. Make your position public. The voters delivered a new majority. They deserve more than the same establishment with a better seat count.
+A party that demands trust while refusing accountability is not leading. It is protecting its own power.
 
-Sincerely,
+Will you call on Washington's delegation to oppose Schumer and Jeffries? Make your position public. Silence is a choice.
+
+Thank you,
 
 [Your name]
 [Your location]`
       }
-    },
+    }
     shared: {
       subject: 'Support new Democratic congressional leadership',
       message: 'Working people need leaders who defend public services and civil rights and challenge wealthy donors and corporate lobbyists. Support an open, competitive leadership process and explain publicly how you will help secure accountable leadership.\n\nThank you,\n[Your name]\n[Your city and ZIP code]'
