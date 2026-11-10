@@ -126,9 +126,10 @@
     for (const field of ['subject', 'message']) {
       const rule = form[field], value = $(field).value;
       const count = rule?.status === 'verified' && rule.newlines === 'crlf' ? value.replace(/\r?\n/g, '\r\n').length : value.length;
-      const limit = rule?.status === 'verified' && Number.isInteger(rule.limit) && rule.limit > 0 ? rule.limit : null;
-      $(field + 'Count').textContent = `${count.toLocaleString('en-US')}${limit ? ' / ' + limit.toLocaleString('en-US') : ''} characters`;
-      if (limit && count > limit) warnings.push(`${field === 'message' ? 'Message' : 'Subject'} exceeds the verified form limit by ${(count - limit).toLocaleString('en-US')} characters.`);
+      const reported = rule?.status === 'user-reported';
+      const limit = (rule?.status === 'verified' || reported) && Number.isInteger(rule.limit) && rule.limit > 0 ? rule.limit : null;
+      $(field + 'Count').textContent = `${count.toLocaleString('en-US')}${limit ? ' / ' + limit.toLocaleString('en-US') : ''} characters${limit && reported ? ' (user-reported advisory)' : ''}`;
+      if (limit && count > limit) warnings.push(`${field === 'message' ? 'Message' : 'Subject'} exceeds the ${reported ? 'user-reported advisory threshold' : 'verified form limit'} by ${(count - limit).toLocaleString('en-US')} characters.${reported ? ' This threshold is not independently verified; counting on the official form may differ.' : ''}`);
     }
     $('limitWarning').hidden = !warnings.length;
     $('limitWarning').textContent = warnings.length ? warnings.join(' ') + ' Edit this version or choose the concise alternative. Nothing has been shortened.' : '';
@@ -170,6 +171,11 @@
     $('contactLink').href = o.website;
     $('contactHelp').textContent = 'Copy, open the official form, paste, and submit there. Nothing is sent from this site.' + (o.group === 'house' ? ' House offices generally accept messages only from their own constituents.' : '');
     $('formCompatibility').textContent = o.form?.note || 'Form limits are unverified. Check the official page before sending; no limit is assumed here.';
+    const subject = o.form?.subject;
+    const noTextSubject = subject?.status === 'verified' && ['absent', 'category'].includes(subject.control);
+    $('copySubject').hidden = noTextSubject;
+    $('subjectHelp').hidden = !noTextSubject;
+    $('subjectHelp').textContent = noTextSubject ? subject.help : '';
     $('phoneLink').hidden = !o.phone;
     if (o.phone) { $('phoneLink').href = 'tel:+1' + o.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, ''); $('phoneLink').textContent = 'Call ' + o.phone; }
     $('phoneNote').textContent = o.phone ? 'Calls open your phone app. You decide whether to place the call.' : 'No verified direct phone number is listed. Use the official contact page instead.';

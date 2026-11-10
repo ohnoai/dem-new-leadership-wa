@@ -6,6 +6,7 @@ Audit date: **2026-11-10**. Coverage: **14 unique recipients**, programmatically
 
 - **Verified** means observed page text, DOM attributes, or specifically described browser behavior. It does not mean successful delivery.
 - **Unverified** means the evidence does not establish the behavior or effective limit. **Inaccessible** means the form itself could not be reached.
+- **User-reported** identifies firsthand evidence supplied by the repository owner, not independent browser verification. Report receipt dates are not claimed as dates of the owner's form visit.
 - No messages, identity details, addresses, ZIP checks, wizard steps, or CAPTCHA challenges were submitted. **All server acceptance and server-side address verification remain untested.**
 - Only Murray and Cantwell have confirmed trusted desktop clipboard paste with exact textarea readback. Other visible forms have synthetic paste probes only; an uncanceled synthetic event does not prove native clipboard paste works.
 - An absent `maxlength` is not evidence of unlimited length. A missing separate subject control is different from a subject control with an unknown cap. Required fields below describe frontend markers or labels, not tested server requirements. Separate newsletter forms are excluded.
@@ -55,6 +56,8 @@ Audit date: **2026-11-10**. Coverage: **14 unique recipients**, programmatically
 **Checked: 2026-11-10.** Address gate and already-present hidden form configuration inspected without revealing or bypassing the gate.[7]
 
 - **Limits: unverified.** Hidden message/subject DOM has no `maxlength`; public message configuration records `maxLength: null`. Neither establishes an effective cap. Counter behavior not reached.
+- **Message threshold: user-reported, 2,000 characters.** On 2026-11-10 the repository owner reported personally encountering this limit on the official contact form.[7] Source of the observation: PR #5 review-follow-up instructions, not the DOM audit. Independent verification remains blocked by the address gate; newline/Unicode counting and server enforcement remain unverified. DEM RESET displays a clearly labeled advisory counter and over-threshold warning without limiting input, copying or navigation.
+- **Draft decision:** The owner clarified that the existing concise copy should stay unchanged, safely below 2,000, rather than adding prose to reach 1,800-1,900. Its default message is 495 UTF-16 units including greeting, paragraph breaks and placeholders; the full default is 976. Both remain editable and independently saved.
 - **Required fields: verified in DOM/configuration.** District address, topic, subject line, message, prefix, first/last name, email. Downstream controls were hidden; phone and phone type were optional. This does not verify the completed workflow.
 - **Address gate: verified.** “House rules say we can only serve our own district's residents.” Full-address autocomplete is required. Actual verification untested.
 - **Paste: unverified.** No visible message field to probe. **Obstacles: verified** district gate and a notice directing Pacific County residents with address-verification trouble to call (360) 695-6292.

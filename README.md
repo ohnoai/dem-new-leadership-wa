@@ -24,7 +24,7 @@ Open http://127.0.0.1:4173. The preview server binds only to localhost. Opening 
 
 The Shared message disclosure edits the master for the selected letter version and identifies which master is active. The Letter version picker offers full and concise alternatives. Each version keeps its own shared and recipient-specific subject and message edits across switches and refreshes; switching never shortens or replaces the other version. Use shared draft removes only the current recipient's active-version letter/subject overrides, not the other version, calls, social posts, or completion. Read the full letter expands the entire message without truncation; the compact editor remains available when you want less page scrolling.
 
-Subject and message counters are always shown in the letter editor. Recipient-specific warnings use only verified form limits; they never block editing, copying or opening a form, and never truncate text. Unknown limits are not treated as unlimited. See the dated [contact-form compatibility audit](docs/contact-forms.md) for required fields, address gates, evidence and inaccessible forms.
+Subject and message counters are always shown in the letter editor. Recipient-specific warnings distinguish verified form limits from explicitly labeled user-reported advisories; they never block editing, copying or opening a form, and never truncate text. Unknown limits are not treated as unlimited. Copy subject is hidden only where the audit confirms no free-text subject control; subject drafts remain editable and saved. Issue/category selection happens on the official form. See the dated [contact-form compatibility audit](docs/contact-forms.md) for required fields, address gates, evidence and inaccessible forms.
 
 ## State and privacy
 

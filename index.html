@@ -73,8 +73,9 @@
           <select id="letterVersion" aria-describedby="versionHelp"><option value="full">Full substantive letter</option><option value="concise">Concise alternative</option></select>
           <p class="note" id="versionHelp">Each version keeps its own edits for this official. Switching never replaces the other version.</p>
           <div class="label-row"><label for="subject">Subject</label><button class="text-button" id="copySubject">Copy subject</button></div>
-          <input id="subject" aria-describedby="subjectCount limitWarning">
+          <input id="subject" aria-describedby="subjectCount limitWarning subjectHelp">
           <p id="subjectCount" class="note character-count"></p>
+          <p id="subjectHelp" class="note" hidden></p>
           <div class="label-row"><label for="message">Message</label><span id="draftKind" class="note"></span></div>
           <textarea id="message" rows="13" spellcheck="true" aria-describedby="draftHelp messageCount limitWarning"></textarea>
           <p id="messageCount" class="note character-count"></p>
