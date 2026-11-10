@@ -19,3 +19,6 @@ tmp/
 .squelch.json
 .veans.yml
 AGENTS.md
+
+# local decision records
+docs/decisions/
