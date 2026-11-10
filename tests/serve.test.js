@@ -34,4 +34,10 @@ test('preview returns 400 for malformed URL escapes and keeps serving', { timeou
     }).on('error', reject);
   });
   assert.equal(fontType, 'font/woff2');
+  const imageType = await new Promise((resolve, reject) => {
+    http.get({ hostname: '127.0.0.1', port, path: '/assets/social-preview.png' }, res => {
+      res.resume(); res.on('end', () => resolve(res.headers['content-type']));
+    }).on('error', reject);
+  });
+  assert.equal(imageType, 'image/png');
 });

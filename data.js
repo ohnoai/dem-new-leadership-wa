@@ -2,7 +2,7 @@
 window.CAMPAIGN = {
  state:'Washington', code:'WA', updated:'2026-11-09',
  kicker:'WASHINGTON / INDEPENDENT & UNCOMPROMISING',
- repository:'https://github.com/ohnoai/dem-new-leadership-wa',
+ repository:'https://github.com/ohnoai/demreset',
  districtFinder:'https://app.leg.wa.gov/DistrictFinder/',
  districtMaps:'https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps',
  officials:[
