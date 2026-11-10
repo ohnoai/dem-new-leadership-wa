@@ -16,6 +16,7 @@ The public application is a static site.
 | `tests/` | Node model tests and Playwright browser/accessibility tests |
 | `playwright.config.js` | Mobile and desktop browser test configurations |
 | `docs/sources.md` | Primary-source contact and district research |
+| `docs/contact-forms.md` | Dated browser form compatibility audit, evidence and unknowns |
 | `docs/verification.md` | Executed verification and outstanding checks |
 | `README.md` | Setup and state-forking instructions |
 | `LICENSE` | MIT license |

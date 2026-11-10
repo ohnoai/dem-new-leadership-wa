@@ -52,7 +52,8 @@
         </div>
         <details class="shared">
           <summary>Shared message</summary>
-          <p class="note">Your master draft follows every official. Editing a recipient's message creates a personal version; it will not change this master.</p>
+          <p class="note">The master for your selected letter version follows every official. Personal edits do not change this master or the other version.</p>
+          <p class="note" id="sharedVersion"></p>
           <label for="sharedSubject">Shared subject</label>
           <input id="sharedSubject">
           <label for="sharedMessage">Shared priorities</label>
@@ -68,14 +69,23 @@
           <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
         </div>
         <section id="letterPanel" aria-label="Letter editor">
+          <label for="letterVersion">Letter version</label>
+          <select id="letterVersion" aria-describedby="versionHelp"><option value="full">Full substantive letter</option><option value="concise">Concise alternative</option></select>
+          <p class="note" id="versionHelp">Each version keeps its own edits for this official. Switching never replaces the other version.</p>
           <div class="label-row"><label for="subject">Subject</label><button class="text-button" id="copySubject">Copy subject</button></div>
-          <input id="subject">
+          <input id="subject" aria-describedby="subjectCount limitWarning subjectHelp">
+          <p id="subjectCount" class="note character-count"></p>
+          <p id="subjectHelp" class="note" hidden></p>
           <div class="label-row"><label for="message">Message</label><span id="draftKind" class="note"></span></div>
-          <textarea id="message" rows="13" spellcheck="true" aria-describedby="draftHelp"></textarea>
+          <textarea id="message" rows="13" spellcheck="true" aria-describedby="draftHelp messageCount limitWarning"></textarea>
+          <p id="messageCount" class="note character-count"></p>
+          <p id="limitWarning" class="notice" role="status" hidden></p>
           <button type="button" id="expandLetter" class="text-button expand-letter" aria-expanded="false" aria-controls="message">Read the full letter ↓</button>
           <div class="label-row"><span class="note" id="draftHelp">Replace the name and location placeholders before sending.</span><button id="useShared" class="text-button" hidden>Use shared draft</button></div>
           <div class="action-row"><button class="button" id="copyMessage">Copy message</button><a class="button secondary" id="contactLink" target="_blank" rel="noopener noreferrer">Open official contact page ↗</a></div>
           <p class="note" id="contactHelp">Copy, open the official form, paste, and submit there. Nothing is sent from this site.</p>
+          <p class="note" id="formCompatibility"></p>
+          <a class="note" href="docs/contact-forms.md" target="_blank" rel="noopener noreferrer">Contact-form audit and verification dates ↗</a>
         </section>
         <section id="callPanel" hidden aria-label="Phone action">
           <label for="callScript">Call script</label><textarea id="callScript" rows="7"></textarea>

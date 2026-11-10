@@ -11,3 +11,4 @@
 @media(min-width:800px){.identity{flex-direction:row;align-items:center;gap:18px}.edition-mark{font-size:10px}.edition-mark img{width:20px;height:20px}.header-inner{min-height:76px}.hero h1{font-size:clamp(100px,11.2vw,160px)}.workspace{grid-template-columns:280px minmax(0,1fr);gap:0 64px}.action-intro{border-bottom:1px solid #515447}.action-intro h2{max-width:none;font-size:46px}.chooser{padding-top:28px}.editor{padding-top:28px}.action-intro>p:last-child{white-space:nowrap}#message{height:430px;padding:26px;font-size:17px;line-height:1.75}}
 @media(forced-colors:active){.progress-track,.progress-track>span,.button{border:1px solid CanvasText}}
 @media(max-width:359px){.hero h1{font-size:21vw}}
+.character-count{margin:6px 0 12px;font-variant-numeric:tabular-nums}#letterVersion{width:100%}#limitWarning{border-left:3px solid var(--paper);padding:12px}#formCompatibility{overflow-wrap:anywhere}

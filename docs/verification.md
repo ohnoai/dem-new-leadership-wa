@@ -5,7 +5,7 @@
 Environment: Windows 11, Node.js 24.22.1, Playwright Chromium. No public deployment, calls, form submissions, or social publication were performed.
 
 `npm run check` runs Node state tests and browser tests at 375×812, 430×932, and 1440×1000. The suite verifies:
-Latest completed run: **4 Node tests and 120 Playwright cases passed**. `npm audit` reported zero vulnerabilities, and JavaScript syntax plus whitespace checks passed.
+Latest completed run (2026-11-10, PR #5 review follow-up): **11 Node tests and 147 Playwright cases passed**. `npm audit` reported zero vulnerabilities, and JavaScript syntax plus whitespace checks passed.
 
 - Recipient-first editing, next-official navigation, correct greetings and role-specific requests for every listed official.
 - Shared priorities following recipients; personal letters remaining independent of the master.
@@ -51,7 +51,18 @@ The audit reproduced delayed clipboard rejection selecting a newly chosen recipi
 
 Erase now removes the legacy migration source first, stopping if that fails instead of deleting v3 replacements and reimporting old private text on reload. It emits action removal even when no action record existed, so other open tabs discard pre-erase pending completions rather than restoring them. This requires writable localStorage for the notification; a denied erase reports failure and directs the user to browser settings. Storage deletion across multiple keys is not transactional.
 
+## Contact-form compatibility revision
+
+All 14 listed contact routes were inspected in actual Chromium browser sessions on 2026-11-10, including linked forms, the governor's official embedded form and available DOM requirements. Findings, source URLs, exact field evidence and per-finding verified/unverified/inaccessible labels live in [contact-forms.md](contact-forms.md). No constituent identities, address submissions, message submissions or CAPTCHA bypass were used. Address gates, multi-page identity steps and the party site's security check prevented complete downstream inspection. Missing maxlength attributes are not evidence of unlimited length; server acceptance is untested for every form.
+
+The editor shows subject and message counters, verified recipient caps and explicitly labeled user-reported advisories, with non-destructive over-limit warnings. Baumgartner's observed counter counts line breaks as two UTF-16 units; other counts use textarea UTF-16 length, including two units per emoji. Copy/open remain user-controlled even over the limit. No maxlength is applied in DEM RESET and text is never truncated. Concise and full drafts retain separate recipient overrides in the existing local draft key; completion remains independent. Full campaign defaults and imported full drafts remain intact.
+
+New failing-first regressions cover counter updates, verified-only boundaries, newline counting, 12,000-character retention, full/concise subject and message independence through refresh and recipient switches, exact concise clipboard content, active-version reset, legacy text retention and independent completion. Axe ran on the concise editor as well as the existing full/channel coverage. The complete preexisting regression suite was retained.
+Independent review found two reproducible issues before delivery: shared editing targeted the full master while concise was active, and a version-switch assurance replaced a stale-tab copy/reload warning. Both failed in real browser regressions, then were corrected. Shared fields now edit and identify the selected version's master, and version switches leave save/conflict feedback intact. Subject is associated with the shared over-limit warning for assistive technology. The full suite was rerun after these fixes.
+
 ## Source verification
+
+PR #5 follow-up regressions hide Copy subject only for audited absent/category controls, retain both subject versions across recipient switches and refresh, and leave copying available for unknown-cap or uninspected subjects. Perez's user-reported advisory is tested at 2,000 and 2,001 characters, including exact over-limit clipboard copying, full/concise persistence, unchanged default copy and independent completion. Axe includes the advisory warning state. Local Squelch lock-status reports 1 of 1 fully locked after fast-forwarding the clean local Squelch checkout to the human-merged comment-normalization fix; no rules or protection files changed.
 
 Contact routes, office numbers, published social identities, and district references are documented with primary-source evidence in [sources.md](sources.md). The old Murray `/contact/` link was a 404 and is replaced with the actual message form. Directory and contact-page retrieval is not proof of successful form submission. Published social links are evidence of office identity, not a guarantee of platform access or monitoring.
 
@@ -61,7 +72,7 @@ Contact routes, office numbers, published social identities, and district refere
 2. Perform a manual NVDA or VoiceOver pass. Automated axe checks and keyboard checks are not equivalent to a human screen-reader session. Test browser zoom, large system fonts and OS high-contrast mode manually.
 3. Complete an address-to-congressional-boundary validation in the official state finder. Its live page and map loaded in a browser, and the public Capitol address `416 Sid Snyder Ave SW, Olympia, WA 98504` returned a location and Legislative District 22. Switching to Congressional displayed the ten congressional polygons, but the results panel retained legislative officials; a congressional result was not verified. The app also offers the official House finder as a fallback and links the official map set. No private residential address was entered; this app does not geocode or guess from ZIP codes.
 4. Recheck live congressional and party membership immediately before launch and after the next Congress takes office. No 2026 election outcome or leadership-election date is asserted by this revision.
-5. Manually inspect each live external form in a regular browser for constituency gates, CAPTCHA and current field limits. Do not submit test advocacy to offices. Rate limits and anti-bot responses may prevent automated verification; those are recorded in the source audit.
+5. Complete the unresolved external-form checks in [contact-forms.md](contact-forms.md), particularly downstream address-gated fields, native mobile paste, the party site's security interstitial and server-side limits. Do not submit test advocacy to offices. The dated audit covers observed DOM and safe browser interaction, not successful delivery.
 6. Multi-tab draft edits are conflict-detected, not merged. A blocked stale tab asks the user to copy local edits and reload. Truly simultaneous writes remain subject to localStorage's lack of transactions; use one editing tab at a time.
 7. The new-page reopening test uses the same browser context, not an actual browser-process restart. Physical browser shutdown/reopening remains a manual check. Imported text can only be identified retrospectively when its retained legacy source or provenance marker exists; this is not automatic detection of every incorrectly addressed user-written letter.
 

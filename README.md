@@ -22,7 +22,9 @@ Open http://127.0.0.1:4173. The preview server binds only to localhost. Opening 
 3. Copy the message and subject, then open the official contact page. Paste and submit on that site yourself. Phone links open the dialer; social sharing opens the device share sheet when available, or copies the post.
 4. Mark the action complete yourself and move to the next official.
 
-The Shared message disclosure holds the master subject and substantive priorities used across recipients. Editing a recipient's letter creates a personal override, leaving the master and other officials untouched. Use shared draft removes only that recipient's letter/subject overrides; it does not reset calls, social posts, or completion. Read the full letter expands the entire message without truncation; the compact editor remains available when you want less page scrolling.
+The Shared message disclosure edits the master for the selected letter version and identifies which master is active. The Letter version picker offers full and concise alternatives. Each version keeps its own shared and recipient-specific subject and message edits across switches and refreshes; switching never shortens or replaces the other version. Use shared draft removes only the current recipient's active-version letter/subject overrides, not the other version, calls, social posts, or completion. Read the full letter expands the entire message without truncation; the compact editor remains available when you want less page scrolling.
+
+Subject and message counters are always shown in the letter editor. Recipient-specific warnings distinguish verified form limits from explicitly labeled user-reported advisories; they never block editing, copying or opening a form, and never truncate text. Unknown limits are not treated as unlimited. Copy subject is hidden only where the audit confirms no free-text subject control; subject drafts remain editable and saved. Issue/category selection happens on the official form. See the dated [contact-form compatibility audit](docs/contact-forms.md) for required fields, address gates, evidence and inaccessible forms.
 
 ## State and privacy
 
