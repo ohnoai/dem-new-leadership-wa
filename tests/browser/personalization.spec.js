@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 const key = 'leadership-wa-drafts-v3';
 async function details(page) {
-  await page.locator('#yourDetails').evaluate(el => el.open = true);
+  await expect(page.locator('#detailName')).toBeVisible();
   for (const [id, value] of [['detailName','Jane Smith'],['detailCity','Centralia'],['detailCounty','Lewis County'],['detailZip','98531']]) await page.locator('#'+id).fill(value);
 }
 test('private details personalize copy and calls without persisting identity into edited prose', async ({ page, context }) => {
@@ -20,7 +20,7 @@ test('private details personalize copy and calls without persisting identity int
   await page.locator('#detailName').fill('Someone else'); await expect(page.locator('#message')).toHaveValue(/Manual signature/);
   await page.locator('#channel').selectOption('call'); await expect(page.locator('#callScript')).toHaveValue(/Someone else[\s\S]*Centralia/);
   await page.locator('#channel').selectOption('social'); await expect(page.locator('#socialText')).not.toHaveValue(/Someone else|Centralia|98531/);
-  await page.reload(); await page.locator('#yourDetails').evaluate(el => el.open = true); await expect(page.locator('#detailCounty')).toHaveValue('Lewis County');
+  await page.reload(); await expect(page.locator('#detailCounty')).toBeVisible(); await expect(page.locator('#detailCounty')).toHaveValue('Lewis County');
   await page.locator('#channel').selectOption('letter'); await expect(page.locator('#message')).toHaveValue(/Manual signature/);
 });
 test('only Democratic targets act while all districts and inactive saved history survive', async ({ page }) => {
@@ -35,7 +35,7 @@ test('only Democratic targets act while all districts and inactive saved history
 });
 test('details survive write failure in memory and stale tabs cannot overwrite identity or drafts', async ({ page, context }) => {
   await page.goto('/'); await details(page);
-  const other=await context.newPage(); await other.goto('/'); await other.locator('#yourDetails').evaluate(el=>el.open=true);
+  const other=await context.newPage(); await other.goto('/'); await expect(other.locator('#detailName')).toBeVisible();
   await page.locator('#detailCounty').fill('Thurston'); await other.locator('#detailName').fill('Stale identity');
   await expect(other.locator('#saveStatus')).toContainText('Another tab');
   expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).details.county,key)).toBe('Thurston');
@@ -66,7 +66,7 @@ test('erase in another tab invalidates in-memory personal details before later s
 test('cross-tab erase clears unsaved identity even when the draft key never existed',async({page,context})=>{
   await page.goto('/');const other=await context.newPage();await other.goto('/');
   await other.evaluate(()=>{window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='leadership-wa-drafts-v3')throw Error('denied');return window.originalSet.call(this,k,v);};});
-  await other.locator('#yourDetails').evaluate(el=>el.open=true);await other.locator('#detailName').fill('Unsaved private identity');
+  await expect(other.locator('#detailName')).toBeVisible();await other.locator('#detailName').fill('Unsaved private identity');
   expect(await page.evaluate(()=>localStorage.getItem('leadership-wa-drafts-v3'))).toBeNull();
   await page.locator('#erase').evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.locator('#erase').click();await page.locator('#confirmErase').click();
   await expect(other.locator('#detailName')).toHaveValue('');await other.evaluate(()=>Storage.prototype.setItem=window.originalSet);await other.locator('#detailCity').fill('Olympia');
