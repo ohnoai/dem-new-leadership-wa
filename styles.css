@@ -15,6 +15,14 @@
 @media(max-width:359px){.hero h1{font-size:21vw}}
 .character-count{margin:6px 0 12px;font-variant-numeric:tabular-nums}#letterVersion{width:100%}#limitWarning{border-left:3px solid var(--paper);padding:12px}#formCompatibility{overflow-wrap:anywhere}
 
+/* Make optional personalization discoverable without changing its behavior. */
+.your-details{margin:8px 0 24px;padding:0 16px 12px;background:#25271f;border:1px solid #63655b;border-left:4px solid var(--accent)}
+.your-details>summary{min-height:64px;padding:16px 0;font-size:19px;line-height:1.25;font-weight:800;color:var(--paper)}
+.your-details>summary .note{font-size:12px;font-weight:400;color:var(--muted)}
+.your-details>summary:hover{color:var(--accent)}
+.your-details[open]>summary{margin-bottom:4px}
+.your-details>p{margin:8px 0 16px}
+
 /* Final presentation pass: preserve Pressure, give working controls room. */
 #letterPanel>label{display:block;font-size:13px;font-weight:700;margin:20px 0 8px}
 .details-grid{row-gap:6px}.details-grid>div:first-child,.details-grid>div:last-child{grid-column:1/-1}
