@@ -17,10 +17,9 @@
 
 /* Make optional personalization discoverable without changing its behavior. */
 .your-details{margin:8px 0 24px;padding:0 16px 12px;background:#25271f;border:1px solid #63655b;border-left:4px solid var(--accent)}
-.your-details>summary{min-height:64px;padding:16px 0;font-size:19px;line-height:1.25;font-weight:800;color:var(--paper)}
-.your-details>summary .note{font-size:12px;font-weight:400;color:var(--muted)}
-.your-details>summary:hover{color:var(--accent)}
-.your-details[open]>summary{margin-bottom:4px}
+.your-details>h3{min-height:64px;padding:16px 0;font-size:19px;line-height:1.25;font-weight:800;color:var(--paper)}
+.your-details>h3 .note{font-size:12px;font-weight:400;color:var(--muted)}
+.your-details>h3{margin:0 0 4px}
 .your-details>p{margin:8px 0 16px}
 
 /* Final presentation pass: preserve Pressure, give working controls room. */
