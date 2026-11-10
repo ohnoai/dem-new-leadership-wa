@@ -20,7 +20,7 @@ test('full and concise edits survive version changes, recipient changes, refresh
   await page.goto('/');
   await page.locator('#message').fill('Full Murray personal letter');
   await page.locator('#subject').fill('Full subject');
-  await page.locator('#letterVersion').selectOption('concise');
+  await page.getByRole('radio', { name: 'Concise', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue(/Dear Senator Murray,/);
   await expect(page.locator('#message')).not.toHaveValue('Full Murray personal letter');
   await page.locator('#message').fill('Concise Murray personal letter');
@@ -31,17 +31,18 @@ test('full and concise edits survive version changes, recipient changes, refresh
   await expect(page.locator('#message')).toHaveValue(/Dear Senator Cantwell,/);
   await page.locator('#official').selectOption('murray');
   await page.reload();
-  await expect(page.locator('#letterVersion')).toHaveValue('concise');
+  await expect(page.getByRole('radio', { name: 'Concise', exact: true })).toBeChecked();
   await expect(page.locator('#message')).toHaveValue('Concise Murray personal letter');
-  await page.locator('#letterVersion').selectOption('full');
+  await page.getByRole('radio', { name: 'Full letter', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue('Full Murray personal letter');
   await expect(page.locator('#subject')).toHaveValue('Full subject');
-  await page.locator('#letterVersion').selectOption('concise');
+  await page.getByRole('radio', { name: 'Concise', exact: true }).check();
   await expect(page.locator('#subject')).toHaveValue('Concise subject');
   expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([]);
+  await page.getByText('Advanced editing', { exact: true }).click();
   await page.locator('#useShared').click();
   await expect(page.locator('#message')).toHaveValue(/Dear Senator Murray,/);
-  await page.locator('#letterVersion').selectOption('full');
+  await page.getByRole('radio', { name: 'Full letter', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue('Full Murray personal letter');
 });
 
@@ -68,10 +69,10 @@ test('version switching keeps imported full text and completion independent', as
   await page.goto('/');
   await expect(page.locator('#message')).toHaveValue('Dear wrong recipient, preserve original');
   await page.locator('#completed').check();
-  await page.locator('#letterVersion').selectOption('concise');
+  await page.getByRole('radio', { name: 'Concise', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue(/Dear Senator Murray,/);
   await expect(page.locator('#completed')).toBeChecked();
-  await page.locator('#letterVersion').selectOption('full');
+  await page.getByRole('radio', { name: 'Full letter', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue('Dear wrong recipient, preserve original');
   await expect(page.locator('#reviewedRecipient')).not.toBeChecked();
 });
@@ -97,14 +98,14 @@ test('verified live limits match newline conventions without modifying drafts', 
 test('shared editing follows the selected version without changing full priorities', async ({ page }) => {
   await page.goto('/');
   const full = await page.locator('#message').inputValue();
-  await page.locator('#letterVersion').selectOption('concise');
-  await page.getByText('Shared message', { exact: true }).click();
+  await page.getByRole('radio', { name: 'Concise', exact: true }).check();
+  await page.getByText('Advanced editing', { exact: true }).click();
   await page.locator('#sharedMessage').fill('Concise shared edit');
   await expect(page.locator('#message')).toHaveValue(/Concise shared edit/);
   await page.locator('#official').selectOption('cantwell');
   await expect(page.locator('#message')).toHaveValue(/Concise shared edit/);
   await page.locator('#official').selectOption('murray');
-  await page.locator('#letterVersion').selectOption('full');
+  await page.getByRole('radio', { name: 'Full letter', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue(full);
 });
 
@@ -113,7 +114,7 @@ test('switching versions in a stale tab preserves the actionable conflict warnin
   await page.locator('#message').fill('Saved baseline');
   const other = await context.newPage(); await other.goto('/');
   await page.locator('#message').fill('Newer saved letter');
-  await other.locator('#letterVersion').selectOption('concise');
+  await other.getByRole('radio', { name: 'Concise', exact: true }).check();
   await expect(other.locator('#feedback')).toContainText('Copy any edits');
   await expect(other.locator('#feedback')).not.toContainText('kept on this device');
 });

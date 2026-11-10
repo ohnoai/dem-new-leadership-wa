@@ -17,7 +17,7 @@ test('cross-tab erase drops failed-write pending completions before the next act
       return original.call(this, name, value);
     };
   }, actionKey);
-  await other.locator('#channel').selectOption('call');
+  await other.getByRole('radio', { name: 'Call', exact: true }).check();
   await other.locator('#completed').check();
   await expect(other.locator('#saveStatus')).toHaveText('Not saved. Copy your work.');
   await confirmErase(page);
@@ -25,7 +25,7 @@ test('cross-tab erase drops failed-write pending completions before the next act
   await expect(other.locator('#completed')).not.toBeChecked();
   await expect(other.locator('#progressText')).toHaveText(/^0 \/ /);
   await other.evaluate(() => { window.allowActionWrites = true; });
-  await other.locator('#channel').selectOption('social');
+  await other.getByRole('radio', { name: 'Social', exact: true }).check();
   await other.locator('#completed').check();
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), actionKey)).toEqual({ 'murray:social': true });
 });
@@ -62,7 +62,7 @@ for (const api of ['clipboard', 'share']) {
       else Object.defineProperty(navigator, 'clipboard', { value: { writeText: deferred } });
     }, api);
     await page.goto('/');
-    if (api === 'share') await page.locator('#channel').selectOption('social');
+    if (api === 'share') await page.getByRole('radio', { name: 'Social', exact: true }).check();
     await page.locator(api === 'share' ? '#sharePost' : '#copyMessage').click();
     await page.locator('#official').selectOption('cantwell');
     await page.evaluate(async () => { window.finishAction(); await new Promise(resolve => setTimeout(resolve, 0)); });
@@ -102,7 +102,7 @@ test('delayed share rejection copies the original post without stale recipient f
     Object.defineProperty(navigator, 'clipboard', { value: { writeText: async text => { window.copies.push(text); } } });
   });
   await page.goto('/');
-  await page.locator('#channel').selectOption('social');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check();
   await page.locator('#socialText').fill('Murray original post');
   await page.locator('#sharePost').click();
   await page.locator('#official').selectOption('cantwell');

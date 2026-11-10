@@ -39,11 +39,11 @@ test('already migrated v3 content is warned without rewriting saved text', async
 });
 test('imported call and social actions require review for the selected channel', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('new-leadership-wa-v2', JSON.stringify({ callScript: { senate: 'Call for Cantwell' }, social: 'Post for Cantwell' })));
-  await page.goto('/'); await page.locator('#channel').selectOption('call');
+  await page.goto('/'); await page.getByRole('radio', { name: 'Call', exact: true }).check();
   await expect(page.locator('#reviewedRecipient')).not.toBeChecked();
   expect(await page.locator('#phoneLink').evaluate(el => !el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })))).toBe(true);
   await page.locator('#reviewedRecipient').check();
-  await page.locator('#channel').selectOption('social');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check();
   await expect(page.locator('#reviewedRecipient')).not.toBeChecked();
   await page.locator('#sharePost').click();
   await expect(page.locator('#feedback')).toContainText('Review');

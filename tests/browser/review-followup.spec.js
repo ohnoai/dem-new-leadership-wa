@@ -8,14 +8,14 @@ test('audited non-text subjects hide copy without deleting either subject versio
     await expect(page.locator('#copySubject')).toBeHidden();
     await expect(page.locator('#subjectHelp')).toContainText(explanation);
     await page.locator('#subject').fill(`${id} full subject retained`);
-    await page.locator('#letterVersion').selectOption('concise');
+    await page.getByRole('radio', { name: 'Concise', exact: true }).check();
     await page.locator('#subject').fill(`${id} concise subject retained`);
     await page.locator('#official').selectOption('murray');
     await expect(page.locator('#copySubject')).toBeVisible();
     await page.locator('#official').selectOption(id);
     await page.reload();
     await expect(page.locator('#subject')).toHaveValue(`${id} concise subject retained`);
-    await page.locator('#letterVersion').selectOption('full');
+    await page.getByRole('radio', { name: 'Full letter', exact: true }).check();
     await expect(page.locator('#subject')).toHaveValue(`${id} full subject retained`);
   }
   for (const id of ['murray', 'cantwell', 'delbene', 'jayapal']) {
@@ -40,7 +40,7 @@ test('Perez advisory is reported not verified and retains over-limit full and co
   await page.locator('#copyMessage').click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(full);
   await page.locator('#completed').check();
-  await page.locator('#letterVersion').selectOption('concise');
+  await page.getByRole('radio', { name: 'Concise', exact: true }).check();
   const concise = await page.locator('#message').inputValue();
   expect(concise.replace(/\r?\n/g, '\r\n').length).toBeGreaterThanOrEqual(700);
   expect(concise.replace(/\r?\n/g, '\r\n').length).toBeLessThanOrEqual(900);
@@ -52,7 +52,7 @@ test('Perez advisory is reported not verified and retains over-limit full and co
   await page.locator('#official').selectOption('murray');
   await expect(page.locator('#messageCount')).not.toContainText('/ 2,000');
   await page.locator('#official').selectOption('perez');
-  await page.locator('#letterVersion').selectOption('full');
+  await page.getByRole('radio', { name: 'Full letter', exact: true }).check();
   await expect(page.locator('#message')).toHaveValue(full);
   expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([]);
   await page.locator('#official').selectOption('jayapal');

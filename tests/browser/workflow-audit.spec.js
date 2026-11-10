@@ -10,17 +10,19 @@ test('resetting a recipient letter preserves master, other recipients, channels 
   await page.locator('#message').fill('Custom Murray letter');
   await page.locator('#subject').fill('Custom Murray subject');
   await page.locator('#completed').check();
-  await page.locator('#channel').selectOption('call'); await page.locator('#callScript').fill('Custom Murray call');
-  await page.locator('#channel').selectOption('social'); await page.locator('#socialText').fill('Custom Murray social');
+  await page.getByRole('radio', { name: 'Call', exact: true }).check(); await page.locator('#callScript').fill('Custom Murray call');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check(); await page.locator('#socialText').fill('Custom Murray social');
   await page.locator('#official').selectOption('cantwell');
-  await page.locator('#channel').selectOption('letter'); await page.locator('#message').fill('Custom Cantwell letter');
-  await page.locator('#official').selectOption('murray'); await page.locator('#useShared').click();
+  await page.getByRole('radio', { name: 'Letter', exact: true }).check(); await page.locator('#message').fill('Custom Cantwell letter');
+  await page.locator('#official').selectOption('murray');
+  await page.getByText('Advanced editing', { exact: true }).click();
+  await page.locator('#useShared').click();
   await expect(page.locator('#message')).toHaveValue(/^Dear Senator Murray,/);
   await expect(page.locator('#completed')).toBeChecked();
-  await page.locator('#channel').selectOption('call'); await expect(page.locator('#callScript')).toHaveValue('Custom Murray call');
-  await page.locator('#channel').selectOption('social'); await expect(page.locator('#socialText')).toHaveValue('Custom Murray social');
+  await page.getByRole('radio', { name: 'Call', exact: true }).check(); await expect(page.locator('#callScript')).toHaveValue('Custom Murray call');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check(); await expect(page.locator('#socialText')).toHaveValue('Custom Murray social');
   const reopened = await context.newPage(); await reopened.goto('/');
-  await reopened.locator('#official').selectOption('cantwell'); await reopened.locator('#channel').selectOption('letter');
+  await reopened.locator('#official').selectOption('cantwell'); await reopened.getByRole('radio', { name: 'Letter', exact: true }).check();
   await expect(reopened.locator('#message')).toHaveValue('Custom Cantwell letter');
 });
 test('erase cancellation keeps data and confirmed erase removes only campaign data', async ({ page }) => {
@@ -37,7 +39,7 @@ test('erase cancellation keeps data and confirmed erase removes only campaign da
 test('share cancellation preserves text and unsupported share copies the post', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.addInitScript(() => Object.defineProperty(navigator, 'share', { configurable: true, value: () => Promise.reject(new DOMException('Cancelled', 'AbortError')) }));
-  await page.goto('/'); await page.locator('#channel').selectOption('social'); await page.locator('#socialText').fill('Social text to preserve');
+  await page.goto('/'); await page.getByRole('radio', { name: 'Social', exact: true }).check(); await page.locator('#socialText').fill('Social text to preserve');
   await page.locator('#sharePost').click(); await expect(page.locator('#completed')).not.toBeChecked();
   await expect(page.locator('#socialText')).toHaveValue('Social text to preserve');
   await page.evaluate(() => Object.defineProperty(navigator, 'share', { value: undefined }));

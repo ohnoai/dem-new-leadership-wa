@@ -15,6 +15,8 @@ The public application is a static site.
 | `scripts/serve.js` | Local-only development preview server |
 | `tests/` | Node model tests and Playwright browser/accessibility tests |
 | `playwright.config.js` | Mobile and desktop browser test configurations |
+| `playwright.usability.config.js` | Fresh-server verification without reusing an unrelated preview |
+| `scripts/capture-workflow.js` | Local before/after screenshot gallery at six review widths |
 | `docs/sources.md` | Primary-source contact and district research |
 | `docs/contact-forms.md` | Dated browser form compatibility audit, evidence and unknowns |
 | `docs/verification.md` | Executed verification and outstanding checks |

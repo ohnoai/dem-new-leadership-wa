@@ -109,12 +109,11 @@
     const o = normalized(current()), draft = M.draft(state, o, T);
     $('subject').value = draft.subject; $('message').value = draft.message;
     const personal = state.personal[o.id] || {};
-    $('letterVersion').value = state.letterVersion || 'full';
+    document.querySelectorAll('input[name="letterVersion"]').forEach(input => { input.checked = input.value === (state.letterVersion || 'full'); });
     const fields = letterFields();
     const master = M.shared(state, o, T);
     $('sharedSubject').value = master.subject ?? state.shared[fields.subject]; $('sharedMessage').value = master.message ?? state.shared[fields.message];
-    $('sharedVersion').textContent = state.letterVersion === 'concise' ? 'Editing the concise master.' : 'Editing the full master.';
-    $('draftKind').textContent = typeof personal[fields.message] === 'string' ? 'Personal version' : 'Shared draft';
+    $('sharedVersion').textContent = `${current().name} · ${o.vote || 'influence'} · ${state.letterVersion === 'concise' ? 'Concise' : 'Full letter'}`;
     $('useShared').hidden = !Object.hasOwn(personal, fields.message) && !Object.hasOwn(personal, fields.subject);
     $('callScript').value = M.call(state, o, T);
     // Sharing may target any network; a published X/Facebook identity is not a universal mention.
@@ -170,7 +169,7 @@
     $('voteBadge').textContent = vote ? `Direct ${vote === 'senate' ? 'Senate' : 'House'} caucus vote` : 'Indirect influence';
     $('voteBadge').classList.toggle('indirect', !vote);
     $('voteDescription').textContent = vote ? `Ask for a leadership change in the ${vote === 'senate' ? 'Senate' : 'House'} Democratic caucus.` : 'No vote in Democratic congressional leadership elections. Ask this office to use its influence.';
-    $('channel').value = state.channel;
+    document.querySelectorAll('input[name="channel"]').forEach(input => { input.checked = input.value === state.channel; });
     for (const channel of ['letter', 'call', 'social']) $(channel + 'Panel').hidden = state.channel !== channel;
     $('contactLink').href = o.website;
     $('contactHelp').textContent = 'Copy, open the official form, paste, and submit there. Nothing is sent from this site.' + (o.group === 'house' ? ' House offices generally accept messages only from their own constituents.' : '');
@@ -201,13 +200,12 @@
   $('district').onchange = () => {
     state.district = $('district').value;
     const o = officials.find(o => o.group === 'house' && o.district === state.district);
-    if (o) { $('districtDetails').open = false; select(o.id, true); } else { select('murray'); renderDistrict(); }
+    if (o) select(o.id); else { select('murray'); renderDistrict(); }
   };
-  $('channel').onchange = () => { state.channel = $('channel').value; feedback(''); render(); save(); };
-  $('letterVersion').onchange = () => { state.letterVersion = $('letterVersion').value; feedback(''); renderDraft(); save(); };
+  $('channel').onchange = event => { state.channel = event.target.value; feedback(''); render(); save(); };
+  $('letterVersion').onchange = event => { state.letterVersion = event.target.value; feedback(''); renderDraft(); save(); };
   for (const field of ['subject', 'message']) $(field).oninput = () => {
     M.editDisplayed(state, normalized(current()), field, $(field).value, T); save();
-    $('draftKind').textContent = Object.hasOwn(state.personal[current().id], letterFields().message) ? 'Personal version' : 'Shared draft';
     $('useShared').hidden = false;
     renderReview(); renderCounts();
   };

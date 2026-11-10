@@ -4,6 +4,13 @@
   const message = document.getElementById('message');
   const button = document.getElementById('expandLetter');
   function fitLetter() {
+    for (const id of ['callScript', 'socialText']) {
+      const field = document.getElementById(id);
+      if (field.getClientRects().length) {
+        field.style.height = 'auto';
+        field.style.height = `${field.scrollHeight + 2}px`;
+      }
+    }
     if (button.getAttribute('aria-expanded') !== 'true' || !message.getClientRects().length) return;
     const top = window.scrollY;
     message.style.height = 'auto';

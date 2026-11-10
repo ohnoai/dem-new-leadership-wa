@@ -2,12 +2,12 @@ const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 test('recipient-first journey preserves work through next, refresh and external return', async ({ page, context }) => {
   await page.goto('/');
-  await expect(page.getByLabel('Choose an official')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Choose an official', exact: true })).toBeVisible();
   await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Dear Senator Murray,/);
   await page.getByLabel('Message', { exact: true }).fill('My personal Murray letter');
   await page.getByRole('button', { name: 'Next official', exact: true }).click();
   await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Dear Senator Cantwell,/);
-  await page.getByLabel('Choose an official').selectOption('murray');
+  await page.getByRole('combobox', { name: 'Choose an official', exact: true }).selectOption('murray');
   await expect(page.getByLabel('Message', { exact: true })).toHaveValue('My personal Murray letter');
   await page.reload();
   await expect(page.getByLabel('Message', { exact: true })).toHaveValue('My personal Murray letter');
@@ -24,7 +24,7 @@ test('recipient-first journey preserves work through next, refresh and external 
 });
 test('master priorities flow across officials without overwriting custom text', async ({ page }) => {
   await page.goto('/');
-  await page.getByText('Shared message', { exact: true }).click();
+  await page.getByText('Advanced editing', { exact: true }).click();
   await page.getByLabel('Shared priorities').fill('Protect public services and demand accountable leadership.');
   await expect(page.getByLabel('Message', { exact: true })).toHaveValue(/Protect public services/);
   await page.getByRole('button', { name: 'Next official', exact: true }).click();

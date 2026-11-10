@@ -26,10 +26,10 @@ test('denied completion writes retain local changes while merging latest persist
   });
   await page.goto('/');
   await page.locator('#completed').check();
-  await page.locator('#channel').selectOption('call');
+  await page.getByRole('radio', { name: 'Call', exact: true }).check();
   await page.locator('#completed').check();
   await expect(page.locator('#progressText')).toHaveText(/^3 \/ /);
-  await page.locator('#channel').selectOption('letter');
+  await page.getByRole('radio', { name: 'Letter', exact: true }).check();
   await expect(page.locator('#completed')).toBeChecked();
   await page.locator('#official').selectOption('cantwell');
   await page.locator('#completed').uncheck();
@@ -41,7 +41,7 @@ test('denied completion writes retain local changes while merging latest persist
   await expect(page.locator('#progressText')).toHaveText(/^3 \/ /);
   await expect(page.locator('#saveStatus')).toContainText('Not saved');
   await page.evaluate(() => { window.allowActionWrites = true; });
-  await page.locator('#channel').selectOption('social');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check();
   await page.locator('#completed').check();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('leadership-wa-actions-v3')))).toEqual({
     'murray:letter': true, 'murray:call': true, 'cantwell:letter': false, 'cantwell:social': true, 'delbene:social': true
@@ -50,23 +50,23 @@ test('denied completion writes retain local changes while merging latest persist
     window.storeActionMap({ 'murray:letter': false, 'cantwell:letter': true });
     window.dispatchEvent(new StorageEvent('storage', { key: 'leadership-wa-actions-v3' }));
   });
-  await page.locator('#channel').selectOption('letter');
+  await page.getByRole('radio', { name: 'Letter', exact: true }).check();
   await expect(page.locator('#completed')).toBeChecked();
   await page.locator('#official').selectOption('murray');
   await expect(page.locator('#completed')).not.toBeChecked();
 });
 test('phone and social are editable, saved separately and never auto-complete', async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(navigator, 'share', { value: async data => { window.sharedPayload = data; } }));
-  await page.goto('/'); await page.locator('#channel').selectOption('call');
+  await page.goto('/'); await page.getByRole('radio', { name: 'Call', exact: true }).check();
   await expect(page.locator('#phoneLink')).toHaveAttribute('href', 'tel:+12022242621');
   await page.locator('#callScript').fill('My call'); await page.locator('#completed').check();
-  await page.locator('#channel').selectOption('social');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check();
   await expect(page.locator('#completed')).not.toBeChecked();
   await page.locator('#socialText').fill('My social message'); await page.locator('#sharePost').click();
   expect(await page.evaluate(() => window.sharedPayload)).toEqual({ text: 'My social message' });
   await expect(page.locator('#completed')).not.toBeChecked(); await page.reload();
   await expect(page.locator('#socialText')).toHaveValue('My social message');
-  await page.locator('#channel').selectOption('call');
+  await page.getByRole('radio', { name: 'Call', exact: true }).check();
   await expect(page.locator('#callScript')).toHaveValue('My call'); await expect(page.locator('#completed')).toBeChecked();
 });
 test('all officials have a recipient greeting and the correct editable request', async ({ page }) => {
@@ -78,17 +78,17 @@ test('all officials have a recipient greeting and the correct editable request',
     const text = await page.locator('#message').inputValue();
     expect(text).toContain(o.greeting || o.name.split(' ').at(-1));
     expect(text).toMatch(o.vote === 'senate' ? /oppose Chuck Schumer/ : o.vote === 'house' ? /oppose Hakeem Jeffries/ : /(?:do not|don't) vote in either (?:congressional )?caucus/);
-    await page.locator('#channel').selectOption('call');
+    await page.getByRole('radio', { name: 'Call', exact: true }).check();
     if (o.phone) await expect(page.locator('#phoneLink')).toHaveAttribute('href', 'tel:+1' + o.phone.replace(/\D/g, ''));
-    await page.locator('#channel').selectOption('letter');
+    await page.getByRole('radio', { name: 'Letter', exact: true }).check();
   }
 });
 test('expanded controls have accessible labels and no small screen overflow', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#districtDetails').evaluate(el => el.open = true);
-  await page.locator('.shared').evaluate(el => el.open = true);
+  await expect(page.locator('#district')).toBeVisible();
+  await page.getByText('Advanced editing', { exact: true }).click();
   for (const channel of ['letter', 'call', 'social']) {
-    await page.locator('#channel').selectOption(channel);
+    await page.locator('input[name="channel"][value="'+channel+'"]').check();
     const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(result.violations).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -119,13 +119,13 @@ test('prototype call and shared social drafts migrate exactly for every relevant
   for (const o of officials) {
     await page.locator('#official').selectOption(o.id);
     if (['senate', 'house'].includes(o.group)) {
-      await page.locator('#channel').selectOption('call');
+      await page.getByRole('radio', { name: 'Call', exact: true }).check();
       await expect(page.locator('#callScript')).toHaveValue(legacy.callScript[o.group]);
       expect(personal[o.id].call).toBe(legacy.callScript[o.group]);
     } else {
       expect(personal[o.id]).not.toHaveProperty('call');
     }
-    await page.locator('#channel').selectOption('social');
+    await page.getByRole('radio', { name: 'Social', exact: true }).check();
     await expect(page.locator('#socialText')).toHaveValue(legacy.social);
     expect(personal[o.id].social).toBe(legacy.social);
   }
@@ -133,7 +133,7 @@ test('prototype call and shared social drafts migrate exactly for every relevant
   await page.locator('#socialText').fill('New personal social version');
   await page.reload();
   await expect(page.locator('#socialText')).toHaveValue('New personal social version');
-  await page.locator('#channel').selectOption('call');
+  await page.getByRole('radio', { name: 'Call', exact: true }).check();
   await expect(page.locator('#callScript')).toHaveValue(legacy.callScript.senate);
 });
 test('an older browser tab cannot silently overwrite a newer draft', async ({ page, context }) => {
@@ -142,13 +142,13 @@ test('an older browser tab cannot silently overwrite a newer draft', async ({ pa
   await other.locator('#message').fill('Newer version');
   await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('leadership-wa-drafts-v3')).personal.murray.message)).toBe('Newer version');
-  await page.locator('#channel').selectOption('call');
+  await page.getByRole('radio', { name: 'Call', exact: true }).check();
   await other.reload();
   await expect(other.locator('#message')).toHaveValue('Newer version');
 });
 test('every House district resolves and compound surname greeting is preserved', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#districtDetails').evaluate(el => el.open = true);
+  await expect(page.locator('#district')).toBeVisible();
   await expect(page.locator('#district option')).toHaveCount(11);
   await page.locator('#district').selectOption('WA-04');
   await expect(page.locator('#districtNotice')).toContainText('Dan Newhouse');
@@ -159,6 +159,6 @@ test('every House district resolves and compound surname greeting is preserved',
 });
 test('cross-platform social drafts identify people without invented mentions', async ({ page }) => {
   await page.goto('/'); await page.locator('#official').selectOption('larsen');
-  await page.locator('#channel').selectOption('social');
+  await page.getByRole('radio', { name: 'Social', exact: true }).check();
   await expect(page.locator('#socialText')).toHaveValue(/^Rick Larsen:/);
 });

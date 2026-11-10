@@ -18,16 +18,16 @@ test('private details personalize copy and calls without persisting identity int
   expect((await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g,'\n')).toBe(await page.locator('#message').inputValue());
   const manual = (await page.locator('#message').inputValue()).replace('Alex Smith','Manual signature'); await page.locator('#message').fill(manual);
   await page.locator('#detailName').fill('Someone else'); await expect(page.locator('#message')).toHaveValue(/Manual signature/);
-  await page.locator('#channel').selectOption('call'); await expect(page.locator('#callScript')).toHaveValue(/Someone else[\s\S]*Centralia/);
-  await page.locator('#channel').selectOption('social'); await expect(page.locator('#socialText')).not.toHaveValue(/Someone else|Centralia|98531/);
+  await page.getByRole('radio', { name: 'Call', exact: true }).check(); await expect(page.locator('#callScript')).toHaveValue(/Someone else[\s\S]*Centralia/);
+  await page.getByRole('radio', { name: 'Social', exact: true }).check(); await expect(page.locator('#socialText')).not.toHaveValue(/Someone else|Centralia|98531/);
   await page.reload(); await expect(page.locator('#detailCounty')).toBeVisible(); await expect(page.locator('#detailCounty')).toHaveValue('Lewis County');
-  await page.locator('#channel').selectOption('letter'); await expect(page.locator('#message')).toHaveValue(/Manual signature/);
+  await page.getByRole('radio', { name: 'Letter', exact: true }).check(); await expect(page.locator('#message')).toHaveValue(/Manual signature/);
 });
 test('only Democratic targets act while all districts and inactive saved history survive', async ({ page }) => {
   await page.addInitScript(() => { if(!localStorage.getItem('seeded')) {localStorage.setItem('seeded','yes'); localStorage.setItem('leadership-wa-drafts-v3',JSON.stringify({ selected:'newhouse',personal:{ newhouse:{message:'Saved Republican draft',call:'Old call',social:'Old post'},baumgartner:{conciseMessage:'Old concise'} } }));localStorage.setItem('leadership-wa-actions-v3',JSON.stringify({'newhouse:letter':true,'baumgartner:call':true,'murray:letter':true}));} });
   await page.goto('/'); await expect(page.locator('#official option')).toHaveCount(12); await expect(page.locator('#official')).toHaveValue('murray');
   await expect(page.locator('#progressText')).toHaveText('1 / 36 actions');
-  await page.locator('#districtDetails').evaluate(el => el.open = true); await expect(page.locator('#district option')).toHaveCount(11);
+  await expect(page.locator('#district')).toBeVisible(); await expect(page.locator('#district option')).toHaveCount(11);
   await page.locator('#district').selectOption('WA-04'); await expect(page.locator('#districtNotice')).toContainText('Dan Newhouse'); await expect(page.locator('#districtNotice')).toContainText('cannot vote'); await expect(page.locator('#official')).toHaveValue('murray');
   await page.locator('#district').selectOption('WA-05'); await expect(page.locator('#districtNotice')).toContainText('Michael Baumgartner');
   const saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key); expect(saved.personal.newhouse.message).toBe('Saved Republican draft'); expect(saved.personal.baumgartner.conciseMessage).toBe('Old concise');
@@ -73,9 +73,9 @@ test('cross-tab erase clears unsaved identity even when the draft key never exis
   expect(await other.evaluate(()=>JSON.parse(localStorage.getItem('leadership-wa-drafts-v3')).details.name)).toBeUndefined();
 });
 test('shared subject-only edits preserve managed signatures in both versions and same category',async({page})=>{
-  await page.goto('/');await details(page);await page.locator('.shared').evaluate(el=>el.open=true);
+  await page.goto('/');await details(page);await page.getByText('Advanced editing', { exact: true }).click();
   for(const version of ['full','concise']){
-    await page.locator('#letterVersion').selectOption(version);await page.locator('#sharedSubject').fill('My '+version+' subject');
+    await page.locator('input[name="letterVersion"][value="'+version+'"]').check();await page.locator('#sharedSubject').fill('My '+version+' subject');
     await expect(page.locator('#message')).toHaveValue(/Jane Smith/);await page.locator('#official').selectOption('cantwell');await expect(page.locator('#subject')).toHaveValue('My '+version+' subject');await expect(page.locator('#message')).toHaveValue(/Jane Smith/);await page.locator('#official').selectOption('murray');
   }
   await page.locator('#detailName').fill('Alex Smith');await expect(page.locator('#message')).toHaveValue(/Alex Smith/);

@@ -3,7 +3,7 @@ const key='leadership-wa-drafts-v3';
 test('legacy shared and inactive prototype records remain exact after details and refresh',async({page})=>{
   const old={shared:{subject:'Old subject',message:'My saved shared argument [Your name]',conciseSubject:'Old short',conciseMessage:'My saved short'},personal:{murray:{message:'Dear wrong recipient,\nMy old full.\nMy manual signature',conciseMessage:'Custom concise',call:'Custom call',social:'Custom post'},newhouse:{message:'Saved inactive House',conciseMessage:'Inactive concise',call:'Inactive call',social:'Inactive post'}},selected:'murray'};
   await page.addInitScript(old=>{if(!localStorage.getItem('seeded')){localStorage.setItem('seeded','yes');localStorage.setItem('leadership-wa-drafts-v3',JSON.stringify(old));localStorage.setItem('leadership-wa-actions-v3',JSON.stringify({'newhouse:letter':true,'murray:call':true}));}},old);
-  await page.goto('/');await page.locator('#yourDetails').evaluate(el=>el.open=true);await page.locator('#detailName').fill('New identity');await page.reload();
+  await page.goto('/');await expect(page.locator('#detailName')).toBeVisible();await page.locator('#detailName').fill('New identity');await page.reload();
   await expect(page.locator('#message')).toHaveValue(old.personal.murray.message);
   const saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);expect(saved.personal).toEqual(old.personal);expect(saved.shared).toEqual(old.shared);
   await page.locator('#official').selectOption('cantwell');await expect(page.locator('#message')).toHaveValue(/My saved shared argument \[Your name\]/);
