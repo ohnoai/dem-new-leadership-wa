@@ -8,9 +8,9 @@ Working people deserve leaders willing to defend public services and civil right
 
 ## Make your case
 
-Choose an official, or find your House representative through the official district finder. Review the prepared letter and make it yours. Copy the message, open the official contact page, and send it there yourself. You can also use the call script or prepare a social post.
+Three steps. Add your details (optional; they sign your letters). Find your district from your ZIP code, with the state's exact-address finder one tap away. Then contact your officials one at a time: review the prepared letter, make it yours if you like, copy it, open the official contact form and send it there yourself. You can also use the call script or a social post.
 
-The site distinguishes officials who vote in Democratic leadership elections from those who can use their influence. Full and concise letters keep separate edits. Your drafts survive recipient changes, and you mark completed actions yourself. Opening a contact page never counts as sending a message.
+The site distinguishes officials who vote in Democratic leadership elections from those who can use their influence. Full and concise letters keep separate edits. Your drafts survive recipient changes, and you mark each official done yourself. Opening a contact page never counts as sending a message.
 
 Some offices require address checks or limit message length. The [contact-form audit](docs/contact-forms.md) records what was observed, what was reported by a user, and what remains unknown.
 
@@ -18,7 +18,7 @@ Some offices require address checks or limit message length. The [contact-form a
 
 DEM RESET is independent advocacy, not a government website or a political party project. You do not need an account. The site has no analytics or tracking pixels. Optional name, city, county and ZIP details personalize letters and calls; those details, your drafts and action history stay in this browser. Nothing is required to start.
 
-Browser storage is not a backup: clearing it can erase your work, and drafts do not sync between devices. Official contact forms and social platforms have their own privacy rules. Nothing is sent or published without your action.
+Browser storage is not a backup: clearing it can erase your work, and drafts do not sync between devices. Official contact forms and social platforms have their own privacy rules. Nothing is sent or published without your action. The optional tip jar contacts its payment services only when you use it; the site's About page says which.
 
 ## Want this for your state? Fork it.
 

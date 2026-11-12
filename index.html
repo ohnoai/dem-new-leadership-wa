@@ -29,11 +29,14 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip" href="#action">Skip to action</a>
+  <a class="skip" href="#steps">Skip to the steps</a>
   <header class="masthead">
     <div class="header-inner">
-      <div class="identity"><a href="#action" class="brand">DEM<span> RESET</span></a><span class="edition-mark"><img src="assets/evergreen.svg" width="20" height="20" alt=""><span id="edition">WASHINGTON</span></span></div>
-      <a href="#completion" class="progress-link" aria-label="View your action progress"><span id="progressText">0 actions</span><span class="progress-track"><span id="progressBar"></span></span></a>
+      <div class="identity"><a href="#steps" class="brand">DEM<span> RESET</span></a><span class="edition-mark"><img src="assets/evergreen.svg" width="20" height="20" alt=""><span id="edition">WASHINGTON</span></span></div>
+      <div class="head-right">
+        <div class="progress" id="progress" hidden><span id="progressText"></span><span class="progress-track"><span id="progressBar"></span></span></div>
+        <button type="button" class="tipjar-btn" id="tipjarBtn" aria-haspopup="dialog" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-9-9a4.5 4.5 0 0 1 9-3 4.5 4.5 0 0 1 9 3c-2 4.5-9 9-9 9Z"/></svg><span class="tj-label">Tip jar</span></button>
+      </div>
     </div>
   </header>
   <main class="wrap">
@@ -42,101 +45,104 @@
       <h1 id="headline">DEMOCRATS NEED A RESET.</h1>
       <div class="hero-bottom">
         <p class="dek">New majority.<br><em>New leadership.</em></p>
-        <div class="hero-argument"><h2 id="intro">Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.</h2><a class="start-action" href="#action">Demand new leadership <span aria-hidden="true">↓</span></a><p class="hero-note">Your voice. Their vote. Start with one office.</p></div>
+        <div class="hero-argument"><h2 id="intro">Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.</h2><a class="start-action" href="#steps">Demand new leadership <span aria-hidden="true">↓</span></a><p class="hero-note">Your voice. Their vote. Start with one office.</p></div>
       </div>
     </section>
-    <noscript><p class="notice">JavaScript is needed to edit and save letters. You can still <a href="https://app.leg.wa.gov/DistrictFinder/">find your district</a> and contact Congress through its official websites.</p></noscript>
-    <section class="workspace" id="action" tabindex="-1" aria-label="Contact an official">
-      <div class="action-intro"><p class="eyebrow">THE ASK IS SIMPLE. MAKE IT HEARD.</p><h2>Put your voice behind the reset.</h2><p>Choose an official. Make your case.</p></div>
-      <aside class="chooser">
-        <p class="eyebrow">START WITH YOUR DELEGATION</p>
-        <section id="yourDetails" class="your-details" aria-labelledby="yourDetailsHeading">
-          <h3 id="yourDetailsHeading">Your details <span class="note">(optional)</span></h3>
-          <p>Add your details once to personalize your letters and call scripts. They stay in this browser.</p>
-          <div class="details-grid">
-            <div><label for="detailName">Full name</label><input id="detailName" autocomplete="name"></div>
-            <div><label for="detailCity">City</label><input id="detailCity" autocomplete="address-level2"></div>
-            <div><label for="detailCounty">County</label><input id="detailCounty" autocomplete="off"></div>
-            <div><label for="detailZip">ZIP code</label><input id="detailZip" autocomplete="postal-code" inputmode="numeric"></div>
+    <noscript><p class="notice">JavaScript is needed for the steps below. You can still <a href="https://app.leg.wa.gov/DistrictFinder/">find your district</a> and contact Congress through its official websites.</p></noscript>
+    <section class="how" id="steps" tabindex="-1" aria-labelledby="howTitle">
+      <p class="eyebrow">THE ASK IS SIMPLE. MAKE IT HEARD.</p>
+      <h2 id="howTitle">Put your voice behind the reset.</h2>
+      <p class="how-line" id="howLine"></p>
+    </section>
+
+    <section class="step" id="s1" data-state="active" aria-labelledby="h1t">
+      <div class="step-head"><span class="num" aria-hidden="true">1</span><h2 id="h1t" tabindex="-1">Your details</h2><p class="summary" id="sum1"></p><button type="button" class="change" data-change="1" aria-label="Change your details">Change</button></div>
+      <div class="step-body">
+        <p class="lead">These sign your letters. They stay on this device.</p>
+        <div class="fields">
+          <div><label for="detailName">Full name</label><input id="detailName" autocomplete="name"></div>
+          <div><label for="detailCity">City</label><input id="detailCity" autocomplete="address-level2"></div>
+          <div><label for="detailCounty">County</label><input id="detailCounty" autocomplete="off"></div>
+          <div><label for="detailZip">ZIP code</label><input id="detailZip" autocomplete="postal-code" inputmode="numeric" maxlength="10"></div>
+        </div>
+        <button type="button" class="btn go" id="done1">Done <span aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <section class="step" id="s2" data-state="locked" aria-labelledby="h2t">
+      <div class="step-head"><span class="num" aria-hidden="true">2</span><h2 id="h2t" tabindex="-1">Your district</h2><p class="summary" id="sum2"></p><button type="button" class="change" data-change="2" aria-label="Change your district">Change</button></div>
+      <div class="step-body">
+        <div id="districtMatch" class="found" hidden><p class="k" id="matchLabel"></p><p class="v" id="matchName"></p></div>
+        <button type="button" class="btn go" id="confirmDistrict" hidden>Yes, that's my district <span aria-hidden="true">→</span></button>
+        <p class="lead" id="districtLead"></p>
+        <div class="choices" id="districtChoices"></div>
+        <p class="note"><span id="finderLead">Not sure?</span> <a id="districtFinder" href="https://app.leg.wa.gov/DistrictFinder/" target="_blank" rel="noopener noreferrer">Look up your exact address on the state's district finder ↗</a><span id="otherDistrict" hidden> · <button type="button" class="link" id="pickOther">Pick a different district</button></span></p>
+      </div>
+    </section>
+
+    <section class="step" id="s3" data-state="locked" aria-labelledby="h3t">
+      <div class="step-head"><span class="num" aria-hidden="true">3</span><h2 id="h3t" tabindex="-1">Contact your officials</h2></div>
+      <div class="step-body">
+        <div id="console">
+          <div class="who">
+            <div><p class="k" id="position"></p><h3 id="officialName"></h3><p id="officialRole"></p></div>
+            <div class="arrows"><button type="button" id="previousOfficial" aria-label="Previous official">‹</button><button type="button" id="nextOfficial" aria-label="Next official">›</button></div>
           </div>
-          <p class="note">Optional. Browser data can be cleared and does not sync across devices. Edits to your letters and signatures take precedence over automatic details.</p>
-        </section>
-        <label for="official">Choose an official</label>
-        <select id="official"></select>
-        <details id="districtDetails">
-          <summary>Find my House representative</summary>
-          <p>Use your full address in the official district finder. Choose <strong>Congressional</strong>, then select your district below.</p>
-          <a class="button secondary full" id="districtFinder" href="https://app.leg.wa.gov/DistrictFinder/" target="_blank" rel="noopener noreferrer">Open Washington district finder ↗</a>
-          <p class="note">Uses official geographic boundaries, not a ZIP-code guess. Your address is entered on the state website, not here.</p>
-          <label for="district">My congressional district</label>
-          <select id="district"><option value="">Choose district</option></select>
-          <a id="districtMaps" href="https://www.sos.wa.gov/elections/data-research/election-data-and-maps/2024-court-designated-legislativecongressional-maps" target="_blank" rel="noopener noreferrer">Official district maps ↗</a>
-          <p class="note">State finder not working? <a id="houseFinder" href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noopener noreferrer">Use the official House finder ↗</a>. A ZIP can span districts; use its full-address follow-up if offered.</p>
-        </details>
-        <p id="districtNotice" class="notice" role="status" hidden></p>
-        <div class="recipient">
-          <span class="badge" id="voteBadge"></span>
-          <h2 id="officialName"></h2>
-          <p id="officialRole" class="note"></p>
-          <p id="voteDescription"></p>
-        </div>
-        <details class="shared">
-          <summary>Shared message</summary>
-          <p class="note">The master for this category and letter version follows officials in that category. Retained older shared drafts still follow every official. Personal edits do not change the master or the other version.</p>
-          <p class="note" id="sharedVersion"></p>
-          <label for="sharedSubject">Shared subject</label>
-          <input id="sharedSubject">
-          <label for="sharedMessage">Shared priorities</label>
-          <textarea id="sharedMessage" rows="10"></textarea>
-        </details>
-      </aside>
-      <div class="editor">
-        <div class="editor-heading"><p class="eyebrow">YOUR WORDS. YOUR CALL.</p><span id="saveStatus" class="note" role="status" aria-live="polite"></span></div>
-        <label for="channel">How will you take action?</label>
-        <select id="channel"><option value="letter">Write a letter</option><option value="call">Make a call</option><option value="social">Share a post</option></select>
-        <div id="recipientReview" class="notice" hidden>
-          <p id="reviewExplanation"></p>
-          <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
-        </div>
-        <section id="letterPanel" aria-label="Letter editor">
-          <label for="letterVersion">Letter version</label>
-          <select id="letterVersion" aria-describedby="versionHelp"><option value="full">Full substantive letter</option><option value="concise">Concise alternative</option></select>
-          <p class="note" id="versionHelp">Each version keeps its own edits for this official. Switching never replaces the other version.</p>
-          <div class="label-row"><label for="subject">Subject</label><button class="text-button" id="copySubject">Copy subject</button></div>
-          <input id="subject" aria-describedby="subjectCount limitWarning subjectHelp">
-          <p id="subjectCount" class="note character-count"></p>
-          <p id="subjectHelp" class="note" hidden></p>
-          <div class="label-row"><label for="message">Message</label><span id="draftKind" class="note"></span></div>
-          <textarea id="message" rows="13" spellcheck="true" aria-describedby="draftHelp messageCount limitWarning"></textarea>
-          <p id="messageCount" class="note character-count"></p>
+          <div class="tabs" role="group" aria-label="How to contact"><button type="button" data-channel="letter">Letter</button><button type="button" data-channel="call">Call</button><button type="button" data-channel="social">Social</button></div>
+          <div class="length" id="letterVersion" role="group" aria-label="Letter length"><button type="button" data-version="full">Full letter</button><button type="button" data-version="concise">Concise</button></div>
+          <div class="subject" id="subjectRow"><p><span class="k">Subject</span> <span id="subjectText"></span></p><button type="button" class="link" id="copySubject">Copy subject</button></div>
+          <p class="note" id="subjectHelp" hidden></p>
+          <div class="texthead"><strong id="textLabel"></strong><button type="button" class="link" id="editText">Edit</button></div>
+          <button type="button" class="preview" id="preview" aria-describedby="previewHint"></button>
+          <p class="sr-only" id="previewHint">Opens the text to read in full or edit.</p>
+          <div id="recipientReview" class="notice" hidden>
+            <p id="reviewExplanation"></p>
+            <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
+          </div>
           <p id="limitWarning" class="notice" role="status" hidden></p>
-          <button type="button" id="expandLetter" class="text-button expand-letter" aria-expanded="false" aria-controls="message">Read the full letter ↓</button>
-          <div class="label-row"><span class="note" id="draftHelp">Optional details fill untouched template fields. Your edits, including manual signatures, take precedence. Review the final text before sending.</span><button id="useShared" class="text-button" hidden>Use shared draft</button></div>
-          <div class="action-row"><button class="button" id="copyMessage">Copy message</button><a class="button secondary" id="contactLink" target="_blank" rel="noopener noreferrer">Open official contact page ↗</a></div>
-          <p class="note" id="contactHelp">Copy, open the official form, paste, and submit there. Nothing is sent from this site.</p>
-          <p class="note" id="formCompatibility"></p>
-          <a class="note" href="docs/contact-forms.md" target="_blank" rel="noopener noreferrer">Contact-form audit and verification dates ↗</a>
-        </section>
-        <section id="callPanel" hidden aria-label="Phone action">
-          <label for="callScript">Call script</label><textarea id="callScript" rows="7"></textarea>
-          <div class="action-row"><a class="button" id="phoneLink"></a><button class="button secondary" id="copyCall">Copy call script</button></div>
-          <p id="phoneNote" class="note"></p>
-        </section>
-        <section id="socialPanel" hidden aria-label="Social action">
-          <label for="socialText">Social post</label><textarea id="socialText" rows="6"></textarea>
-          <div class="action-row"><button class="button" id="sharePost">Share post</button><button class="button secondary" id="copySocial">Copy post</button><a class="button secondary" id="socialProfile" target="_blank" rel="noopener noreferrer">Official social profile ↗</a></div>
-          <p class="note">Review your post in your chosen app. Nothing is published automatically.</p>
-        </section>
-        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
-        <div class="completion" id="completion">
-          <div><p class="eyebrow">KEEP THE PRESSURE ON</p><label class="check"><input type="checkbox" id="completed"> I completed this action</label><p class="note">Self-reported, for this official and channel.</p></div>
-          <button class="button" id="nextOfficial" aria-label="Next official">Next official →</button>
+          <div class="row"><button type="button" class="btn" id="copyText"></button><a class="btn" id="contactLink" target="_blank" rel="noopener noreferrer"></a></div>
+          <button type="button" class="btn go" id="sent"></button>
+          <ul class="sent-list" id="officialList" aria-label="Your officials"></ul>
+        </div>
+        <div id="finish" class="finish" hidden>
+          <h3 id="finishTitle"></h3>
+          <p class="big" id="finishMessage"></p>
+          <button type="button" class="btn go" id="copyShare">Copy To Share With A Friend</button>
+          <ul class="share" id="shareRow" aria-label="Share"></ul>
+          <p class="note"><button type="button" class="link" id="reviewMessages">Review your messages</button></p>
+          <div id="finishTips"></div>
         </div>
       </div>
     </section>
-    <details class="about"><summary>About the campaign, privacy &amp; sources</summary><p>Independent civic advocacy. Not a government website or affiliated with a political party. House Democrats choose their caucus leader separately from the full House's election of a Speaker. Senate Democrats choose their own leader. State and party officials have influence, not a congressional caucus ballot.</p><p>Drafts, optional personal details and self-reported actions stay in this browser. No account, analytics, or backend. Browser data can be cleared or unavailable in private mode. No cross-device sync.</p><div id="sources"></div><p><a href="docs/sources.md">Contact verification notes</a> · <a href="docs/verification.md">Testing &amp; known limitations</a></p><details><summary>Erase saved data</summary><p>This removes this campaign's personal details, drafts and action history, including saved inactive recipients, from this browser.</p><button class="button secondary" id="erase">Erase my drafts and actions</button><div id="eraseConfirm" hidden><p>Erase permanently on this device?</p><button class="button" id="confirmErase">Yes, erase local data</button> <button class="button secondary" id="cancelErase">Cancel</button></div></details></details>
+    <p id="saveStatus" class="notice" role="status" hidden></p>
   </main>
-  <footer class="wrap"><div class="footer-mark" aria-hidden="true">DEM RESET<span>Different leadership. Same fight.</span></div><a id="forkLink" href="https://github.com/ohnoai/demreset">Want this for your state? Fork it.</a><p>Independent civic action · <a href="LICENSE">MIT licensed</a> · <a href="README.md">Adapt this project</a></p></footer>
-  <script src="data.js"></script><script src="campaign.js"></script><script src="model.js"></script><script src="app.js"></script><script src="presentation.js"></script>
+  <footer class="wrap"><div class="footer-mark" aria-hidden="true">DEM RESET<span>Different leadership. Same fight.</span></div><a id="forkLink" href="https://github.com/ohnoai/demreset">Want this for your state? Fork it.</a><p>Independent civic action · <a href="LICENSE">MIT licensed</a> · <a href="README.md">Adapt this project</a> · <button type="button" class="link" id="aboutLink">About, privacy &amp; sources</button></p></footer>
+
+  <dialog id="editor" aria-labelledby="editorTitle">
+    <h2 id="editorTitle"></h2>
+    <div id="editorSubject"><label for="editSubject">Subject</label><input id="editSubject"></div>
+    <label for="editBody" id="editBodyLabel"></label>
+    <textarea id="editBody" spellcheck="true"></textarea>
+    <div class="row"><button type="button" class="btn" id="resetText">Reset to original</button><button type="button" class="btn go" id="saveText">Done</button></div>
+    <button type="button" class="link" id="cancelEdit">Cancel</button>
+  </dialog>
+  <dialog id="about" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About, privacy &amp; sources</h2>
+    <p>Independent civic advocacy. Not a government website or affiliated with a political party. House Democrats choose their caucus leader separately from the full House's election of a Speaker. Senate Democrats choose their own leader. State and party officials have influence, not a congressional caucus ballot.</p>
+    <p>Your details, drafts and progress stay in this browser. No account, analytics or backend. Nothing is sent from this site: you send each message yourself on the official's own contact form. Browser data can be cleared or unavailable in private mode, and does not sync across devices.</p>
+    <p id="tipPrivacy" hidden></p>
+    <p>District matching uses the U.S. Census Bureau's 2020 ZIP Code Tabulation Area to 119th Congressional District relationship file. Census ZIP areas approximate postal ZIP codes, so a match is "most likely", not certain. ZIP codes that cross a district line show every possible district, and the state's district finder checks your exact address.</p>
+    <div id="sources"></div>
+    <p><a href="docs/contact-forms.md">Contact-form audit and verification dates</a> · <a href="docs/verification.md">Testing &amp; known limitations</a></p>
+    <h3>Erase saved data</h3>
+    <p>This removes this campaign's personal details, drafts and action history, including saved inactive recipients, from this browser.</p>
+    <button type="button" class="btn" id="erase">Erase my drafts and actions</button>
+    <div id="eraseConfirm" hidden><p>Erase permanently on this device?</p><div class="row"><button type="button" class="btn go" id="confirmErase">Yes, erase local data</button><button type="button" class="btn" id="cancelErase">Cancel</button></div></div>
+    <button type="button" class="link dialog-close" id="closeAbout">Close</button>
+  </dialog>
+  <dialog id="tipDialog" class="tip-dialog" aria-label="Tip jar"><div id="tipDialogBody"></div><button type="button" class="link dialog-close" id="closeTips">Close</button></dialog>
+  <p id="feedback" class="toast" role="status" aria-live="polite"></p>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <script src="data.js"></script><script src="campaign.js"></script><script src="districts.js"></script><script src="icons.js"></script><script src="model.js"></script><script src="app.js"></script><script src="tips.js"></script><script src="confetti.js"></script>
 </body>
 </html>
