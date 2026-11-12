@@ -1,8 +1,8 @@
 # DEM RESET
 
-Democrats need a reset. Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders, and ask Washington's delegation to back the change.
+Democrats need a reset. Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders, and ask Washington State's delegation to back the change.
 
-Working people deserve leaders willing to defend public services and civil rights, challenge wealthy donors, and answer to the people they represent. DEM RESET helps Washington residents make that demand directly to elected officials.
+Working people deserve leaders willing to defend public services and civil rights, challenge wealthy donors, and answer to the people they represent. DEM RESET helps Washington State residents make that demand directly to elected officials.
 
 [demreset.com](https://demreset.com) is the campaign's intended home. The domain is registered, but the site is not confirmed live yet. You can run it locally with the instructions below.
 

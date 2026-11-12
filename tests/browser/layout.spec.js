@@ -3,7 +3,7 @@ const { toConsole, channel, axe, fits } = require('./helpers');
 
 test('production metadata and icon sizes are complete', async ({ page, request }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle('DEM RESET · Washington');
+  await expect(page).toHaveTitle('DEM RESET · Washington State');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://demreset.com/');
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://demreset.com/');
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://demreset.com/assets/social-preview.png');

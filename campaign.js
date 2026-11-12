@@ -2,7 +2,7 @@
 window.CAMPAIGN_CONTENT = {
   name: 'DEM RESET',
   headline: 'DEMOCRATS NEED A RESET.',
-  intro: "Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.",
+  intro: "Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington State's delegation to back a change.",
   letters: {
     senate: {
       subject: "Oppose Chuck Schumer for Democratic leader",
