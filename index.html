@@ -65,7 +65,7 @@
           <div><label for="detailCounty">County</label><input id="detailCounty" autocomplete="off"></div>
           <div><label for="detailZip">ZIP code</label><input id="detailZip" autocomplete="postal-code" inputmode="numeric" maxlength="10"></div>
         </div>
-        <button type="button" class="btn go" id="done1">Done <span aria-hidden="true">→</span></button>
+        <button type="button" class="btn go" id="done1">Next: find my district <span aria-hidden="true">→</span></button>
       </div>
     </section>
 
@@ -100,8 +100,13 @@
             <label class="check"><input id="reviewedRecipient" type="checkbox"> I reviewed this text for this official</label>
           </div>
           <p id="limitWarning" class="notice" role="status" hidden></p>
-          <div class="row"><button type="button" class="btn" id="copyText"></button><a class="btn" id="contactLink" target="_blank" rel="noopener noreferrer"></a></div>
-          <button type="button" class="btn go" id="sent"></button>
+          <ol class="howto" aria-label="How to send it">
+            <li><span class="n" aria-hidden="true">1</span><div><p id="howCopy"></p><button type="button" class="btn" id="copyText"></button></div></li>
+            <li><span class="n" aria-hidden="true">2</span><div><p id="howOpen"></p><a class="btn" id="contactLink" target="_blank" rel="noopener noreferrer"></a></div></li>
+            <li><span class="n" aria-hidden="true">3</span><div><p id="howSend"></p><p class="note" id="howNote"></p></div></li>
+          </ol>
+          <button type="button" class="btn go" id="sent" aria-describedby="sentHint"></button>
+          <p class="note sent-hint" id="sentHint"></p>
           <ul class="sent-list" id="officialList" aria-label="Your officials"></ul>
         </div>
         <div id="finish" class="finish" hidden>

@@ -205,6 +205,16 @@
   for (const [field, id] of Object.entries(detailInputs)) $(id).oninput = () => { state.details[field] = $(id).value; save(); };
 
   // ---- Step 3: one official at a time ----
+  // "I sent it!" unlocks once the official's form, phone or profile has been opened for this channel (or, with no
+  // link to open, once the text is copied). Kept for this browser session only: official IDs and channels, no text.
+  const openedKey = `${prefix}-opened`;
+  const opened = new Set((() => { try { const v = JSON.parse(sessionStorage.getItem(openedKey)); return Array.isArray(v) ? v : []; } catch { return []; } })());
+  function markOpened(o = current(), channel = state.channel) {
+    opened.add(`${o.id}:${channel}`);
+    try { sessionStorage.setItem(openedKey, JSON.stringify([...opened])); } catch {}
+    if (current() === o && state.channel === channel) renderConsole();
+  }
+  const unlocked = (o = current()) => opened.has(`${o.id}:${state.channel}`) || actions[`${o.id}:${state.channel}`] === true;
   function renderProgress() {
     const list = myList(), count = list.filter(contacted).length;
     $('progress').hidden = !districtChosen();
@@ -263,8 +273,16 @@
     link.hidden = !target;
     if (target) { link.href = target; link.textContent = { letter: 'Open contact form ↗', call: 'Call ' + o.phone, social: 'Open their profile ↗' }[channel]; }
     if (channel === 'call') link.removeAttribute('target'); else link.target = '_blank';
-    const left = list.filter(x => !contacted(x) && x !== o).length;
+    const how = {
+      letter: ['Copy your letter', 'Open their contact form', 'Paste it into their form and send it there.', "This site doesn't send anything."],
+      call: ['Copy your script, or keep it on screen', 'Call their office', 'Read your script when someone answers.', "This site doesn't call for you."],
+      social: ['Copy your post', target ? 'Open their profile' : 'Open your social app', 'Paste it and post it there.', "This site doesn't post anything."]
+    }[channel];
+    $('howCopy').textContent = how[0]; $('howOpen').textContent = how[1]; $('howSend').textContent = how[2]; $('howNote').textContent = how[3];
+    const left = list.filter(x => !contacted(x) && x !== o).length, ready = unlocked(o);
     $('sent').textContent = `I sent it! ${left ? 'Next official' : 'Finish'} →`;
+    $('sent').setAttribute('aria-disabled', String(!ready));
+    $('sentHint').textContent = ready ? '' : target ? { letter: 'Open their form first (step 2).', call: 'Call them first (step 2).', social: 'Open their profile first (step 2).' }[channel] : 'Copy your post first (step 1).';
     $('officialList').replaceChildren(...list.map(x => {
       const li = document.createElement('li'); li.className = contacted(x) ? 'done' : '';
       li.textContent = (contacted(x) ? '✓ ' : '') + x.name; if (x === o) li.setAttribute('aria-current', 'true');
@@ -286,6 +304,11 @@
   for (const b of document.querySelectorAll('[data-channel]')) b.onclick = () => { state.channel = b.dataset.channel; feedback(''); save(); renderConsole(); };
   for (const b of document.querySelectorAll('[data-version]')) b.onclick = () => { state.letterVersion = b.dataset.version; feedback(''); save(); renderConsole(); };
   $('sent').onclick = () => {
+    if (!unlocked()) {
+      feedback($('sentHint').textContent + ' ' + $('howNote').textContent);
+      ($('contactLink').hidden ? $('copyText') : $('contactLink')).focus();
+      return;
+    }
     const list = myList(), o = current();
     pendingActions[`${o.id}:${state.channel}`] = true;
     if (mergeActions() && persist(actionKey, actions)) pendingActions = {};
@@ -312,10 +335,15 @@
   }
   // Async copies report success only if the same official and channel are still on screen.
   const context = () => { const id = current().id, channel = state.channel, source = state; return () => state === source && current().id === id && state.channel === channel; };
-  $('copyText').onclick = () => { if (allowReviewedAction()) copy(shown(), 'Copied. Ready to paste.', context(), 'editBody'); };
+  $('copyText').onclick = async () => {
+    if (!allowReviewedAction()) return;
+    const o = current(), channel = state.channel;
+    await copy(shown(), 'Copied. Ready to paste.', context(), 'editBody');
+    if ($('contactLink').hidden) markOpened(o, channel);
+  };
   $('copySubject').onclick = () => { if (allowReviewedAction()) copy(texts(state, current()).subject, 'Subject copied. Ready to paste.', context(), 'editSubject'); };
   // Save synchronously before navigation, including mobile tab/app switches.
-  $('contactLink').addEventListener('click', event => { if (!allowReviewedAction()) event.preventDefault(); else save(); });
+  $('contactLink').addEventListener('click', event => { if (!allowReviewedAction()) event.preventDefault(); else { save(); markOpened(); } });
   document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
   window.addEventListener('pagehide', save);
 
@@ -400,6 +428,7 @@
       localStorage.setItem(actionKey, '{}');
       for (const key of [draftKey, actionKey]) localStorage.removeItem(key);
       lastDraft = 'null'; state = M.create(T.shared, T.concise?.shared); actions = {}; pendingActions = {}; readFailures.clear(); writeFailures.clear(); draftConflict = false;
+      opened.clear(); try { sessionStorage.removeItem(openedKey); } catch {}
       step = 1; reviewing = false; celebrated = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.');
     }
     catch { writeFailures.add(draftKey); saveStatus(); feedback('Unable to erase browser storage. Use browser settings.'); }

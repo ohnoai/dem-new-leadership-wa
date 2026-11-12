@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { toConsole, channel, axe, fits } = require('./helpers');
+const { send, toConsole, channel, axe, fits } = require('./helpers');
 
 test('production metadata and icon sizes are complete', async ({ page, request }) => {
   await page.goto('/');
@@ -76,7 +76,7 @@ test('every step fits and passes accessibility checks at all review widths', asy
     await page.click('#districtChoices [data-district="WA-03"]');
     for (const c of ['letter', 'call', 'social']) { await channel(page, c); expect(await fits(page)).toBe(true); }
     await axe(page);
-    for (let i = 0; i < 5; i++) await page.click('#sent');
+    for (let i = 0; i < 5; i++) await send(page);
     await expect(page.locator('#finish')).toBeVisible();
     expect(await fits(page)).toBe(true); await axe(page);
     await page.click('#aboutLink'); await axe(page); await page.click('#closeAbout');

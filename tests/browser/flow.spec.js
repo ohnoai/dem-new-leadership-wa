@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { toConsole, preview, channel, goTo, stored, draftKey, actionKey } = require('./helpers');
+const { send, toConsole, preview, channel, goTo, stored, draftKey, actionKey } = require('./helpers');
 
 // Owner requirements (2026-11-11). These guard the design itself; change them only with the owner's say-so.
 test.describe('requirement guards', () => {
@@ -122,14 +122,14 @@ test('I sent it marks the official, moves to the next one, and the finish surviv
   await page.goto('/'); await toConsole(page);
   await expect(page.locator('#position')).toHaveText('Contacting 1 of 5');
   await expect(page.locator('#sent')).toHaveText('I sent it! Next official →');
-  await page.click('#sent');
+  await send(page);
   await expect(page.locator('#officialName')).toHaveText('Maria Cantwell');
   await expect(page.locator('#officialList li').first()).toHaveText('✓ Patty Murray');
   await expect(page.locator('#progressText')).toHaveText('1 / 5 contacted');
   expect(await stored(page, actionKey)).toEqual({ 'murray:letter': true });
-  await goTo(page, 'Bob Ferguson'); await channel(page, 'call'); await page.click('#sent');
+  await goTo(page, 'Bob Ferguson'); await channel(page, 'call'); await send(page);
   await expect(page.locator('#officialName')).toHaveText('Maria Cantwell');
-  for (let i = 0; i < 3; i++) await page.click('#sent');
+  for (let i = 0; i < 3; i++) await send(page);
   await expect(page.locator('#finish')).toBeVisible();
   await expect(page.locator('#finishTitle')).toHaveText('You made a difference.');
   await expect(page.locator('#console')).toBeHidden();
@@ -173,4 +173,62 @@ test('progress and drafts from before this design still count', async ({ page })
   // Another district's action stays saved even though that official is not on this list.
   expect(await stored(page, actionKey)).toEqual({ 'murray:social': true, 'smith:letter': true });
   expect((await stored(page, draftKey)).personal.jayapal.call).toBe('My saved Jayapal call');
+});
+
+// Owner request (2026-11-12): nobody should finish thinking the site sent anything for them.
+test.describe('nothing reads as automatic', () => {
+  test('step 1 says what comes next instead of "Done"', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#done1')).toHaveText('Next: find my district →');
+  });
+
+  test('"I sent it!" stays locked until the official\'s form is opened, and says why', async ({ page, context }) => {
+    await context.route('https://www.murray.senate.gov/**', route => route.fulfill({ contentType: 'text/html', body: '<title>Contact form stand-in</title>' }));
+    await page.goto('/'); await toConsole(page);
+    await expect(page.locator('.howto li')).toHaveText([/1Copy your letter/, /2Open their contact form/, /3Paste it into their form and send it there\.This site doesn't send anything\./]);
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'true');
+    await expect(page.locator('#sentHint')).toHaveText('Open their form first (step 2).');
+    await page.click('#sent', { force: true }); // a visitor can still tap the greyed button
+    await expect(page.locator('#feedback')).toHaveText("Open their form first (step 2). This site doesn't send anything.");
+    await expect(page.locator('#contactLink')).toBeFocused();
+    await expect(page.locator('#officialName')).toHaveText('Patty Murray');
+    expect(await stored(page, actionKey)).toBeNull();
+    const popup = page.waitForEvent('popup');
+    await page.click('#contactLink');
+    await (await popup).close();
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'false');
+    await expect(page.locator('#sentHint')).toBeHidden();
+    // Still unlocked after a reload in the same tab (a phone may reload the page while you're on their site).
+    await page.reload();
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'false');
+    // Each channel is separate: calling needs its own step 2.
+    await channel(page, 'call');
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'true');
+    await expect(page.locator('#sentHint')).toHaveText('Call them first (step 2).');
+    await channel(page, 'letter'); await page.click('#sent');
+    await expect(page.locator('#officialName')).toHaveText('Maria Cantwell');
+    expect(await stored(page, actionKey)).toEqual({ 'murray:letter': true });
+    // Going back to an official already sent to never re-locks it.
+    await page.click('#previousOfficial');
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'false');
+  });
+
+  test('with no profile to open, copying the post unlocks it', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto('/'); await toConsole(page); await goTo(page, 'Shasti Conrad'); await channel(page, 'social');
+    await expect(page.locator('#contactLink')).toBeHidden();
+    await expect(page.locator('#howOpen')).toHaveText('Open your social app');
+    await expect(page.locator('#sentHint')).toHaveText('Copy your post first (step 1).');
+    await page.click('#copyText');
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'false');
+  });
+
+  test('erase also forgets which forms were opened', async ({ page }) => {
+    await page.goto('/'); await toConsole(page);
+    await page.locator('#contactLink').evaluate(a => { a.addEventListener('click', e => e.preventDefault(), { once: true }); a.click(); });
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'false');
+    await page.click('#aboutLink'); await page.click('#erase'); await page.click('#confirmErase'); await page.click('#closeAbout');
+    await toConsole(page);
+    await expect(page.locator('#sent')).toHaveAttribute('aria-disabled', 'true');
+  });
 });
