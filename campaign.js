@@ -156,5 +156,29 @@ Thank you,
     influence: '[official] Publicly advocate for replacing Chuck Schumer and Hakeem Jeffries. Urge Washington congressional Democrats to hold competitive leadership elections. Silence is a choice. Voters deserve accountability, not unity without it. #DEMRESET'
   },
   call: 'Hello, my name is [your name], and I live in [your city and ZIP code]. I am calling for [official]. [request] Please record my request and let me know what action the office will take. Thank you.',
-  social: '[handle] Washington deserves accountable Democratic leadership. I am urging a change from Chuck Schumer and Hakeem Jeffries. [socialRequest] #DEMRESET'
+  social: '[handle] Washington deserves accountable Democratic leadership. I am urging a change from Chuck Schumer and Hakeem Jeffries. [socialRequest] #DEMRESET',
+  howItWorks: 'Add your details, find your representatives, and send the ready-to-use letters through their contact forms. Just a few minutes to make your voice heard.',
+  finish: {
+    title: 'You made a difference.',
+    message: 'You showed up. You spoke out. You refused to settle for more of the same. Whatever happens next, you did your part to make change possible. Thank you.'
+  },
+  // The share text already ends with the link. hashtag is used where a network takes one separately (Threads).
+  share: {
+    url: 'https://demreset.com/',
+    text: "Democrats have another chance to deliver real change. They shouldn't waste it protecting the same leadership.\n\nI just told my members of Congress where I stand. You can too.\n\n#DEMRESET https://demreset.com/",
+    emailSubject: 'I called for new Democratic leadership. Will you join me?',
+    hashtag: 'DEMRESET'
+  },
+  // Tip jar. Shown only on the hosts listed, so a fork never shows these payment details by accident.
+  // A fork that wants a tip jar replaces every value here with its own; remove the block to have none.
+  // kofi: Ko-fi page (its payment form is embedded only after a visitor taps Ko-fi).
+  // lightning: Lightning address (LUD-16) whose server allows browser requests (CORS).
+  // priceUrl: BTC/USD price as JSON with a numeric "price" (LNbits /api/v1/rate/USD), for dollar amounts.
+  tips: {
+    hosts: ['demreset.com', 'www.demreset.com'],
+    kofi: 'https://ko-fi.com/demreset',
+    lightning: 'demreset@pnwsats.com',
+    priceUrl: 'https://pnwsats.com/api/v1/rate/USD',
+    amounts: [5, 10, 25]
+  }
 };

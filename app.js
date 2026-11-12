@@ -1,7 +1,9 @@
 (() => {
   'use strict';
-  const C = window.CAMPAIGN, T = window.CAMPAIGN_CONTENT, M = window.ActionModel;
+  const C = window.CAMPAIGN, T = window.CAMPAIGN_CONTENT, M = window.ActionModel, Z = window.CAMPAIGN_ZIPS || { zips: {} };
   const $ = id => document.getElementById(id);
+
+  // ---- Storage, migration and cross-tab safety (unchanged from the previous interface) ----
   const prefix = `leadership-${C.code.toLowerCase()}`;
   const draftKey = `${prefix}-drafts-v3`, actionKey = `${prefix}-actions-v3`;
   const legacyKey = 'new-leadership-wa-v2';
@@ -19,7 +21,6 @@
   if (!actions || typeof actions !== 'object' || Array.isArray(actions)) actions = {};
   const allOfficials = C.officials;
   const officials = allOfficials.filter(o => o.active !== false);
-  const current = () => officials.find(o => o.id === state.selected) || officials[0];
   const ballot = o => Object.hasOwn(o, 'vote') ? o.vote : ['senate', 'house'].includes(o.group) ? o.group : null;
   const normalized = o => ({ ...o, vote: ballot(o) });
   // Preserve exact prototype text, including user-written greetings. Never rewrite it.
@@ -48,8 +49,10 @@
       if (p && !p.legacyReview && ((typeof p.call === 'string' && p.call === legacy?.callScript?.[o.group]) || (typeof p.social === 'string' && p.social === legacy?.social))) p.legacyReview = 'Imported prototype text';
     }
   }
+  // Only a problem is shown; a working save needs no message.
   function saveStatus() {
-    $('saveStatus').textContent = readFailures.size || writeFailures.size ? 'Not saved. Copy your work.' : draftConflict ? 'Another tab changed this draft.' : 'Saved on this device';
+    const text = readFailures.size || writeFailures.size ? 'Not saved. Copy your work.' : draftConflict ? 'Another tab changed this draft. Copy any edits here, then reload.' : '';
+    $('saveStatus').textContent = text; $('saveStatus').hidden = !text;
   }
   function persist(key, value) {
     let saved = false;
@@ -76,67 +79,139 @@
       if (persist(draftKey, state)) lastDraft = JSON.stringify(state);
     } catch { writeFailures.add(draftKey); saveStatus(); }
   };
-  function feedback(text) { $('feedback').textContent = text; }
-  function option(value, text) {
-    const el = document.createElement('option'); el.value = value; el.textContent = text; return el;
+  function mergeActions() {
+    const latest = read(actionKey);
+    if (latest === undefined) { actions = { ...actions, ...pendingActions }; saveStatus(); return false; }
+    actions = { ...(latest && typeof latest === 'object' && !Array.isArray(latest) ? latest : {}), ...pendingActions };
+    return true;
   }
-  for (const [label, matches] of [
-    ['Senate Democrats', o => o.group === 'senate'],
-    ['House Democrats', o => o.group === 'house'],
-    ['Washington Democratic leadership', o => o.group === 'influence']
-  ]) {
-    const group = document.createElement('optgroup'); group.label = label;
-    for (const o of officials.filter(matches)) group.append(option(o.id, `${o.name} · ${o.district}`));
-    $('official').append(group);
+
+  // ---- Small helpers ----
+  function feedback(text) {
+    const el = $('feedback'); el.textContent = text; el.classList.toggle('show', !!text);
+    clearTimeout(feedback.timer); if (text) feedback.timer = setTimeout(() => el.classList.remove('show'), 4000);
   }
-  for (const o of allOfficials.filter(o => o.group === 'house').sort((a, b) => a.district.localeCompare(b.district))) {
-    $('district').append(option(o.district, `${o.district} · ${o.name}`));
+  const channels = ['letter', 'call', 'social'];
+  const contacted = o => channels.some(channel => actions[`${o.id}:${channel}`] === true);
+  const house = allOfficials.filter(o => o.group === 'house').sort((a, b) => a.district.localeCompare(b.district));
+  const districtName = n => `${Z.state || C.code}-${String(n).padStart(2, '0')}`;
+  const repFor = district => house.find(o => o.district === district);
+  const districtChosen = () => !!repFor(state.district);
+  // Your officials: both senators, your own House member if a Democrat, then state leadership.
+  function myList() {
+    const rep = officials.find(o => o.group === 'house' && o.district === state.district);
+    return [...officials.filter(o => o.group === 'senate'), ...(rep ? [rep] : []), ...officials.filter(o => o.group === 'influence')];
   }
+  function current() {
+    const list = myList();
+    return list.find(o => o.id === state.selected) || list.find(o => !contacted(o)) || list[0];
+  }
+  const letterFields = () => state.letterVersion === 'concise' ? { message: 'conciseMessage', subject: 'conciseSubject' } : { message: 'message', subject: 'subject' };
+  function socialText(st, o) {
+    const n = normalized(o), handle = o.name + ':';
+    // Sharing may target any network; a published X/Facebook identity is not a universal mention.
+    return st.personal[o.id]?.social ?? T.posts?.[n.vote || 'influence']?.replace('[official]', handle) ?? T.social.replace('[handle]', handle).replace('[socialRequest]', n.vote ? 'Use your caucus vote to support a credible alternative.' : 'Use your influence to advocate for change.');
+  }
+  // The text shown for an official and channel; the same model calls as before, so wording is unchanged.
+  function texts(st, o) {
+    const n = normalized(o), d = M.draft(st, n, T);
+    return { subject: d.subject, letter: d.message, call: M.call(st, n, T), social: socialText(st, o) };
+  }
+  const shown = (o = current()) => texts(state, o)[state.channel];
+  const editFields = channel => channel === 'letter' ? Object.values(letterFields()) : [channel];
+  // A copy of state with this channel's personal edits removed: the original text.
+  function withoutEdits(o, channel) {
+    const st = { ...state, personal: { ...state.personal }, bindings: { ...state.bindings } };
+    const p = { ...st.personal[o.id] }, b = { ...st.bindings[o.id] };
+    for (const field of editFields(channel)) { delete p[field]; delete b[field]; }
+    st.personal[o.id] = p; st.bindings[o.id] = b;
+    return st;
+  }
+
+  // ---- Static copy ----
   $('edition').textContent = C.state.toUpperCase();
   $('headline').textContent = T.headline;
   $('intro').textContent = T.intro;
   $('heroKicker').textContent = C.kicker || `${C.state.toUpperCase()}. A NEW DIRECTION.`;
+  $('howLine').textContent = T.howItWorks || '';
   document.title = `${T.name} · ${C.state}`;
   $('districtFinder').href = C.districtFinder || $('districtFinder').href;
-  $('districtFinder').textContent = `Open ${C.state} district finder ↗`;
-  $('districtMaps').href = C.districtMaps || $('districtMaps').href;
   $('forkLink').href = C.repository || $('forkLink').href;
+  $('finishTitle').textContent = T.finish?.title || 'Thank you.';
+  $('finishMessage').textContent = T.finish?.message || '';
   for (const source of C.sources) {
     const link = document.createElement('a'); link.textContent = source.name + ' ↗';
     link.href = source.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; $('sources').append(link);
   }
-  function renderDraft() {
-    const o = normalized(current()), draft = M.draft(state, o, T);
-    $('subject').value = draft.subject; $('message').value = draft.message;
-    const personal = state.personal[o.id] || {};
-    $('letterVersion').value = state.letterVersion || 'full';
-    const fields = letterFields();
-    const master = M.shared(state, o, T);
-    $('sharedSubject').value = master.subject ?? state.shared[fields.subject]; $('sharedMessage').value = master.message ?? state.shared[fields.message];
-    $('sharedVersion').textContent = state.letterVersion === 'concise' ? 'Editing the concise master.' : 'Editing the full master.';
-    $('draftKind').textContent = typeof personal[fields.message] === 'string' ? 'Personal version' : 'Shared draft';
-    $('useShared').hidden = !Object.hasOwn(personal, fields.message) && !Object.hasOwn(personal, fields.subject);
-    $('callScript').value = M.call(state, o, T);
-    // Sharing may target any network; a published X/Facebook identity is not a universal mention.
-    const handle = o.name + ':';
-    $('socialText').value = personal.social ?? T.posts?.[o.vote || 'influence']?.replace('[official]', handle) ?? T.social.replace('[handle]', handle).replace('[socialRequest]', o.vote ? 'Use your caucus vote to support a credible alternative.' : 'Use your influence to advocate for change.');
-    renderReview(); renderCounts();
+
+  // ---- Steps ----
+  let step = districtChosen() ? 3 : 1, forcePick = false, reviewing = false, celebrated = false;
+  const detailInputs = { name: 'detailName', city: 'detailCity', county: 'detailCounty', zip: 'detailZip' };
+  const zip5 = () => (state.details.zip || '').replace(/\D/g, '').slice(0, 5);
+  function setSteps() {
+    const states = step === 1 ? ['active', districtChosen() ? 'done' : 'locked', districtChosen() ? 'done' : 'locked']
+      : step === 2 ? ['done', 'active', 'locked'] : ['done', 'done', 'active'];
+    states.forEach((s, i) => { $('s' + (i + 1)).dataset.state = s; });
   }
-  const letterFields = () => state.letterVersion === 'concise' ? { message: 'conciseMessage', subject: 'conciseSubject' } : { message: 'message', subject: 'subject' };
-  function renderCounts() {
-    const form = current().form || {}, warnings = [];
-    for (const field of ['subject', 'message']) {
-      const rule = form[field], value = $(field).value;
-      const count = rule?.status === 'verified' && rule.newlines === 'crlf' ? value.replace(/\r?\n/g, '\r\n').length : value.length;
-      const reported = rule?.status === 'user-reported';
-      const limit = (rule?.status === 'verified' || reported) && Number.isInteger(rule.limit) && rule.limit > 0 ? rule.limit : null;
-      $(field + 'Count').textContent = `${count.toLocaleString('en-US')}${limit ? ' / ' + limit.toLocaleString('en-US') : ''} characters${limit && reported ? ' (user-reported advisory)' : ''}`;
-      if (limit && count > limit) warnings.push(`${field === 'message' ? 'Message' : 'Subject'} exceeds the ${reported ? 'user-reported advisory threshold' : 'verified form limit'} by ${(count - limit).toLocaleString('en-US')} characters.${reported ? ' This threshold is not independently verified; counting on the official form may differ.' : ''}`);
+  function focusStep(n) { $('h' + n + 't').focus({ preventScroll: true }); $('s' + n).scrollIntoView({ block: 'start' }); }
+  function renderSummaries() {
+    const d = state.details, county = (d.county || '').trim();
+    const parts = [d.name, d.city, county && (/county$/i.test(county) ? county : county + ' County'), d.zip].map(v => (v || '').trim()).filter(Boolean);
+    $('sum1').textContent = parts.length ? '✓ ' + parts.join(' · ') : 'Skipped. Letters will end with [Your name].';
+    const rep = repFor(state.district);
+    $('sum2').textContent = !rep ? '' : rep.active !== false ? `✓ ${rep.district} · ${rep.name}` : `✓ ${rep.district} · ${rep.name}, a Republican, so not on your list`;
+  }
+  function choiceButton(rep) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn choice'; b.dataset.district = rep.district;
+    b.textContent = `${rep.district} · ${rep.name}`;
+    if (rep.active === false) { const s = document.createElement('span'); s.textContent = 'Republican'; b.append(' ', s); }
+    return b;
+  }
+  function renderDistrictStep() {
+    const zip = zip5(), hits = /^\d{5}$/.test(zip) ? Z.zips[zip] : null;
+    const single = !forcePick && hits?.length === 1 && repFor(districtName(hits[0]));
+    $('districtMatch').hidden = $('confirmDistrict').hidden = $('otherDistrict').hidden = !single;
+    $('districtChoices').hidden = $('districtLead').hidden = !!single;
+    $('finderLead').textContent = single ? 'Live near a district line?' : 'Not sure?';
+    $('districtFinder').textContent = single ? 'Check your exact address ↗' : "Look up your exact address on the state's district finder ↗";
+    if (single) {
+      const rep = repFor(districtName(hits[0]));
+      $('matchLabel').textContent = `ZIP ${zip} is most likely ${rep.district}. Your representative:`;
+      $('matchName').textContent = rep.name + (rep.active === false ? ' (Republican)' : '');
+      $('confirmDistrict').dataset.district = rep.district;
+      return;
     }
-    $('limitWarning').hidden = !warnings.length;
-    $('limitWarning').textContent = warnings.length ? warnings.join(' ') + ' Edit this version or choose the concise alternative. Nothing has been shortened.' : '';
+    const multi = !forcePick && hits?.length > 1;
+    $('districtLead').textContent = multi ? `ZIP ${zip} crosses a district line. Which one is yours?` : zip && !hits && !forcePick ? `We couldn't match ZIP ${zip}. Pick your district.` : 'Pick your district.';
+    const reps = multi ? hits.map(n => repFor(districtName(n))).filter(Boolean) : house;
+    $('districtChoices').replaceChildren(...reps.map(choiceButton));
   }
-  const reviewSnapshot = () => JSON.stringify([state.channel, $('subject').value, $('message').value, $('callScript').value, $('socialText').value]);
+  function pickDistrict(district) {
+    state.district = district; forcePick = false; reviewing = false;
+    const list = myList();
+    if (!list.some(o => o.id === state.selected)) state.selected = (list.find(o => !contacted(o)) || list[0]).id;
+    save(); step = 3; render(); focusStep(3);
+  }
+  $('done1').onclick = () => {
+    const hits = Z.zips[zip5()];
+    // Keep a chosen district when the ZIP still fits it (or there is no usable ZIP); otherwise ask again.
+    const keep = districtChosen() && (!hits || hits.some(n => districtName(n) === state.district));
+    forcePick = false; step = keep ? 3 : 2; save(); render(); focusStep(step);
+  };
+  $('confirmDistrict').onclick = () => pickDistrict($('confirmDistrict').dataset.district);
+  $('districtChoices').onclick = event => { const b = event.target.closest('[data-district]'); if (b) pickDistrict(b.dataset.district); };
+  $('pickOther').onclick = () => { forcePick = true; renderDistrictStep(); $('districtChoices').querySelector('button')?.focus(); };
+  for (const b of document.querySelectorAll('[data-change]')) b.onclick = () => { step = +b.dataset.change; forcePick = false; render(); focusStep(step); };
+  for (const [field, id] of Object.entries(detailInputs)) $(id).oninput = () => { state.details[field] = $(id).value; save(); };
+
+  // ---- Step 3: one official at a time ----
+  function renderProgress() {
+    const list = myList(), count = list.filter(contacted).length;
+    $('progress').hidden = !districtChosen();
+    $('progressText').replaceChildren(`${count} / ${list.length} `, Object.assign(document.createElement('span'), { className: 'pc', textContent: 'contacted' }));
+    $('progressBar').style.width = `${list.length ? count / list.length * 100 : 0}%`;
+  }
+  const reviewSnapshot = () => { const t = texts(state, current()); return JSON.stringify([state.channel, t.subject, t.letter, t.call, t.social]); };
   function renderReview() {
     const p = state.personal[current().id];
     $('recipientReview').hidden = !p?.legacyReview;
@@ -151,124 +226,168 @@
     return true;
   }
   $('reviewedRecipient').onchange = () => { M.edit(state, current(), 'reviewed', $('reviewedRecipient').checked ? reviewSnapshot() : ''); save(); };
-  const actionId = () => `${current().id}:${state.channel}`;
-  function renderProgress() {
-    const count = officials.reduce((sum, o) => sum + ['letter', 'call', 'social'].filter(channel => actions[`${o.id}:${channel}`] === true).length, 0);
-    const total = officials.length * 3;
-    $('progressText').textContent = `${count} / ${total} actions`;
-    $('progressBar').style.width = `${count / total * 100}%`;
-    $('completed').checked = actions[actionId()] === true;
+  // Warn only when edited text passes a verified or user-reported form limit. Nothing is ever shortened.
+  function renderLimit(o, t) {
+    const warnings = [];
+    if (state.channel === 'letter') for (const field of ['subject', 'message']) {
+      const rule = o.form?.[field], value = field === 'message' ? t.letter : t.subject;
+      const reported = rule?.status === 'user-reported';
+      const limit = (rule?.status === 'verified' || reported) && Number.isInteger(rule.limit) && rule.limit > 0 ? rule.limit : null;
+      const count = rule?.status === 'verified' && rule.newlines === 'crlf' ? value.replace(/\r?\n/g, '\r\n').length : value.length;
+      if (limit && count > limit) warnings.push(`This ${field} is ${count.toLocaleString('en-US')} characters; this office's form takes about ${limit.toLocaleString('en-US')}${reported ? ' (reported by a user, not verified)' : ''}. Shorten your edit or use Concise.`);
+    }
+    $('limitWarning').hidden = !warnings.length; $('limitWarning').textContent = warnings.join(' ');
+  }
+  function renderConsole() {
+    const list = myList(), o = current(), n = list.length, i = list.indexOf(o), all = list.every(contacted);
+    state.selected = o.id;
+    $('console').hidden = all && !reviewing; $('finish').hidden = !all || reviewing;
+    if (all && !reviewing) { if (!celebrated) { celebrated = true; window.celebrate?.(); } return; }
+    const t = texts(state, o), channel = state.channel;
+    $('position').textContent = `Contacting ${i + 1} of ${n}`;
+    $('officialName').textContent = o.name;
+    $('officialRole').textContent = o.office + (o.group === 'house' ? ' · ' + o.district : '');
+    $('previousOfficial').disabled = i <= 0; $('nextOfficial').disabled = i >= n - 1;
+    for (const b of document.querySelectorAll('[data-channel]')) b.setAttribute('aria-pressed', String(b.dataset.channel === channel));
+    for (const b of document.querySelectorAll('[data-version]')) b.setAttribute('aria-pressed', String(b.dataset.version === (state.letterVersion || 'full')));
+    $('letterVersion').hidden = $('subjectRow').hidden = channel !== 'letter';
+    const subject = o.form?.subject, noTextSubject = channel === 'letter' && subject?.status === 'verified' && ['absent', 'category'].includes(subject.control);
+    $('subjectText').textContent = t.subject;
+    $('copySubject').hidden = noTextSubject;
+    $('subjectHelp').hidden = !noTextSubject; $('subjectHelp').textContent = noTextSubject ? subject.help : '';
+    $('textLabel').textContent = { letter: `Your letter (${state.letterVersion === 'concise' ? 'concise' : 'full'})`, call: 'Your call script', social: 'Your post' }[channel];
+    $('preview').textContent = t[channel];
+    $('copyText').textContent = { letter: 'Copy letter', call: 'Copy script', social: 'Copy post' }[channel];
+    const link = $('contactLink'), phone = o.phone ? '+1' + o.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '') : '';
+    const target = { letter: o.website, call: phone && 'tel:' + phone, social: o.social }[channel];
+    link.hidden = !target;
+    if (target) { link.href = target; link.textContent = { letter: 'Open contact form ↗', call: 'Call ' + o.phone, social: 'Open their profile ↗' }[channel]; }
+    if (channel === 'call') link.removeAttribute('target'); else link.target = '_blank';
+    const left = list.filter(x => !contacted(x) && x !== o).length;
+    $('sent').textContent = `I sent it! ${left ? 'Next official' : 'Finish'} →`;
+    $('officialList').replaceChildren(...list.map(x => {
+      const li = document.createElement('li'); li.className = contacted(x) ? 'done' : '';
+      li.textContent = (contacted(x) ? '✓ ' : '') + x.name; if (x === o) li.setAttribute('aria-current', 'true');
+      return li;
+    }));
+    renderReview(); renderLimit(o, t);
   }
   function render() {
-    const o = current(), vote = ballot(o);
-    state.selected = o.id;
-    $('official').value = o.id; $('district').value = state.district;
-    for (const [field, id] of Object.entries({ name: 'detailName', city: 'detailCity', county: 'detailCounty', zip: 'detailZip' })) $(id).value = state.details[field] || '';
-    renderDistrict();
-    $('officialName').textContent = o.name;
-    $('officialRole').textContent = `${o.office} · ${o.district}${o.party ? ' · ' + o.party : ''}`;
-    $('voteBadge').textContent = vote ? `Direct ${vote === 'senate' ? 'Senate' : 'House'} caucus vote` : 'Indirect influence';
-    $('voteBadge').classList.toggle('indirect', !vote);
-    $('voteDescription').textContent = vote ? `Ask for a leadership change in the ${vote === 'senate' ? 'Senate' : 'House'} Democratic caucus.` : 'No vote in Democratic congressional leadership elections. Ask this office to use its influence.';
-    $('channel').value = state.channel;
-    for (const channel of ['letter', 'call', 'social']) $(channel + 'Panel').hidden = state.channel !== channel;
-    $('contactLink').href = o.website;
-    $('contactHelp').textContent = 'Copy, open the official form, paste, and submit there. Nothing is sent from this site.' + (o.group === 'house' ? ' House offices generally accept messages only from their own constituents.' : '');
-    $('formCompatibility').textContent = o.form?.note || 'Form limits are unverified. Check the official page before sending; no limit is assumed here.';
-    const subject = o.form?.subject;
-    const noTextSubject = subject?.status === 'verified' && ['absent', 'category'].includes(subject.control);
-    $('copySubject').hidden = noTextSubject;
-    $('subjectHelp').hidden = !noTextSubject;
-    $('subjectHelp').textContent = noTextSubject ? subject.help : '';
-    $('phoneLink').hidden = !o.phone;
-    if (o.phone) { $('phoneLink').href = 'tel:+1' + o.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, ''); $('phoneLink').textContent = 'Call ' + o.phone; }
-    $('phoneNote').textContent = o.phone ? 'Calls open your phone app. You decide whether to place the call.' : 'No verified direct phone number is listed. Use the official contact page instead.';
-    $('socialProfile').hidden = !o.social;
-    if (o.social) $('socialProfile').href = o.social;
-    $('sharedSubject').value = state.shared.subject; $('sharedMessage').value = state.shared.message;
-    renderDraft(); renderProgress(); saveStatus();
+    for (const [field, id] of Object.entries(detailInputs)) $(id).value = state.details[field] || '';
+    if (step > 1 && step !== 2 && !districtChosen()) step = 2;
+    setSteps(); renderSummaries(); renderProgress();
+    if (step === 2) renderDistrictStep();
+    if (step === 3) renderConsole();
+    saveStatus();
   }
-  function select(id, moveFocus = false) {
-    state.selected = id; feedback(''); render(); save();
-    if (moveFocus) { $('official').focus({ preventScroll: true }); $('action').scrollIntoView({ block: 'start' }); }
-  }
-  $('official').onchange = () => select($('official').value);
-  function renderDistrict() {
-    const office = allOfficials.find(o => o.group === 'house' && o.district === state.district);
-    $('districtNotice').hidden = !office || office.active !== false;
-    $('districtNotice').textContent = office?.active === false ? `${office.district} is represented by ${office.name}, a Republican who cannot vote in Democratic leadership elections. Contact Senators Patty Murray and Maria Cantwell, or Washington Democratic leadership, instead. Any older drafts and action history for this office stay saved but are not counted in campaign progress.` : '';
-  }
-  $('district').onchange = () => {
-    state.district = $('district').value;
-    const o = officials.find(o => o.group === 'house' && o.district === state.district);
-    if (o) { $('districtDetails').open = false; select(o.id, true); } else { select('murray'); renderDistrict(); }
-  };
-  $('channel').onchange = () => { state.channel = $('channel').value; feedback(''); render(); save(); };
-  $('letterVersion').onchange = () => { state.letterVersion = $('letterVersion').value; feedback(''); renderDraft(); save(); };
-  for (const field of ['subject', 'message']) $(field).oninput = () => {
-    M.editDisplayed(state, normalized(current()), field, $(field).value, T); save();
-    $('draftKind').textContent = Object.hasOwn(state.personal[current().id], letterFields().message) ? 'Personal version' : 'Shared draft';
-    $('useShared').hidden = false;
-    renderReview(); renderCounts();
-  };
-  for (const [id, field] of [['callScript', 'call'], ['socialText', 'social']]) $(id).oninput = () => { M.editDisplayed(state, normalized(current()), field, $(id).value, T); renderReview(); save(); };
-  for (const [id, field] of [['sharedSubject', 'subject'], ['sharedMessage', 'message']]) $(id).oninput = () => {
-    if (state.legacyShared) state.shared[letterFields()[field]] = $(id).value;
-    else { const key = M.sharedKey(state, normalized(current())); state.categoryShared[key] = { ...state.categoryShared[key], [field]: $(id).value }; }
-    renderDraft(); save();
-  };
-  for (const [field, id] of Object.entries({ name: 'detailName', city: 'detailCity', county: 'detailCounty', zip: 'detailZip' })) $(id).oninput = () => { state.details[field] = $(id).value; renderDraft(); save(); };
-  $('useShared').onclick = () => { const p = state.personal[current().id], fields = letterFields(); delete p[fields.message]; delete p[fields.subject]; renderDraft(); save(); feedback('This recipient now uses the shared draft for this version.'); };
-  function mergeActions() {
-    const latest = read(actionKey);
-    if (latest === undefined) { actions = { ...actions, ...pendingActions }; saveStatus(); return false; }
-    actions = { ...(latest && typeof latest === 'object' && !Array.isArray(latest) ? latest : {}), ...pendingActions };
-    return true;
-  }
-  $('completed').onchange = () => {
-    pendingActions[actionId()] = $('completed').checked;
+  function select(id) { state.selected = id; feedback(''); save(); renderConsole(); }
+  $('previousOfficial').onclick = () => { const list = myList(); select(list[Math.max(0, list.indexOf(current()) - 1)].id); };
+  $('nextOfficial').onclick = () => { const list = myList(); select(list[Math.min(list.length - 1, list.indexOf(current()) + 1)].id); };
+  for (const b of document.querySelectorAll('[data-channel]')) b.onclick = () => { state.channel = b.dataset.channel; feedback(''); save(); renderConsole(); };
+  for (const b of document.querySelectorAll('[data-version]')) b.onclick = () => { state.letterVersion = b.dataset.version; feedback(''); save(); renderConsole(); };
+  $('sent').onclick = () => {
+    const list = myList(), o = current();
+    pendingActions[`${o.id}:${state.channel}`] = true;
     if (mergeActions() && persist(actionKey, actions)) pendingActions = {};
-    renderProgress();
+    const i = list.indexOf(o), next = list.find((x, j) => j > i && !contacted(x)) || list.find(x => !contacted(x));
+    if (next) state.selected = next.id; else reviewing = false;
+    save(); renderProgress(); renderConsole(); focusStep(3);
   };
-  $('nextOfficial').onclick = () => { const index = officials.findIndex(o => o.id === current().id); select(officials[(index + 1) % officials.length].id, true); };
-  function captureAction(id) {
-    const field = $(id), text = field.value, selected = state.selected, channel = state.channel, source = state;
-    return { field, text, isCurrent: () => state === source && state.selected === selected && state.channel === channel && field.value === text };
-  }
-  async function copy(id, context) {
-    if (!context && !allowReviewedAction()) return;
-    context = context || captureAction(id);
+  $('reviewMessages').onclick = () => { reviewing = true; renderConsole(); focusStep(3); };
+
+  // Copy: the clipboard API, then a temporary-textarea fallback, then select the text for a manual copy.
+  async function copy(text, done, isCurrent = () => true, field) {
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText(context.text);
-      if (context.isCurrent()) feedback('Copied. Ready to paste.');
-    } catch {
-      if (!context.isCurrent()) return;
-      context.field.focus(); context.field.select();
-      feedback('Clipboard unavailable. Text selected; use your device’s Copy command.');
-    }
+      await navigator.clipboard.writeText(text);
+      if (isCurrent()) feedback(done);
+      return;
+    } catch {}
+    if (!isCurrent()) return;
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.append(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch {} ta.remove();
+    if (ok) { feedback(done); return; }
+    if (field) { openEditor(); const el = $(field); el.focus(); el.select(); }
+    feedback('Clipboard unavailable. Text selected; use your device’s Copy command.');
   }
-  for (const [button, field] of [['copySubject', 'subject'], ['copyMessage', 'message'], ['copyCall', 'callScript'], ['copySocial', 'socialText']]) $(button).onclick = () => copy(field);
-  $('sharePost').onclick = async () => {
-    if (!allowReviewedAction()) return;
-    const context = captureAction('socialText');
-    if (!navigator.share) { await copy('socialText', context); return; }
-    try { await navigator.share({ text: context.text }); if (context.isCurrent()) feedback('Share dialog closed. Mark complete only if you posted.'); }
-    catch (error) { if (error.name !== 'AbortError') { await copy('socialText', context); } }
-  };
+  // Async copies report success only if the same official and channel are still on screen.
+  const context = () => { const id = current().id, channel = state.channel, source = state; return () => state === source && current().id === id && state.channel === channel; };
+  $('copyText').onclick = () => { if (allowReviewedAction()) copy(shown(), 'Copied. Ready to paste.', context(), 'editBody'); };
+  $('copySubject').onclick = () => { if (allowReviewedAction()) copy(texts(state, current()).subject, 'Subject copied. Ready to paste.', context(), 'editSubject'); };
   // Save synchronously before navigation, including mobile tab/app switches.
-  for (const id of ['contactLink', 'phoneLink', 'socialProfile']) $(id).addEventListener('click', event => { if (!allowReviewedAction()) event.preventDefault(); else save(); });
+  $('contactLink').addEventListener('click', event => { if (!allowReviewedAction()) event.preventDefault(); else save(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
   window.addEventListener('pagehide', save);
+
+  // ---- Edit dialog ----
+  let resetRequested = false;
+  function openEditor() {
+    const o = current(), t = texts(state, o), channel = state.channel;
+    resetRequested = false;
+    $('editorTitle').textContent = `Edit · ${o.name}`;
+    $('editorSubject').hidden = channel !== 'letter';
+    $('editSubject').value = t.subject;
+    $('editBodyLabel').textContent = { letter: 'Letter', call: 'Call script', social: 'Post' }[channel];
+    $('editBody').value = t[channel];
+    if (!$('editor').open) $('editor').showModal();
+  }
+  $('editText').onclick = $('preview').onclick = openEditor;
+  $('resetText').onclick = () => {
+    const t = texts(withoutEdits(current(), state.channel), current());
+    resetRequested = true; $('editSubject').value = t.subject; $('editBody').value = t[state.channel];
+  };
+  $('saveText').onclick = () => {
+    const o = current(), n = normalized(o), channel = state.channel;
+    if (resetRequested) {
+      const clean = withoutEdits(o, channel);
+      state.personal[o.id] = clean.personal[o.id]; state.bindings[o.id] = clean.bindings[o.id];
+    }
+    const before = texts(state, o);
+    if (channel === 'letter' && $('editSubject').value !== before.subject) M.editDisplayed(state, n, 'subject', $('editSubject').value, T);
+    const body = $('editBody').value;
+    if (body !== before[channel]) M.editDisplayed(state, n, channel === 'letter' ? 'message' : channel, body, T);
+    $('editor').close(); save(); renderConsole();
+    // Confirm only a real save; a refused or failed save keeps its own warning on screen.
+    if (!draftConflict && !readFailures.size && !writeFailures.size) feedback(resetRequested ? 'Back to the original text.' : 'Saved on this device.');
+  };
+  $('cancelEdit').onclick = () => $('editor').close();
+
+  // ---- Finish: share ----
+  const share = T.share || {};
+  function shareRow() {
+    const e = encodeURIComponent, text = e(share.text || ''), url = e(share.url || location.href), icons = window.BRAND_ICONS || {};
+    const svg = (d, line) => `<svg viewBox="0 0 24 24" aria-hidden="true"${line ? ' fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"' : ''}><path${line ? '' : ' fill="currentColor"'} d="${d}"/></svg>`;
+    // Intent formats checked 2026-11-11 (docs/development.md). Instagram and TikTok have no web share link.
+    const items = [
+      ['X', `https://twitter.com/intent/tweet?text=${text}`, icons.x],
+      ['Bluesky', `https://bsky.app/intent/compose?text=${text}`, icons.bluesky],
+      ['Threads', `https://www.threads.com/intent/post?text=${text}${share.hashtag ? '&tag=' + e(share.hashtag) : ''}`, icons.threads],
+      ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${url}`, icons.facebook],
+      ['Snapchat', `https://www.snapchat.com/scan?attachmentUrl=${url}`, icons.snapchat],
+      ['Reddit', `https://www.reddit.com/submit?url=${url}&title=${e((share.text || '').split('\n\n')[0])}`, icons.reddit],
+      ['WhatsApp', `https://wa.me/?text=${text}`, icons.whatsapp],
+      ['Text', `sms:?&body=${text}`, 'M4 5h16v11H9l-5 4Z', true],
+      ['Email', `mailto:?subject=${e(share.emailSubject || '')}&body=${text}`, 'M3 6h18v12H3ZM3 7l9 6 9-6', true]
+    ];
+    return items.map(([name, href, d, line]) => `<li><a href="${href}"${href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''} aria-label="Share on ${name}">${d ? svg(d, line) : ''}<span>${name}</span></a></li>`).join('')
+      + (navigator.share ? `<li><button type="button" id="shareMore" aria-label="More ways to share">${svg('M12 3v12M7 8l5-5 5 5M5 14v6h14v-6', true)}<span>More</span></button></li>` : '');
+  }
+  $('shareRow').innerHTML = shareRow();
+  $('copyShare').onclick = () => copy(share.text || '', 'Copied. Paste it anywhere.');
+  $('shareMore')?.addEventListener('click', () => navigator.share({ text: share.text }).catch(() => {}));
+
+  // ---- About, privacy and erase ----
+  $('aboutLink').onclick = () => $('about').showModal();
+  $('closeAbout').onclick = () => $('about').close();
   // Other tabs never silently overwrite unsaved-in-memory work. Progress is independent.
   window.addEventListener('storage', event => {
     if (event.key === actionKey) {
-      if (event.newValue === null && event.oldValue !== null) { pendingActions = {}; actions = {}; state = M.create(T.shared, T.concise?.shared); lastDraft = 'null'; draftConflict = false; readFailures.clear(); writeFailures.clear(); render(); saveStatus(); }
+      if (event.newValue === null && event.oldValue !== null) { pendingActions = {}; actions = {}; state = M.create(T.shared, T.concise?.shared); lastDraft = 'null'; draftConflict = false; readFailures.clear(); writeFailures.clear(); step = 1; render(); saveStatus(); }
       else mergeActions();
-      renderProgress();
+      renderProgress(); if (step === 3) renderConsole();
     }
     if (event.key === draftKey && event.newValue === null && event.oldValue !== null) {
-      state = M.create(T.shared, T.concise?.shared); lastDraft = 'null'; draftConflict = false; render();
+      state = M.create(T.shared, T.concise?.shared); lastDraft = 'null'; draftConflict = false; step = 1; render();
       feedback('Local details and drafts erased in another tab.');
     } else if (event.key === draftKey) feedback('Drafts changed in another tab. This tab keeps its current version; reload to use the other version.');
   });
@@ -280,10 +399,13 @@
       // Create then remove an empty action record so other tabs receive an erase event even if no actions were saved.
       localStorage.setItem(actionKey, '{}');
       for (const key of [draftKey, actionKey]) localStorage.removeItem(key);
-      lastDraft = 'null'; state = M.create(T.shared, T.concise?.shared); actions = {}; pendingActions = {}; readFailures.clear(); writeFailures.clear(); draftConflict = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.');
+      lastDraft = 'null'; state = M.create(T.shared, T.concise?.shared); actions = {}; pendingActions = {}; readFailures.clear(); writeFailures.clear(); draftConflict = false;
+      step = 1; reviewing = false; celebrated = false; render(); $('eraseConfirm').hidden = true; feedback('Local drafts and actions erased.');
     }
     catch { writeFailures.add(draftKey); saveStatus(); feedback('Unable to erase browser storage. Use browser settings.'); }
   };
+
+  celebrated = districtChosen() && myList().every(contacted); // no confetti for a finish reached on an earlier visit
   render();
   if (!savedDrafts && C.code === 'WA' && Object.keys(state.personal).length) {
     save();
