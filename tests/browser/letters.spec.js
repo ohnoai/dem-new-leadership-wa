@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { toConsole, preview, channel, version, goTo, edit, stored, draftKey, axe, fits } = require('./helpers');
+const { send, toConsole, preview, channel, version, goTo, edit, stored, draftKey, axe, fits } = require('./helpers');
 
 async function start(page, district = 'WA-01') { await page.goto('/'); await toConsole(page, district); }
 const clip = page => page.evaluate(() => navigator.clipboard.readText()).then(t => t.replace(/\r\n/g, '\n'));
@@ -31,7 +31,7 @@ test('reset to original restores this letter only, keeping other channels, offic
   await start(page);
   await edit(page, { body: 'Custom Murray letter', subject: 'Custom Murray subject' });
   await channel(page, 'call'); await edit(page, { body: 'Custom Murray call' });
-  await channel(page, 'letter'); await page.click('#sent');
+  await channel(page, 'letter'); await send(page);
   await expect(page.locator('#officialName')).toHaveText('Maria Cantwell');
   await edit(page, { body: 'Custom Cantwell letter' });
   await goTo(page, 'Patty Murray');

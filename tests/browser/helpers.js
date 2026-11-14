@@ -31,6 +31,15 @@ async function edit(page, { subject, body, reset } = {}) {
   await page.locator('#saveText').click();
   await expect(page.locator('#editor')).toBeHidden();
 }
+// Do what a visitor does before "I sent it!": open the official's form, phone or profile (the navigation itself is
+// cancelled, so tests never reach an outside site), or copy when there is nothing to open. Then tap the button.
+async function send(page) {
+  if (await page.locator('#sent').getAttribute('aria-disabled') === 'true') {
+    if (await page.locator('#contactLink').isVisible()) await page.locator('#contactLink').evaluate(a => { a.addEventListener('click', e => e.preventDefault(), { once: true }); a.click(); });
+    else await page.locator('#copyText').click();
+  }
+  await page.locator('#sent').click();
+}
 async function erase(page) {
   await page.locator('#aboutLink').click();
   await page.locator('#erase').click();
@@ -50,4 +59,4 @@ async function allowTipsHere(page) {
   });
 }
 
-module.exports = { draftKey, actionKey, legacyKey, toConsole, preview, channel, version, goTo, edit, erase, stored, fits, axe, allowTipsHere };
+module.exports = { draftKey, actionKey, legacyKey, toConsole, send, preview, channel, version, goTo, edit, erase, stored, fits, axe, allowTipsHere };

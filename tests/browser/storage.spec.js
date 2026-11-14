@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { toConsole, preview, channel, goTo, edit, erase, stored, draftKey, actionKey, legacyKey } = require('./helpers');
+const { send, toConsole, preview, channel, goTo, edit, erase, stored, draftKey, actionKey, legacyKey } = require('./helpers');
 
 // Storage that can be made to fail on demand, while tests read and write the real thing underneath.
 async function faults(page) {
@@ -36,7 +36,7 @@ test('a working save shows nothing; a failed save says so, keeps the text, and r
 test('a failed progress save does not stop later draft saves', async ({ page }) => {
   await faults(page); await seeded(page); await page.goto('/');
   await fault(page, { actionWrite: true });
-  await page.click('#sent');
+  await send(page);
   await expect(page.locator('#saveStatus')).toContainText('Not saved');
   await goTo(page, 'Patty Murray');
   await edit(page, { body: 'Saved after action failure' });
@@ -102,7 +102,7 @@ test('an older tab cannot silently overwrite a newer draft, even after its stora
 test('a progress read failure saves the pending mark once reads recover', async ({ page }) => {
   await faults(page); await seeded(page); await page.goto('/');
   await fault(page, { actionRead: true });
-  await page.click('#sent');
+  await send(page);
   await expect(page.locator('#saveStatus')).toContainText('Not saved');
   await fault(page, { actionRead: false });
   await edit(page, { body: 'Trigger recovery' });
@@ -122,13 +122,13 @@ test('denied progress writes keep local marks while merging what another tab sav
   });
   await page.goto('/');
   await expect(page.locator('#officialName')).toHaveText('Patty Murray');
-  await page.click('#sent');
+  await send(page);
   await expect(page.locator('#progressText')).toHaveText('2 / 5 contacted');
   await page.evaluate(() => { window.storeActionMap({ 'cantwell:letter': true, 'delbene:social': true }); window.dispatchEvent(new StorageEvent('storage', { key: 'leadership-wa-actions-v3' })); });
   await expect(page.locator('#progressText')).toHaveText('3 / 5 contacted');
   await expect(page.locator('#saveStatus')).toContainText('Not saved');
   await page.evaluate(() => { window.allowActionWrites = true; });
-  await goTo(page, 'Shasti Conrad'); await channel(page, 'call'); await page.click('#sent');
+  await goTo(page, 'Shasti Conrad'); await channel(page, 'call'); await send(page);
   expect(await stored(page, actionKey)).toEqual({ 'murray:letter': true, 'cantwell:letter': true, 'delbene:social': true, 'conrad:call': true });
 });
 
@@ -154,7 +154,7 @@ test('details typed in a stale tab cannot overwrite the newer tab', async ({ pag
 
 test('erase asks first, removes only this campaign, and starts over at step 1', async ({ page }) => {
   await seeded(page); await page.goto('/');
-  await edit(page, { body: 'Saved personal text' }); await page.click('#sent');
+  await edit(page, { body: 'Saved personal text' }); await send(page);
   await page.evaluate(() => { localStorage.setItem('unrelated-key', 'Keep me'); localStorage.setItem('new-leadership-wa-v2', '{}'); });
   await page.click('#aboutLink'); await page.click('#erase'); await page.click('#cancelErase');
   await page.click('#closeAbout');
@@ -171,7 +171,7 @@ test('erase asks first, removes only this campaign, and starts over at step 1', 
 
 test('a blocked legacy removal leaves every record in place and cannot re-import private text', async ({ page }) => {
   await seeded(page); await page.goto('/');
-  await edit(page, { body: 'Current v3 letter' }); await page.click('#sent');
+  await edit(page, { body: 'Current v3 letter' }); await send(page);
   const before = await page.evaluate(({ draftKey, actionKey, legacyKey }) => {
     localStorage.setItem(legacyKey, JSON.stringify({ drafts: { senate: { message: 'Private legacy letter' } } }));
     const original = Storage.prototype.removeItem; window.removalAttempts = [];
@@ -196,7 +196,7 @@ test('erase in another tab clears this tab, including unsaved details and pendin
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function (name, value) { if ((name === key || name.endsWith('-drafts-v3')) && !window.allowActionWrites) throw new Error('blocked'); return original.call(this, name, value); };
   }, actionKey);
-  await other.click('#sent');
+  await send(other);
   await expect(other.locator('#saveStatus')).toHaveText('Not saved. Copy your work.');
   await erase(page);
   await other.waitForFunction(() => window.sawErase);

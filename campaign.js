@@ -2,7 +2,7 @@
 window.CAMPAIGN_CONTENT = {
   name: 'DEM RESET',
   headline: 'DEMOCRATS NEED A RESET.',
-  intro: "Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington's delegation to back a change.",
+  intro: "Replace Chuck Schumer and Hakeem Jeffries as Democratic congressional leaders. Ask Washington State's delegation to back a change.",
   letters: {
     senate: {
       subject: "Oppose Chuck Schumer for Democratic leader",
@@ -153,7 +153,7 @@ Thank you,
   posts: {
     senate: '[official] Please oppose Chuck Schumer for Senate Democratic leader. A new majority is not a mandate to keep him. Support a competitive replacement contest and make your position public. Voters deserve accountability. #DEMRESET',
     house: '[official] Please oppose Hakeem Jeffries for House Democratic leader. Winning back the House is not a vote of confidence in him. Support a competitive replacement contest and make your position public. #DEMRESET',
-    influence: '[official] Publicly advocate for replacing Chuck Schumer and Hakeem Jeffries. Urge Washington congressional Democrats to hold competitive leadership elections. Silence is a choice. Voters deserve accountability, not unity without it. #DEMRESET'
+    influence: '[official] Publicly advocate for replacing Chuck Schumer and Hakeem Jeffries. Urge Washington State congressional Democrats to hold competitive leadership elections. Silence is a choice. Voters deserve accountability, not unity without it. #DEMRESET'
   },
   call: 'Hello, my name is [your name], and I live in [your city and ZIP code]. I am calling for [official]. [request] Please record my request and let me know what action the office will take. Thank you.',
   social: '[handle] Washington deserves accountable Democratic leadership. I am urging a change from Chuck Schumer and Hakeem Jeffries. [socialRequest] #DEMRESET',

@@ -88,6 +88,13 @@ input:not([type=checkbox]){width:100%;min-width:0;height:46px;border:1px solid #
 .texthead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0 4px}.texthead strong{font-size:18px}
 .preview{display:block;width:100%;text-align:left;background:var(--paper);color:#222;border:0;border-radius:8px;padding:16px 18px;white-space:pre-wrap;font-size:16px;line-height:1.55;max-height:9.5em;overflow:hidden;position:relative}
 .preview::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3em;background:linear-gradient(transparent,var(--paper))}
+.howto{list-style:none;padding:0;margin:16px 0;display:grid;gap:14px}
+.howto li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+.howto .n{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--paper);font-weight:800;font-size:15px}
+.howto p{margin:4px 0 8px;font-weight:700}.howto .note{font-weight:400;margin:0}.howto .btn{width:100%}
+.btn.go[aria-disabled=true]{opacity:.45;cursor:not-allowed}.btn.go[aria-disabled=true]:hover{background:var(--accent)}
+.sent-hint{text-align:center}.sent-hint:empty{display:none}
+@media(min-width:800px){.howto li{align-items:center}.howto div{display:flex;align-items:center;justify-content:space-between;gap:16px}.howto li:last-child div{display:block}.howto p{margin:0}.howto .note{margin-top:2px}.howto .btn{width:auto;min-width:220px;flex:none}}
 .check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px}.check input{width:22px;height:22px;flex:none;accent-color:var(--accent)}
 .sent-list{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 0;padding:0;list-style:none;font-size:13px;color:var(--muted)}
 .sent-list li{border:1px solid var(--rule);border-radius:99px;padding:2px 10px}.sent-list li.done{border-color:var(--accent);color:var(--accent)}
